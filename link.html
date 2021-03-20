@@ -54,7 +54,7 @@ function letg() {
         xmlhttp.open('GET', theUrl);
         xmlhttp.send();
          //         alert(jsonResponse.desc);
-        liff.closeWindow();
+       // liff.closeWindow();
             xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
             var jsonResponse = JSON.parse(this.responseText);
