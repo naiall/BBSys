@@ -64,7 +64,11 @@ function letg() {
         if (this.readyState == 4 && this.status == 200) {
             var jsonResponse = JSON.parse(this.responseText);
         }
-        alert(jsonResponse.desc);
+              
+           swal("Good job!", "You clicked the button!", "success", {
+            button: "Aww yiss!",
+          });
+        //alert(jsonResponse.desc);
         liff.closeWindow();
       }});  
 }
