@@ -48,7 +48,7 @@ function letg() {
         var uid = profile.userId;
         var uname = profile.displayName;
 
-       alert(exc+'****'+excst+'****'+uid+'****'+uname);
+    //   alert(exc+'****'+excst+'****'+uid+'****'+uname);
           
   x.innerHTML = "<br>StdId: " + x2+ +exc+'****'+excst
   "<br>userId: " + uid+
@@ -59,7 +59,10 @@ function letg() {
          // alert(theUrl +'****'+excst);
         xmlhttp.open('GET', theUrl);
         xmlhttp.send();
+          
+        alert(theUrl);
         alert(jsonResponse.desc);
+          
         liff.closeWindow();
             xmlhttp.onreadystatechange = function() {
         if (this.readyState == 400 && this.status == 200) {
