@@ -63,15 +63,15 @@ function letg() {
             xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
             var jsonResponse = JSON.parse(this.responseText);
-        }    
-        alert(jsonResponse.desc);
-        Swal.fire({
+        }   
+                      Swal.fire({
                   position: 'top-end',
                   icon: 'success',
                   title: 'Your work has been saved',
                   showConfirmButton: false,
                   timer: 1500
-                })      
+                })   
+        alert(jsonResponse.desc); 
         liff.closeWindow();
       }});  
 }
