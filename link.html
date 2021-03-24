@@ -59,8 +59,8 @@ function letg() {
          // alert(theUrl +'****'+excst);
         xmlhttp.open('GET', theUrl);
         xmlhttp.send();
-          //        alert(jsonResponse.desc);
-        //liff.closeWindow();
+        alert(jsonResponse.desc);
+        liff.closeWindow();
             xmlhttp.onreadystatechange = function() {
         if (this.readyState == 400 && this.status == 200) {
             var jsonResponse = JSON.parse(this.responseText);
