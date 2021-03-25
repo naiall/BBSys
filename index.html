@@ -36,6 +36,7 @@ function initializeLiff(myLiffId) {
             liffId: myLiffId
         })
         .then(() => {
+           letg(); //เพิ่มใหม่
         })
         .catch((err) => {
         });
@@ -43,7 +44,7 @@ function initializeLiff(myLiffId) {
 
 function letg() {
 var x = document.getElementById("tex1");
-var x2 = document.getElementById("stdid").value;
+var x2 = 'naiall' //document.getElementById("stdid").value;
      liff.getProfile().then(function(profile) {
             var uid = profile.userId;
             var uname = profile.displayName;
