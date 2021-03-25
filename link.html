@@ -43,21 +43,6 @@ function initializeLiff(myLiffId) {
         .catch((err) => {
         });
 }
-window.onunload = function() {
-  initializeLiffx('1655787799-blrJl9Nw');
-}
- 
-function initializeLiffx(myLiffId) {
-    liff
-        .init({
-            liffId: myLiffId
-        })
-        .then(() => {
-         letgx();
-        })
-        .catch((err) => {
-        });
-}
 const xurl = "https://script.google.com/macros/s/AKfycbwocrWEQWv9V_4TXcxeCMThKWECL4UuAyHSTXeUkYWJ0EiCuoM/exec";
 var myParam = window.location.search;
 var exc = myParam.split('code=')[1].split('&')[0];
@@ -83,13 +68,6 @@ function letg() {
         liff.closeWindow();
       }});  
 
-function letgx() {
-        liff.getProfile().then(function(profile) {
-        var uid = profile.userId;
-        var uname = profile.displayName;
-        window.location.replace('https://docs.google.com/spreadsheets/d/1LRExambZBbX7udJLRwncBg8qnbJVis9LxrG3gRsQPnM/edit#gid=0');
-        liff.closeWindow();
-      }});    
 }
 
 
