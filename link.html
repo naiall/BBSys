@@ -31,21 +31,7 @@
 window.onload = function() {
   initializeLiff('1655787799-blrJl9Nw');
 }
-
-function initializeLiffx(myLiffId) {
-    liff
-        .init({
-            liffId: myLiffId
-        })
-        .then(() => {
-          letgx();
-        })
-        .catch((err) => {
-        });
-}
-window.onunload = function() {
-  initializeLiffx('1655787799-blrJl9Nw');
-}  
+ 
 function initializeLiff(myLiffId) {
     liff
         .init({
@@ -83,12 +69,7 @@ function letg() {
         liff.closeWindow();
       }});  
 }
-function letgx() {
-        liff.getProfile().then(function(profile) {
-        window.location.replace('https://www.youtube.com');  
-        //liff.closeWindow();
-      }});  
-}
+
 
 
 
