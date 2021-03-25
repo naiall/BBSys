@@ -31,9 +31,6 @@
 window.onload = function() {
   initializeLiff('1655787799-blrJl9Nw');
 }
-window.onunload = function() {
-  initializeLiffx('1655787799-blrJl9Nw');
-}
 
 function initializeLiffx(myLiffId) {
     liff
@@ -46,6 +43,9 @@ function initializeLiffx(myLiffId) {
         .catch((err) => {
         });
 }
+window.onunload = function() {
+  initializeLiffx('1655787799-blrJl9Nw');
+}  
 function initializeLiff(myLiffId) {
     liff
         .init({
