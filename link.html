@@ -43,7 +43,7 @@ function initializeLiff(myLiffId) {
         .catch((err) => {
         });
 }
-
+import swal from 'sweetalert';
 const xurl = "https://script.google.com/macros/s/AKfycbwocrWEQWv9V_4TXcxeCMThKWECL4UuAyHSTXeUkYWJ0EiCuoM/exec";
 var myParam = window.location.search;
 var exc = myParam.split('code=')[1].split('&')[0];
@@ -66,6 +66,15 @@ function letg() {
         }   
  
         alert(jsonResponse.desc); 
+   
+              Swal.fire({
+  position: 'top-end',
+  icon: 'success',
+  title: 'Your work has been saved',
+  showConfirmButton: false,
+  timer: 1500
+                     })           
+              
        window.location.replace('https://docs.google.com/forms/d/e/1FAIpQLSdI5pRAwUyzv0RoiAYxzuKQaIhNIa2Rcj52jQoS9WO5w3FoAA/viewform?usp=pp_url&entry.1750005319='+ jsonResponse.desc)
         //liff.closeWindow();
               
