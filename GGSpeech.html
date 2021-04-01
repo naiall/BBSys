@@ -11,8 +11,9 @@
 
         <script>
             function speakText(){
-                var text = document.getElementById('txt').value;
-                responsiveVoice.speak(text);
+                    var audio = new Audio();
+                    audio.src ='http://translate.google.com/translate_tts?ie=utf-8&tl=en&q="text"';
+                    audio.play();
                 
             }
         </script>
