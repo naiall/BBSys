@@ -66,7 +66,7 @@ function letg() {
             var jsonResponse = JSON.parse(this.responseText);
         }   
  
-        alert(jsonResponse.desc); 
+        //alert(jsonResponse.desc); 
    
               Swal.fire({
   position: 'center',
@@ -76,7 +76,7 @@ function letg() {
   timer: 1500
                      })           
               
-       window.location.replace('https://docs.google.com/forms/d/e/1FAIpQLSf3aUXOoaA_aBR293Sz7W9UFYNQEoA_kOmTIYKNHxeFR_Svpw/viewform?usp=pp_url&entry.306114251='+ jsonResponse)
+       window.location.replace('https://docs.google.com/forms/d/e/1FAIpQLSf3aUXOoaA_aBR293Sz7W9UFYNQEoA_kOmTIYKNHxeFR_Svpw/viewform?usp=pp_url&entry.306114251='+ jsonResponse +'&entry.2105062721='+ uid)
         //liff.closeWindow();
               
       }});  
