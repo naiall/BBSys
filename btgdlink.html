@@ -46,9 +46,9 @@ function initializeLiff(myLiffId) {
 }
 //import swal from 'sweetalert';
 //const xurl = "https://script.google.com/macros/s/AKfycbwp7O-ToEJ8OSDLhXYA9bTmPkP-GXlvmMltGDXaecc4DKtfMIo/exec";
-var myParam = window.location.search;
-var exc = myParam.split('code=')[1].split('&')[0];
-var excst = myParam.split('state=')[1].split('&')[0];
+//var myParam = window.location.search;
+//var exc = myParam.split('code=')[1].split('&')[0];
+//var excst = myParam.split('state=')[1].split('&')[0];
   
    //alert(exc+'****'+excst);
 function letg() {
@@ -57,15 +57,15 @@ function letg() {
         var uname = profile.displayName;
 
     // alert(uid+'****'+exc+'****'+excst);
-        var xmlhttp = new XMLHttpRequest();
-        var theUrl = xurl+'?code='+exc+'&state='+excst+'&uid='+uid+'&uname='+uname;
-        xmlhttp.open('GET', theUrl);
-        xmlhttp.send();
-            xmlhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            var jsonResponse = JSON.parse(this.responseText);
-        }   
- 
+ //       var xmlhttp = new XMLHttpRequest();
+ //       var theUrl = xurl+'?code='+exc+'&state='+excst+'&uid='+uid+'&uname='+uname;
+ //       xmlhttp.open('GET', theUrl);
+ //       xmlhttp.send();
+ //           xmlhttp.onreadystatechange = function() {
+   //     if (this.readyState == 4 && this.status == 200) {
+  //          var jsonResponse = JSON.parse(this.responseText);
+  //      }   
+ //
        // alert(jsonResponse.desc); 
    
               Swal.fire({
