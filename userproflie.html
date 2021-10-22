@@ -66,7 +66,8 @@ const xurl = "https://script.google.com/macros/s/AKfycbwocrWEQWv9V_4TXcxeCMThKWE
 var myParam = window.location.search;
 var exc = myParam.split('code=')[1].split('&')[0];
 var excst = myParam.split('state=')[1].split('&')[0];
-  
+var x = document.getElementById("tex1");
+var x2 = document.getElementById("stdid").value;  
    
 function letg() {
         liff.getProfile().then(function(profile) {
@@ -74,6 +75,10 @@ function letg() {
         var uname = profile.displayName;
         alert(uid);
 
+  x.innerHTML = "<br>StdId: " + x2+ 
+  "<br>userId: " + uid+ 
+  "<br>displayName: " + uname;          
+          
         liff.closeWindow();
               
       }});  
