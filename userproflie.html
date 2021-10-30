@@ -6,43 +6,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
    
 <style>
-@import "compass/css3";
-
-body {
-  background-color: #22475E;
-  overflow:hidden;
+body{
+    position: absolute;
+    top: 50%;
+    left: 30%;
+    transform: translate(-50%,-50%);
+    background-color: #2a9d8f;
 }
-div {
-  width: 30px;
-  height: 30px;
-  position: absolute;
-  background-color: #ccc;
-  top: 45%;
-  border-radius: 50%;
+.progress{
+    position: relative;
+    height: 10px;
+    width: 1110%;
+    border: 10px solid #f4a261;
+    border-radius: 15px;
 }
-
-div:nth-child(1) {
-  background-color: #FF5460;
-  animation: move 2s infinite cubic-bezier(.2,.64,.81,.23);
+.progress .color{
+    position: absolute;
+    background-color: #ffffff;
+    width: 0px;
+    height: 10px;
+    border-radius: 15px;
+    animation: progres 4s infinite linear;    
 }
-div:nth-child(2) {
-  background-color: #FF9D84;
-  animation: move 2s 150ms infinite cubic-bezier(.2,.64,.81,.23);
-}
-div:nth-child(3) {
-  background-color: #F0E797;
-  animation: move 2s 300ms infinite cubic-bezier(.2,.64,.81,.23);
-}
-div:nth-child(4) {
-  background-color: #75B08A;
-  animation: move 2s 450ms infinite cubic-bezier(.2,.64,.81,.23);
-}
-
-
-@keyframes move {
-  0% {left: 0%;}
-  100% {left:100%;}
-}
+@keyframes progres{
+    0%{
+      width: 0%;
+    }
+    25%{
+        width: 50%;
+    }
+    50%{
+        width: 75%;
+    }
+    75%{
+        width: 85%;
+    }
+    100%{
+        width: 100%;
+    }
+};
 </style>    
     <title>ARUN BBSYS</title>
   </head>
@@ -50,12 +52,9 @@ div:nth-child(4) {
     <center>
       <p id="tex1"></p>
 	    <h1> ข้อมูลผู้ใช้งาน </h1>	    
-<div></div>
-<div></div>
-<div></div>
-<div></div>
-<div></div>
-<div></div>
+<div class="progress">
+  <div class="color"></div>
+</div>
 	    
 <script>
 window.onload = function() {
