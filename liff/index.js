@@ -105,9 +105,9 @@ import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/
   //messagingSenderId: "624286198648",
   //appId: "1:624286198648:web:1178a3f793a05d9382f68d"  
 const firebaseConfig = {
-  apiKey: "AIzaSyAx7jK5E4aIMdhvbCbUQw2LgGXtDTgchJc",
-  authDomain: "bbsys-8d807.firebaseapp.com",
-  projectId: "bbsys-8d807"
+  apiKey: "AIzaSyAwERQ_IiGPMywgcMbe4DnKyqgUNDrf9LI",
+  authDomain: "bbsysline.firebaseapp.com",
+  projectId: "bbsysline"
 
 };
 const app = initializeApp(firebaseConfig);
