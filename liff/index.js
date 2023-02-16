@@ -97,10 +97,18 @@ btnCapture.onclick = () => {
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.7/firebase-app.js";
 import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/9.6.7/firebase-functions.js";
 
+  //apiKey: "AIzaSyAx7jK5E4aIMdhvbCbUQw2LgGXtDTgchJc",
+  //authDomain: "bbsys-8d807.firebaseapp.com",
+  //databaseURL: "https://bbsys-8d807.firebaseio.com",
+  //projectId: "bbsys-8d807",
+  //storageBucket: "bbsys-8d807.appspot.com",
+  //messagingSenderId: "624286198648",
+  //appId: "1:624286198648:web:1178a3f793a05d9382f68d"  
 const firebaseConfig = {
-  apiKey: "### FIREBASE API KEY ###",
-  authDomain: "### FIREBASE AUTH DOMAIN ###",
-  projectId: "### CLOUD FUNCTIONS PROJECT ID ###"
+  apiKey: "AIzaSyAx7jK5E4aIMdhvbCbUQw2LgGXtDTgchJc",
+  authDomain: "bbsys-8d807.firebaseapp.com",
+  projectId: "bbsys-8d807"
+
 };
 const app = initializeApp(firebaseConfig);
 const functions = getFunctions(app);
