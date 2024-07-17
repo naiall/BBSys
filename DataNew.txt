@@ -61,6 +61,7 @@ main_ini HID Integer
 main_ini autobp Integer
 input_pt_crossmach tran_request_CODE Integer
 input_pt_crossmach LAB_request_CODE Integer
+input_pt_crossmach HCT String(5)
 main_ini Update Integer
 Xmatchitem Tech_code Integer
 Xmatchitem Tech_Code_dist Integer
