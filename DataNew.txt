@@ -190,10 +190,6 @@ bloodcomp xp4_bag_id Integer
 bloodcomp EXP_time date
 bloodplt xp4_bag_id Integer
 bloodplt EXP_time date
-bloodplt Unitml String(100)
-bloodplt Price Integer
-bloodplt note_ String(100)
-bloodplt note_code String(100)
 bloodmaster xp4_bag_id Integer
 bloodmaster EXP_time date
 bloodmaster Unitml String(10)
