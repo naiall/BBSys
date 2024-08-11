@@ -162,6 +162,7 @@ input_pt_crossmach age Integer
 input_pt_crossmach Status Integer
 input_pt_crossmach Cancel_order String(2)
 input_pt_crossmach lab_order_number String(100)
+input_pt_crossmach HCT String(5)
 main_ini Bag_CARD_Hade String(50)
 main_ini Bag_CARD_Note String(100)
 main_ini LocalBagStatus Integer
