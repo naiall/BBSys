@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barcode Scanner</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/QuaggaJS/0.12.1/Quagga.min.js"></script>
+    <style>
+        #scanner-preview {
+            width: 100%;
+            height: auto;
+            border: 1px solid #000;
+        }
+        #result {
+            margin-top: 10px;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Barcode Scanner</h1>
+    <div id="scanner-preview"></div>
+    <div id="result">Scan a barcode</div>
+
+    <script>
+        function startScanner() {
+            Quagga.init({
+                inputStream: {
+                    name: "Live",
+                    type: "LiveStream",
+                    target: document.querySelector('#scanner-preview'),
+                    constraints: {
+                        facingMode: "environment"
+                    }
+                },
+                decoder: {
+                    readers: ["code_128_reader", "ean_reader", "ean_8_reader", "code_39_reader"]
+                }
+            }, function (err) {
+                if (err) {
+                    console.error("Initialization failed: ", err);
+                    return;
+                }
+                console.log("Initialization successful");
+                Quagga.start();
+            });
+
+            Quagga.onDetected(function (data) {
+                document.getElementById("result").innerText = "Barcode Detected: " + data.codeResult.code;
+                Quagga.stop();
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            startScanner();
+        });
+    </script>
+</body>
+</html>
