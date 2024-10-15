@@ -1,28 +1,38 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <!-- Required meta tags -->
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <?!= include('CSS'); ?>
-  <!-- See CSS.html file -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Scanner</title>
+    <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+    <style>
+        #reader {
+            width: 100%;
+            height: auto;
+        }
+    </style>
 </head>
+<body>
+    <h1>QR Code Scanner</h1>
+    <div id="reader"></div>
+    <div id="result">Scan result will appear here</div>
 
-<body class="bg-dark text-light">
-  <nav class="navbar sticky-top navbar-dark bg-primary">
-    <div class="container-fluid">
-      <a class="navbar-brand mx-auto" href="#"><span><i class="bi bi-card-checklist"></i></span> Inventory Form</a>
-    </div>
-  </nav>
-  <div class="container">
-    <?!= include('Form'); ?>
-    <!-- See Form.html file -->
-  </div>
-  <?!= include('JavaScript'); ?>
-  <!-- See JavaScript.html file -->
-  <?!= include('QrReaderJS'); ?>
-  <!-- See QrReaderJS.html file -->
+    <script>
+        function onScanSuccess(decodedText, decodedResult) {
+            // Handle the decoded text and result
+            document.getElementById("result").innerText = `Scan result: ${decodedText}`;
+            console.log(`Scan result: ${decodedText}`);
+        }
+
+        function onScanFailure(error) {
+            // Handle scan failure
+            console.warn(`QR Code scan error: ${error}`);
+        }
+
+        let html5QrcodeScanner = new Html5QrcodeScanner(
+            "reader", { fps: 10, qrbox: { width: 250, height: 250 } }
+        );
+        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+    </script>
 </body>
-
 </html>
