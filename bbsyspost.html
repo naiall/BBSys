@@ -192,13 +192,13 @@
 
             function lotg() {
                 const x = document.getElementById("tex1");
-                const bo = '23947'; // Example bo value
-                const bt = '312.67.1.17619'; // Example bt value
-
+                const bo = document.getElementById("productCode").value;  // รับค่าจาก input ที่มี id="productCode"
+                const bt = document.getElementById("productName").value;  // รับค่าจาก input ที่มี id="productName"
+            
                 liff.getProfile().then(function(profile) {
                     const uid = profile.userId;
                     const uname = profile.displayName;
-
+            
                     // Check if bo and bt match expected values before proceeding
                     if (bo && bt) {
                         const redirectUrl = `https://script.google.com/macros/s/AKfycbxKTile0eqVDlq17vBNE32_TseqgLYRY9BvQj9Fa5MTkTn6fCYyMhXGdvbKmznHyF4I/exec?method=postData&bo=${bo}&bt=${bt}&userId=${uid}&displayName=${uname}`;
