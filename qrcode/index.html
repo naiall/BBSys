@@ -4,34 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR Code Scanner</title>
-    <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" type="text/javascript"></script>
     <style>
-        #reader {
+        #qr-reader {
             width: 100%;
             height: auto;
+        }
+        .result {
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
     <h1>QR Code Scanner</h1>
-    <div id="reader"></div>
-    <div id="result">Scan result will appear here</div>
+    <div id="qr-reader"></div>
+    <div class="result">
+        <h2>Scan Results:</h2>
+        <div id="qr-reader-results"></div>
+    </div>
+    <input type="hidden" id="productCode" />
 
     <script>
-        function onScanSuccess(decodedText, decodedResult) {
-            document.getElementById("result").innerText = `Scan result: ${decodedText}`;
-            console.log(`Scan result: ${decodedText}`);
-        }
+        function docReady(fn) {
+            if (document.readyState === "complete" || document.readyState === "interactive") {
+                setTimeout(fn, 1);
+            } else {
+                document.addEventListener("DOMContentLoaded", fn);
+            }
+        } 
 
-        function onScanFailure(error) {
-            document.getElementById("result").innerText = `QR Code scan error: ${error}`;
-            console.warn(`QR Code scan error: ${error}`);
-        }
+        docReady(function() {
+            var resultContainer = document.getElementById('qr-reader-results');
+            var lastResult, countResults = 0;
+            
+            var html5QrcodeScanner = new Html5QrcodeScanner(
+                "qr-reader", { fps: 10, qrbox: 250 });
+            
+            function onScanSuccess(decodedText, decodedResult) {
+                if (decodedText !== lastResult) {
+                    ++countResults;
+                    lastResult = decodedText;
+                    console.log(`Scan result = ${decodedText}`, decodedResult);
 
-        let html5QrcodeScanner = new Html5QrcodeScanner(
-            "reader", { fps: 10, qrbox: { width: 250, height: 250 } }
-        );
-        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+                    resultContainer.innerHTML += `<div class="p-3 mb-2 bg-success text-white">[${countResults}] - ${decodedText}</div>`;
+                    
+                    // Assign the scanned code to productCode field
+                    const productCode = document.getElementById("productCode");
+                    productCode.value = decodedText;
+                }
+            }
+            
+            // Optional callback for error, can be ignored.
+            function onScanError(qrCodeError) {
+                // Handle scan error if necessary
+            }
+            
+            html5QrcodeScanner.render(onScanSuccess, onScanError);
+        });
     </script>
 </body>
 </html>
