@@ -29,9 +29,15 @@
         <i class="fas fa-paper-plane"></i> Submit
     </button>
 
+    <!-- แสดงข้อมูลผู้ใช้ -->
+    <div id="userInfo" style="margin-top: 20px;">
+        <p><strong>User ID:</strong> <span id="uid"></span></p>
+        <p><strong>User Name:</strong> <span id="uname"></span></p>
+    </div>
+
     <script>
         window.onload = function() {
-            initializeLiff('1655717777-o4zRwkr6');
+            initializeLiff('1655717777-MVpyYoWx');
         }
 
         function initializeLiff(myLiffId) {
@@ -48,6 +54,12 @@
             liff.getProfile().then(function(profile) {
                 const uid = profile.userId;
                 const uname = profile.displayName;
+                
+                // แสดงข้อมูล uid และ uname ในหน้าเว็บ
+                document.getElementById("uid").textContent = uid;
+                document.getElementById("uname").textContent = uname;
+            }).catch((err) => {
+                console.error("Error retrieving profile: ", err);
             });
         }
 
