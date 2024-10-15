@@ -19,13 +19,12 @@
 
     <script>
         function onScanSuccess(decodedText, decodedResult) {
-            // Handle the decoded text and result
             document.getElementById("result").innerText = `Scan result: ${decodedText}`;
             console.log(`Scan result: ${decodedText}`);
         }
 
         function onScanFailure(error) {
-            // Handle scan failure
+            document.getElementById("result").innerText = `QR Code scan error: ${error}`;
             console.warn(`QR Code scan error: ${error}`);
         }
 
