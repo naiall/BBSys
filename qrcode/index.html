@@ -52,14 +52,23 @@
 
         function lotg() {
             liff.getProfile().then(function(profile) {
-                const uid = profile.userId;
-                const uname = profile.displayName;
-                
+            //    const uid = profile.userId;
+            //    const uname = profile.displayName;
+            var x = document.getElementById("tex1");    
                 // แสดงข้อมูล uid และ uname ในหน้าเว็บ
-                document.getElementById("uid").textContent = uid;
-                document.getElementById("uname").textContent = uname;
+           //     document.getElementById("uid").textContent = uid;
+           //     document.getElementById("uname").textContent = uname;
                     // แสดงข้อมูลผ่าน alert
-                    alert(uid + '*' + uname);
+          //          alert(uid + '*' + uname);
+            var uid = profile.userId;
+            var uname = profile.displayName;
+            var xos = liff.getOS();
+       
+              x.innerHTML = "<br>StdId: " + x2+ 
+              "<br>userId: " + uid+ 
+             "<br>displayName: " + uname;       
+                 window.location.replace('https://script.google.com/macros/s/AKfycbxKTile0eqVDlq17vBNE32_TseqgLYRY9BvQj9Fa5MTkTn6fCYyMhXGdvbKmznHyF4I/exec?method=getUserData&userId='+uid+'&displayName='+uname);
+                        alert(uid+ '*' + uname);                
             }).catch((err) => {
                 console.error("Error retrieving profile: ", err);
             });
