@@ -58,7 +58,8 @@
                 // แสดงข้อมูล uid และ uname ในหน้าเว็บ
                 document.getElementById("uid").textContent = uid;
                 document.getElementById("uname").textContent = uname;
-                document.getElementById("uid").value
+                    // แสดงข้อมูลผ่าน alert
+                    alert(uid + '*' + uname);
             }).catch((err) => {
                 console.error("Error retrieving profile: ", err);
             });
