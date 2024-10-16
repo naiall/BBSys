@@ -139,7 +139,8 @@
                 const uid = profile.userId;
                 const uname = profile.displayName;
                 
-                const redirectUrl = `https://naiall.github.io/BBSys/qrcode/qrcode.html?method=postData&bo=${scan1}&bt=${scan2}`;
+                const redirectUrl = `https://naiall.github.io/BBSys/qrcode/qrcode.html?bo=value1&bt=value2&userId=value3&displayName=value4
+`;
                 window.location.replace(redirectUrl);
             }).catch((err) => {
                 console.error("Error getting profile: ", err);
