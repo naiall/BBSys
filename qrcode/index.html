@@ -50,9 +50,11 @@
         function initializeLiff(myLiffId) {
             liff.init({ liffId: myLiffId })
                 .then(() => {
+                    alert("Hello")
                     lotg();
                 })
                 .catch((err) => {
+                    alert("error")
                     console.error("Error initializing LIFF: ", err);
                 });
         }
