@@ -78,12 +78,18 @@
 
                     resultContainer.innerHTML += `<div class="p-3 mb-2 bg-success text-white">[${countResults}] - ${decodedText}</div>`;
 
-                    // Assuming the decodedText contains the parameters in the format:
-                    // bo=value1&bt=value2&userId=value3&displayName=value4
+                    // Parse the decoded text as query parameters
                     const params = new URLSearchParams(decodedText);
-                    document.getElementById("bo").textContent = params.get("bo") || "N/A";
-                    document.getElementById("bt").textContent = params.get("bt") || "N/A";
+                    const boValue = params.get("bo") || "N/A";
+                    const btValue = params.get("bt") || "N/A";
+                    const userIdValue = params.get("userId") || "N/A";
+                    const displayNameValue = params.get("displayName") || "N/A";
 
+                    // Update displayed data on the page
+                    document.getElementById("bo").textContent = boValue;
+                    document.getElementById("bt").textContent = btValue;
+                    document.getElementById("userId").textContent = userIdValue;
+                    document.getElementById("displayName").textContent = displayNameValue;
                 }
             }
 
@@ -97,9 +103,9 @@
             const params = getQueryParams();
             document.getElementById("bo").textContent = params.bo || "N/A";
             document.getElementById("bt").textContent = params.bt || "N/A";
-
+            document.getElementById("userId").textContent = params.userId || "N/A";
+            document.getElementById("displayName").textContent = params.displayName || "N/A";
         });
     </script>
 </body>
 </html>
-
