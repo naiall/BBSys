@@ -52,23 +52,18 @@
 
         function lotg() {
             liff.getProfile().then(function(profile) {
-            //    const uid = profile.userId;
-            //    const uname = profile.displayName;
-            var x = document.getElementById("tex1");    
+                const uid = profile.userId;
+                const uname = profile.displayName;
+
                 // แสดงข้อมูล uid และ uname ในหน้าเว็บ
-           //     document.getElementById("uid").textContent = uid;
-           //     document.getElementById("uname").textContent = uname;
-                    // แสดงข้อมูลผ่าน alert
-          //          alert(uid + '*' + uname);
-            var uid = profile.userId;
-            var uname = profile.displayName;
-            var xos = liff.getOS();
-       
-              x.innerHTML = "<br>StdId: " + x2+ 
-              "<br>userId: " + uid+ 
-             "<br>displayName: " + uname;       
-                 window.location.replace('https://script.google.com/macros/s/AKfycbxKTile0eqVDlq17vBNE32_TseqgLYRY9BvQj9Fa5MTkTn6fCYyMhXGdvbKmznHyF4I/exec?method=getUserData&userId='+uid+'&displayName='+uname);
-                        alert(uid+ '*' + uname);                
+                document.getElementById("uid").textContent = uid;
+                document.getElementById("uname").textContent = uname;
+
+                // แสดงข้อมูลผ่าน alert
+                alert(uid + '*' + uname);
+
+                // เรียก docReady() เพื่อเริ่มการสแกน QR หลังจากแสดง alert
+                docReady(initiateScanner);
             }).catch((err) => {
                 console.error("Error retrieving profile: ", err);
             });
@@ -82,7 +77,8 @@
             }
         }
 
-        docReady(function() {
+        // แยกฟังก์ชันสแกน QR เพื่อให้เรียกใช้ได้ใน docReady
+        function initiateScanner() {
             var resultContainer = document.getElementById('qr-reader-results');
             var lastResult, countResults = 0;
 
@@ -113,27 +109,7 @@
             }
 
             html5QrcodeScanner.render(onScanSuccess, onScanError);
-        });
+        }
 
         function submitData() {
-            const scan1 = document.getElementById("productCode1").value;
-            const scan2 = document.getElementById("productCode2").value;
-
-            if (!scan1 || !scan2) {
-                alert("Please scan two codes before submitting.");
-                return;
-            }
-
-            liff.getProfile().then(function(profile) {
-                const uid = profile.userId;
-                const uname = profile.displayName;
-                
-                const redirectUrl = `https://script.google.com/macros/s/AKfycbxKTile0eqVDlq17vBNE32_TseqgLYRY9BvQj9Fa5MTkTn6fCYyMhXGdvbKmznHyF4I/exec?method=postData&bo=${scan1}&bt=${scan2}&userId=${uid}&displayName=${uname}`;
-                window.location.replace(redirectUrl);
-            }).catch((err) => {
-                console.error("Error getting profile: ", err);
-            });
-        }
-    </script>
-</body>
-</html>
+            const scan1
