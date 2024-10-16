@@ -44,16 +44,7 @@
 
 
                     // Check if uid and uname are available
-                    if (uid && uname) {
-                        alert("Hello");
-                        console.log(uid + '*' + uname); // Log the uid and uname to the console
-                        
-                        // แสดงข้อมูล uid และ uname ในหน้าเว็บ
-                        document.getElementById("uid").textContent = uid;
-                        document.getElementById("uname").textContent = uname;
-                    } else {
-                        alert("User ID and Name are not available."); // แจ้งว่าไม่มี uid และ uname
-                    }            
+           
         }
 
         function initializeLiff(myLiffId) {
@@ -71,7 +62,16 @@
                 const uid = profile.userId;
                 const uname = profile.displayName;
                     // Show the alert with the message
-                    alert("Hello");
+                    if (uid && uname) {
+                        alert("Hello");
+                        console.log(uid + '*' + uname); // Log the uid and uname to the console
+                        
+                        // แสดงข้อมูล uid และ uname ในหน้าเว็บ
+                        document.getElementById("uid").textContent = uid;
+                        document.getElementById("uname").textContent = uname;
+                    } else {
+                        alert("User ID and Name are not available."); // แจ้งว่าไม่มี uid และ uname
+                    } 
             
                     // Log the uid and uname to the console
                     console.log(uid + '*' + uname);
