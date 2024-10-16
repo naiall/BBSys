@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Data Receiver</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .data {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Received QR Code Data</h1>
+    <div class="data">
+        <h2>Data:</h2>
+        <p><strong>BO:</strong> <span id="bo"></span></p>
+        <p><strong>BT:</strong> <span id="bt"></span></p>
+        <p><strong>User ID:</strong> <span id="userId"></span></p>
+        <p><strong>User Name:</strong> <span id="displayName"></span></p>
+    </div>
+
+    <script>
+        // Function to get URL parameters
+        function getQueryParams() {
+            const params = {};
+            const queryString = window.location.search.substring(1);
+            const pairs = queryString.split("&");
+            for (let i = 0; i < pairs.length; i++) {
+                const pair = pairs[i].split("=");
+                params[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
+            }
+            return params;
+        }
+
+        window.onload = function() {
+            const params = getQueryParams();
+            // Display the received data
+            document.getElementById("bo").textContent = params.bo || "N/A";
+            document.getElementById("bt").textContent = params.bt || "N/A";
+            document.getElementById("userId").textContent = params.userId || "N/A";
+            document.getElementById("displayName").textContent = params.displayName || "N/A";
+        }
+    </script>
+</body>
+</html>
