@@ -127,7 +127,8 @@
             submitButton.addEventListener('click', function() {
                 const bo = scanResults[0];
                 const bt = scanResults[1];
-                const submitUrl = `https://script.google.com/macros/s/AKfycbxKTile0eqVDlq17vBNE32_TseqgLYRY9BvQj9Fa5MTkTn6fCYyMhXGdvbKmznHyF4I/exec?method=sendToLineBot`;
+                //const submitUrl = `https://script.google.com/macros/s/AKfycbxKTile0eqVDlq17vBNE32_TseqgLYRY9BvQj9Fa5MTkTn6fCYyMhXGdvbKmznHyF4I/exec?method=sendToLineBot`;
+                const submitUrl = `https://script.google.com/macros/s/AKfycbxKTile0eqVDlq17vBNE32_TseqgLYRY9BvQj9Fa5MTkTn6fCYyMhXGdvbKmznHyF4I/exec?method=postData&bo=${bo}&bt=${bt}&userId=${userId}&displayName=${displayName}`;
                 window.location.href = submitUrl;
             });
         });
