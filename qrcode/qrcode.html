@@ -41,9 +41,22 @@
     </div>
 
     <script>
-        // ข้อมูล User ที่แสดงด้านบน
-        const userId = "your-user-id"; // ใส่ค่า userId ที่ต้องการแสดง
-        const displayName = "your-display-name"; // ใส่ค่า displayName ที่ต้องการแสดง
+        // Function to get URL parameters
+        function getQueryParams() {
+            const params = {};
+            const queryString = window.location.search.substring(1);
+            const pairs = queryString.split("&");
+            for (let i = 0; i < pairs.length; i++) {
+                const pair = pairs[i].split("=");
+                params[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
+            }
+            return params;
+        }
+
+        // ดึงค่า userId และ displayName จาก URL
+        const params = getQueryParams();
+        const userId = params.userId || "N/A"; 
+        const displayName = params.displayName || "N/A"; 
 
         // แสดงข้อมูล User ที่โหลดขึ้นมา
         document.getElementById("userId").textContent = userId;
