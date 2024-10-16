@@ -3,20 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Code Data Receiver</title>
+    <title>QR Code Scanner</title>
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" type="text/javascript"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
         }
+        #qr-reader {
+            width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
         .data {
+            margin-top: 20px;
+        }
+        .result {
             margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <h1>Received QR Code Data</h1>
+    <h1>QR Code Scanner</h1>
+    <div id="qr-reader"></div>
+    <div class="result">
+        <h2>Scan Results:</h2>
+        <div id="qr-reader-results"></div>
+    </div>
+
     <div class="data">
         <h2>Data:</h2>
         <p><strong>BO:</strong> <span id="bo"></span></p>
@@ -38,14 +53,55 @@
             return params;
         }
 
-        window.onload = function() {
+        // Document ready function
+        function docReady(fn) {
+            if (document.readyState === "complete" || document.readyState === "interactive") {
+                setTimeout(fn, 1);
+            } else {
+                document.addEventListener("DOMContentLoaded", fn);
+            }
+        }
+
+        docReady(function() {
+            // Initialize QR Code Scanner
+            var resultContainer = document.getElementById('qr-reader-results');
+            var lastResult, countResults = 0;
+
+            var html5QrcodeScanner = new Html5QrcodeScanner(
+                "qr-reader", { fps: 10, qrbox: 250 });
+
+            function onScanSuccess(decodedText, decodedResult) {
+                if (decodedText !== lastResult) {
+                    ++countResults;
+                    lastResult = decodedText;
+                    console.log(`Scan result = ${decodedText}`, decodedResult);
+
+                    resultContainer.innerHTML += `<div class="p-3 mb-2 bg-success text-white">[${countResults}] - ${decodedText}</div>`;
+
+                    // Assuming the decodedText contains the parameters in the format:
+                    // bo=value1&bt=value2&userId=value3&displayName=value4
+                    const params = new URLSearchParams(decodedText);
+                    document.getElementById("bo").textContent = params.get("bo") || "N/A";
+                    document.getElementById("bt").textContent = params.get("bt") || "N/A";
+                    document.getElementById("userId").textContent = params.get("userId") || "N/A";
+                    document.getElementById("displayName").textContent = params.get("displayName") || "N/A";
+                }
+            }
+
+            function onScanError(qrCodeError) {
+                // Handle scan error if necessary
+            }
+
+            html5QrcodeScanner.render(onScanSuccess, onScanError);
+
+            // Display the received data from URL parameters
             const params = getQueryParams();
-            // Display the received data
             document.getElementById("bo").textContent = params.bo || "N/A";
             document.getElementById("bt").textContent = params.bt || "N/A";
             document.getElementById("userId").textContent = params.userId || "N/A";
             document.getElementById("displayName").textContent = params.displayName || "N/A";
-        }
+        });
     </script>
 </body>
 </html>
+
