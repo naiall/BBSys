@@ -11,12 +11,6 @@
             font-family: Arial, sans-serif;
             margin: 20px;
         }
-        #user-info {
-            margin-bottom: 20px;
-            padding: 10px;
-            background-color: #f1f1f1;
-            border: 1px solid #ccc;
-        }
         #qr-reader {
             width: 100%;
             height: auto;
@@ -31,39 +25,30 @@
     </style>
 </head>
 <body>
-    <div id="user-info">
-        <h2>User Information</h2>
+    <h1>QR Code Scanner</h1>
+    
+    <!-- แสดงข้อมูล User ที่ด้านบน -->
+    <div class="data">
+        <h2>User Information:</h2>
         <p><strong>User ID:</strong> <span id="userId"></span></p>
         <p><strong>User Name:</strong> <span id="displayName"></span></p>
     </div>
-
-    <h1>QR Code Scanner</h1>
+    
     <div id="qr-reader"></div>
     <div class="result">
         <h2>Scan Results:</h2>
         <div id="qr-reader-results"></div>
     </div>
 
-    <div class="data">
-        <h2>Data:</h2>
-        <p><strong>BO:</strong> <span id="bo"></span></p>
-        <p><strong>BT:</strong> <span id="bt"></span></p>
-    </div>
-
     <script>
-        // Function to get URL parameters
-        function getQueryParams() {
-            const params = {};
-            const queryString = window.location.search.substring(1);
-            const pairs = queryString.split("&");
-            for (let i = 0; i < pairs.length; i++) {
-                const pair = pairs[i].split("=");
-                params[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
-            }
-            return params;
-        }
+        // ข้อมูล User ที่แสดงด้านบน
+        const userId = "your-user-id"; // ใส่ค่า userId ที่ต้องการแสดง
+        const displayName = "your-display-name"; // ใส่ค่า displayName ที่ต้องการแสดง
 
-        // Document ready function
+        // แสดงข้อมูล User ที่โหลดขึ้นมา
+        document.getElementById("userId").textContent = userId;
+        document.getElementById("displayName").textContent = displayName;
+
         function docReady(fn) {
             if (document.readyState === "complete" || document.readyState === "interactive") {
                 setTimeout(fn, 1);
@@ -73,7 +58,6 @@
         }
 
         docReady(function() {
-            // Initialize QR Code Scanner
             var resultContainer = document.getElementById('qr-reader-results');
             var lastResult, countResults = 0;
 
@@ -87,15 +71,6 @@
                     console.log(`Scan result = ${decodedText}`, decodedResult);
 
                     resultContainer.innerHTML += `<div class="p-3 mb-2 bg-success text-white">[${countResults}] - ${decodedText}</div>`;
-
-                    // Parse the decoded text as query parameters
-                    const params = new URLSearchParams(decodedText);
-                    document.getElementById("bo").textContent = params.get("bo") || "N/A";
-                    document.getElementById("bt").textContent = params.get("bt") || "N/A";
-
-                    // Update user info fields at the top
-                    document.getElementById("userId").textContent = params.get("userId") || "N/A";
-                    document.getElementById("displayName").textContent = params.get("displayName") || "N/A";
                 }
             }
 
@@ -104,13 +79,6 @@
             }
 
             html5QrcodeScanner.render(onScanSuccess, onScanError);
-
-            // Display the received data from URL parameters
-            const params = getQueryParams();
-            document.getElementById("bo").textContent = params.bo || "N/A";
-            document.getElementById("bt").textContent = params.bt || "N/A";
-            document.getElementById("userId").textContent = params.userId || "N/A";
-            document.getElementById("displayName").textContent = params.displayName || "N/A";
         });
     </script>
 </body>
