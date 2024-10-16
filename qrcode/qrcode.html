@@ -11,6 +11,12 @@
             font-family: Arial, sans-serif;
             margin: 20px;
         }
+        #user-info {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f1f1f1;
+            border: 1px solid #ccc;
+        }
         #qr-reader {
             width: 100%;
             height: auto;
@@ -25,6 +31,12 @@
     </style>
 </head>
 <body>
+    <div id="user-info">
+        <h2>User Information</h2>
+        <p><strong>User ID:</strong> <span id="userId"></span></p>
+        <p><strong>User Name:</strong> <span id="displayName"></span></p>
+    </div>
+
     <h1>QR Code Scanner</h1>
     <div id="qr-reader"></div>
     <div class="result">
@@ -36,8 +48,6 @@
         <h2>Data:</h2>
         <p><strong>BO:</strong> <span id="bo"></span></p>
         <p><strong>BT:</strong> <span id="bt"></span></p>
-        <p><strong>User ID:</strong> <span id="userId"></span></p>
-        <p><strong>User Name:</strong> <span id="displayName"></span></p>
     </div>
 
     <script>
@@ -80,16 +90,12 @@
 
                     // Parse the decoded text as query parameters
                     const params = new URLSearchParams(decodedText);
-                    const boValue = params.get("bo") || "N/A";
-                    const btValue = params.get("bt") || "N/A";
-                    const userIdValue = params.get("userId") || "N/A";
-                    const displayNameValue = params.get("displayName") || "N/A";
+                    document.getElementById("bo").textContent = params.get("bo") || "N/A";
+                    document.getElementById("bt").textContent = params.get("bt") || "N/A";
 
-                    // Update displayed data on the page
-                    document.getElementById("bo").textContent = boValue;
-                    document.getElementById("bt").textContent = btValue;
-               //     document.getElementById("userId").textContent = userIdValue;
-              //      document.getElementById("displayName").textContent = displayNameValue;
+                    // Update user info fields at the top
+                    document.getElementById("userId").textContent = params.get("userId") || "N/A";
+                    document.getElementById("displayName").textContent = params.get("displayName") || "N/A";
                 }
             }
 
@@ -103,8 +109,8 @@
             const params = getQueryParams();
             document.getElementById("bo").textContent = params.bo || "N/A";
             document.getElementById("bt").textContent = params.bt || "N/A";
-  //     document.getElementById("userId").textContent = params.userId || "N/A";
-   //         document.getElementById("displayName").textContent = params.displayName || "N/A";
+            document.getElementById("userId").textContent = params.userId || "N/A";
+            document.getElementById("displayName").textContent = params.displayName || "N/A";
         });
     </script>
 </body>
