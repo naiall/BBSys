@@ -198,12 +198,11 @@
                 liff.getProfile().then(function(profile) {
                     const uid = profile.userId;
                     const uname = profile.displayName;
-                    const value1 = "A"
-                    const value2 = "B"
+
             
                     // Check if bo and bt match expected values before proceeding
                     if (bo && bt) {
-                        const redirectUrl = `https://naiall.github.io/BBSys/qrcode/index.html?bo=value1&bt=value2&userId=uid&displayName=uname`;
+                        const redirectUrl = `https://naiall.github.io/BBSys/qrcode/qrcode.html?bo=${bo}&bt=${bt}&userId=${uid}&displayName=${uname}`;
                         window.location.replace(redirectUrl);
                     } else {
                         x.innerHTML = "Invalid bo or bt values.";
