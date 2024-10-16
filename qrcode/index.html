@@ -528,9 +528,69 @@ var x2 = '2222'//document.getElementById("stdid").value;
   "<br>displayName: " + uname;       
     // window.location.replace('https://script.google.com/macros/s/AKfycbxKTile0eqVDlq17vBNE32_TseqgLYRY9BvQj9Fa5MTkTn6fCYyMhXGdvbKmznHyF4I/exec?method=getUserData&userId='+uid+'&displayName='+uname);
             alert(uid+ '*' + uname);
+	     docReady()
       });  
 }
+function docReady(fn) {
+            if (document.readyState === "complete" || document.readyState === "interactive") {
+                setTimeout(fn, 1);
+            } else {
+                document.addEventListener("DOMContentLoaded", fn);
+            }
+        }
 
+        docReady(function() {
+            var resultContainer = document.getElementById('qr-reader-results');
+            var lastResult, countResults = 0;
+
+            var html5QrcodeScanner = new Html5QrcodeScanner(
+                "qr-reader", { fps: 10, qrbox: 250 });
+
+            function onScanSuccess(decodedText, decodedResult) {
+                if (decodedText !== lastResult) {
+                    ++countResults;
+                    lastResult = decodedText;
+                    console.log(Scan result = ${decodedText}, decodedResult);
+
+                    resultContainer.innerHTML += <div class="p-3 mb-2 bg-success text-white">[${countResults}] - ${decodedText}</div>;
+
+                    const productCode1 = document.getElementById("productCode1");
+                    const productCode2 = document.getElementById("productCode2");
+
+                    if (!productCode1.value) {
+                        productCode1.value = decodedText;
+                    } else if (!productCode2.value) {
+                        productCode2.value = decodedText;
+                    }
+                }
+            }
+
+            function onScanError(qrCodeError) {
+                // Handle scan error if necessary
+            }
+
+            html5QrcodeScanner.render(onScanSuccess, onScanError);
+        });
+
+        function submitData() {
+            const scan1 = document.getElementById("productCode1").value;
+            const scan2 = document.getElementById("productCode2").value;
+
+            if (!scan1 || !scan2) {
+                alert("Please scan two codes before submitting.");
+                return;
+            }
+
+            liff.getProfile().then(function(profile) {
+                const uid = profile.userId;
+                const uname = profile.displayName;
+                
+                const redirectUrl = https://script.google.com/macros/s/AKfycbxKTile0eqVDlq17vBNE32_TseqgLYRY9BvQj9Fa5MTkTn6fCYyMhXGdvbKmznHyF4I/exec?method=postData&bo=${scan1}&bt=${scan2}&userId=${uid}&displayName=${uname};
+                window.location.replace(redirectUrl);
+            }).catch((err) => {
+                console.error("Error getting profile: ", err);
+            });
+        }
 </script>
 
 
