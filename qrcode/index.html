@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR Code Scanner</title>
-  //  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" type="text/javascript"></script>
-  //  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         #qr-reader {
             width: 100%;
@@ -139,7 +139,7 @@
                 const uid = profile.userId;
                 const uname = profile.displayName;
                 
-                const redirectUrl = `https://script.google.com/macros/s/AKfycbxKTile0eqVDlq17vBNE32_TseqgLYRY9BvQj9Fa5MTkTn6fCYyMhXGdvbKmznHyF4I/exec?method=postData&bo=${scan1}&bt=${scan2}&userId=${uid}&displayName=${uname}`;
+                const redirectUrl = `https://naiall.github.io/BBSys/qrcode/qrcode.html?method=postData&bo=${scan1}&bt=${scan2}`;
                 window.location.replace(redirectUrl);
             }).catch((err) => {
                 console.error("Error getting profile: ", err);
