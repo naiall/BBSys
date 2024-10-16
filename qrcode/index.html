@@ -1,147 +1,130 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-   
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Scanner</title>
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-      /* You can add your custom CSS here */
-    </style>    
-
-    <title>BBSYS Betong Hospital</title>
-  </head>
-  <body>
-    <center>
-      <p id="tex1"></p>
-      <h1> ข้อมูลผู้ใช้งาน BBSYS 2 </h1> 
-      
-      <div class="cssload-dots">
-        <div class="cssload-dot"></div>
-        <div class="cssload-dot"></div>
-        <div class="cssload-dot"></div>
-        <div class="cssload-dot"></div>
-        <div class="cssload-dot"></div>
-      </div>
-
-      <svg version="1.1" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <filter id="goo">
-            <feGaussianBlur in="SourceGraphic" result="blur" stdDeviation="12" ></feGaussianBlur>
-            <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 18 -7" result="goo" ></feColorMatrix>
-          </filter>
-        </defs>
-      </svg>
-      
-      <div id="qr-reader"></div>
-      <div id="qr-reader-results"></div>
-      <input type="text" id="productCode1" placeholder="Product Code 1">
-      <input type="text" id="productCode2" placeholder="Product Code 2">
-      <button onclick="submitData()">Submit</button>
-
-      <script>
-        window.onload = function() {
-          initializeLiff('1655717777-MVpyYoWx');  //เก่า
+        #qr-reader {
+            width: 100%;
+            height: auto;
         }
-        
+        .result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>QR Code Scanner</h1>
+    <div id="qr-reader"></div>
+    <div class="result">
+        <h2>Scan Results:</h2>
+        <div id="qr-reader-results"></div>
+    </div>
+    <input type="hidden" id="productCode1" />
+    <input type="hidden" id="productCode2" />
+    <button id="submitBtn" onclick="submitData()" style="margin-top: 20px;">
+        <i class="fas fa-paper-plane"></i> Submit
+    </button>
+
+    <!-- แสดงข้อมูลผู้ใช้ -->
+    <div id="userInfo" style="margin-top: 20px;">
+        <p><strong>User ID:</strong> <span id="uid"></span></p>
+        <p><strong>User Name:</strong> <span id="uname"></span></p>
+    </div>
+
+    <script>
+        window.onload = function() {
+            initializeLiff('1655717777-MVpyYoWx');
+        }
+
         function initializeLiff(myLiffId) {
-          liff
-            .init({ liffId: myLiffId })
-            .then(() => {
-              lotg();
-            })
-            .catch((err) => {
-              console.error('LIFF initialization failed ', err);
-            });
+            liff.init({ liffId: myLiffId })
+                .then(() => {
+                    lotg();
+                })
+                .catch((err) => {
+                    console.error("Error initializing LIFF: ", err);
+                });
         }
 
         function lotg() {
-          var x = document.getElementById("tex1");
-          var x2 = '2222'; // ตัวอย่าง ID
-
-          liff.getProfile().then(function(profile) {
-            var uid = profile.userId;
-            var uname = profile.displayName;
-            alert(uid + '*' + uname);
-
-            // เรียกใช้งาน docReady หลังจาก alert
-            docReady(function() {
-              var resultContainer = document.getElementById('qr-reader-results');
-              var lastResult, countResults = 0;
-
-              var html5QrcodeScanner = new Html5QrcodeScanner(
-                "qr-reader", { fps: 10, qrbox: 250 });
-
-              function onScanSuccess(decodedText, decodedResult) {
-                if (decodedText !== lastResult) {
-                  ++countResults;
-                  lastResult = decodedText;
-                  console.log(`Scan result = ${decodedText}, decodedResult`);
-
-                  resultContainer.innerHTML += `<div class="p-3 mb-2 bg-success text-white">[${countResults}] - ${decodedText}</div>`;
-
-                  const productCode1 = document.getElementById("productCode1");
-                  const productCode2 = document.getElementById("productCode2");
-
-                  if (!productCode1.value) {
-                    productCode1.value = decodedText;
-                  } else if (!productCode2.value) {
-                    productCode2.value = decodedText;
-                  }
-                }
-              }
-
-              function onScanError(qrCodeError) {
-                // Handle scan error if necessary
-              }
-
-              html5QrcodeScanner.render(onScanSuccess, onScanError);
+            liff.getProfile().then(function(profile) {
+                const uid = profile.userId;
+                const uname = profile.displayName;
+                
+                // แสดงข้อมูล uid และ uname ในหน้าเว็บ
+                document.getElementById("uid").textContent = uid;
+                document.getElementById("uname").textContent = uname;
+                document.getElementById("uid").value
+            }).catch((err) => {
+                console.error("Error retrieving profile: ", err);
             });
-            
-            x.innerHTML = "<br>StdId: " + x2 + 
-                          "<br>userId: " + uid + 
-                          "<br>displayName: " + uname; 
-          }).catch((err) => {
-            console.error("Error getting profile: ", err);
-          });
         }
 
         function docReady(fn) {
-          if (document.readyState === "complete" || document.readyState === "interactive") {
-            setTimeout(fn, 1);
-          } else {
-            document.addEventListener("DOMContentLoaded", fn);
-          }
+            if (document.readyState === "complete" || document.readyState === "interactive") {
+                setTimeout(fn, 1);
+            } else {
+                document.addEventListener("DOMContentLoaded", fn);
+            }
         }
+
+        docReady(function() {
+            var resultContainer = document.getElementById('qr-reader-results');
+            var lastResult, countResults = 0;
+
+            var html5QrcodeScanner = new Html5QrcodeScanner(
+                "qr-reader", { fps: 10, qrbox: 250 });
+
+            function onScanSuccess(decodedText, decodedResult) {
+                if (decodedText !== lastResult) {
+                    ++countResults;
+                    lastResult = decodedText;
+                    console.log(`Scan result = ${decodedText}`, decodedResult);
+
+                    resultContainer.innerHTML += `<div class="p-3 mb-2 bg-success text-white">[${countResults}] - ${decodedText}</div>`;
+
+                    const productCode1 = document.getElementById("productCode1");
+                    const productCode2 = document.getElementById("productCode2");
+
+                    if (!productCode1.value) {
+                        productCode1.value = decodedText;
+                    } else if (!productCode2.value) {
+                        productCode2.value = decodedText;
+                    }
+                }
+            }
+
+            function onScanError(qrCodeError) {
+                // Handle scan error if necessary
+            }
+
+            html5QrcodeScanner.render(onScanSuccess, onScanError);
+        });
 
         function submitData() {
-          const scan1 = document.getElementById("productCode1").value;
-          const scan2 = document.getElementById("productCode2").value;
+            const scan1 = document.getElementById("productCode1").value;
+            const scan2 = document.getElementById("productCode2").value;
 
-          if (!scan1 || !scan2) {
-            alert("Please scan two codes before submitting.");
-            return;
-          }
+            if (!scan1 || !scan2) {
+                alert("Please scan two codes before submitting.");
+                return;
+            }
 
-          liff.getProfile().then(function(profile) {
-            const uid = profile.userId;
-            const uname = profile.displayName;
-
-            //const redirectUrl = `https://script.google.com/macros/s/AKfycbxKTile0eqVDlq17vBNE32_TseqgLYRY9BvQj9Fa5MTkTn6fCYyMhXGdvbKmznHyF4I/exec?method=postData&bo=${scan1}&bt=${scan2}&userId=${uid}&displayName=${uname}`;
-            //window.location.replace(redirectUrl);
-          }).catch((err) => {
-            console.error("Error getting profile: ", err);
-          });
+            liff.getProfile().then(function(profile) {
+                const uid = profile.userId;
+                const uname = profile.displayName;
+                
+                const redirectUrl = `https://script.google.com/macros/s/AKfycbxKTile0eqVDlq17vBNE32_TseqgLYRY9BvQj9Fa5MTkTn6fCYyMhXGdvbKmznHyF4I/exec?method=postData&bo=${scan1}&bt=${scan2}&userId=${uid}&displayName=${uname}`;
+                window.location.replace(redirectUrl);
+            }).catch((err) => {
+                console.error("Error getting profile: ", err);
+            });
         }
-      </script>
-
-      <!-- Optional JavaScript -->
-      <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
-      <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
-      <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
-      <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" crossorigin="anonymous"></script>
-      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" crossorigin="anonymous"></script>
-    </center>
-  </body>
+    </script>
+</body>
 </html>
