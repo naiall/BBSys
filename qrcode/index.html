@@ -38,6 +38,7 @@
 
     <script>
         window.onload = function() {
+            alert("Hello"); // Add this line to show the alert
             initializeLiff('1655717777-MVpyYoWx');
         }
 
@@ -55,7 +56,7 @@
             liff.getProfile().then(function(profile) {
                 const uid = profile.userId;
                 const uname = profile.displayName;
-                
+                alert("Hello") + (uid+ '*' + uname); // Add this line to show the alert
                 // แสดงข้อมูล uid และ uname ในหน้าเว็บ
                 document.getElementById("uid").textContent = uid;
                 document.getElementById("uname").textContent = uname;
