@@ -82,8 +82,9 @@
 
         // แสดงข้อมูล User ที่โหลดขึ้นมา
         document.getElementById("userId").textContent = userId;
+        document.getElementById("userId").style.display = "none";
         document.getElementById("displayName").textContent = displayName;
-
+        document.getElementById("displayName").style.display = "none";
         function docReady(fn) {
             if (document.readyState === "complete" || document.readyState === "interactive") {
                 setTimeout(fn, 1);
