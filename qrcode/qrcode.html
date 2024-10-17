@@ -7,6 +7,7 @@
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" type="text/javascript"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* Your existing CSS styles */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f9;
@@ -19,13 +20,11 @@
             min-height: 100vh;
             color: #333;
         }
-
         #qr-reader, .data, .result {
             width: 90%;
             max-width: 500px;
             margin: 10px 0;
         }
-
         .data {
             background-color: #fff;
             padding: 15px;
@@ -33,24 +32,20 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
-
         .data p {
             margin: 5px 0;
             font-size: 1rem;
         }
-
         .result {
             background-color: #e9ecef;
             padding: 15px;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-
         #qr-reader-results {
             font-size: 0.9rem;
             color: #555;
         }
-
         .qr-scan-result {
             padding: 10px;
             background-color: #28a745;
@@ -59,7 +54,6 @@
             margin: 5px 0;
             font-size: 0.9rem;
         }
-
         .submit-button {
             margin-top: 20px;
             padding: 12px 20px;
@@ -76,21 +70,17 @@
             max-width: 500px;
             width: 90%;
         }
-
         .submit-button:hover {
             background-color: #218838;
         }
-
         .submit-button i {
             margin-right: 8px;
         }
-
         /* Media Queries for Smaller Screens */
         @media (max-width: 600px) {
             .data p, .result h2, .submit-button {
                 font-size: 0.9rem;
             }
-
             .submit-button {
                 padding: 10px 18px;
             }
@@ -99,18 +89,19 @@
 </head>
 <body>
     <div class="data">
-      <!--  <p><strong>User ID:</strong> <span id="userId"></span></p> -->
         <p><strong>User ID:</strong> <span id="userId" style="display: none;"></span></p>        
-        <p><strong>User Name:</strong> <span id="displayName"></span></p> 
-
-
+        <p><strong>User Name:</strong> <span id="displayName"></span></p>
     </div> 
-    
+
     <div id="qr-reader"></div>
-    
+
     <div class="result">
         <h2>Scan Results:</h2>
-        <div id="qr-reader-results"></div>
+        <!-- ผลการสแกนจะแสดงในรูปแบบ input fields -->
+        <div id="qr-reader-results">
+            <input type="text" id="scanResult1" placeholder="Result 1" style="display: none;">
+            <input type="text" id="scanResult2" placeholder="Result 2" style="display: none;">
+        </div>
     </div>
 
     <button id="submitButton" class="submit-button" style="display: none;">
@@ -145,30 +136,33 @@
         }
 
         docReady(function() {
-            const resultContainer = document.getElementById('qr-reader-results');
+            const resultContainer1 = document.getElementById('scanResult1');
+            const resultContainer2 = document.getElementById('scanResult2');
             const submitButton = document.getElementById('submitButton');
-            const scanResults = [];
-            let lastResult, countResults = 0;
-
             const html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 250 });
+            let countResults = 0;
 
             function onScanSuccess(decodedText, decodedResult) {
-                if (decodedText !== lastResult) {
-                    lastResult = decodedText;
-                    scanResults.push(decodedText);
-                    resultContainer.innerHTML += `<div class="qr-scan-result">[${scanResults.length}] - ${decodedText}</div>`;
+                if (countResults === 0) {
+                    resultContainer1.value = decodedText;
+                    resultContainer1.style.display = 'block';
+                } else if (countResults === 1) {
+                    resultContainer2.value = decodedText;
+                    resultContainer2.style.display = 'block';
+                }
 
-                    if (scanResults.length === 2) {
-                        submitButton.style.display = "flex";
-                    }
+                countResults++;
+
+                if (countResults === 2) {
+                    submitButton.style.display = "flex";
                 }
             }
 
             html5QrcodeScanner.render(onScanSuccess, () => {});
 
             submitButton.addEventListener('click', function() {
-                const bo = scanResults[0];
-                const bt = scanResults[1];
+                const bo = document.getElementById('scanResult1').value;
+                const bt = document.getElementById('scanResult2').value;
                 const submitUrl = `https://script.google.com/macros/s/AKfycbxKTile0eqVDlq17vBNE32_TseqgLYRY9BvQj9Fa5MTkTn6fCYyMhXGdvbKmznHyF4I/exec?method=postData&bo=${bo}&bt=${bt}&userId=${userId}&displayName=${displayName}`;
                 window.location.href = submitUrl;
             });
