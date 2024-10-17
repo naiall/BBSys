@@ -54,10 +54,9 @@
             margin: 5px 0;
             font-size: 0.9rem;
         }
-        .submit-button, .clear-button {
+        .submit-button, .clear-button, .confirm-button {
             margin-top: 10px;
             padding: 12px 20px;
-            background-color: #28a745;
             color: white;
             border: none;
             border-radius: 5px;
@@ -70,24 +69,33 @@
             max-width: 500px;
             width: 90%;
         }
-        .submit-button:hover, .clear-button:hover {
-            background-color: #218838;
+        .submit-button {
+            background-color: #28a745;
         }
         .clear-button {
             background-color: #dc3545;
         }
+        .confirm-button {
+            background-color: #007bff;
+        }
+        .submit-button:hover {
+            background-color: #218838;
+        }
         .clear-button:hover {
             background-color: #c82333;
         }
-        .submit-button i, .clear-button i {
+        .confirm-button:hover {
+            background-color: #0056b3;
+        }
+        .submit-button i, .clear-button i, .confirm-button i {
             margin-right: 8px;
         }
         /* Media Queries for Smaller Screens */
         @media (max-width: 600px) {
-            .data p, .result h2, .submit-button, .clear-button {
+            .data p, .result h2, .submit-button, .clear-button, .confirm-button {
                 font-size: 0.9rem;
             }
-            .submit-button, .clear-button {
+            .submit-button, .clear-button, .confirm-button {
                 padding: 10px 18px;
             }
         }
@@ -103,12 +111,15 @@
 
     <div class="result">
         <h2>Scan Results:</h2>
-        <!-- ผลการสแกนจะแสดงในรูปแบบ input fields -->
         <div id="qr-reader-results">
             <input type="text" id="scanResult1" placeholder="Result 1" style="display: none;">
             <input type="text" id="scanResult2" placeholder="Result 2" style="display: none;">
         </div>
     </div>
+
+    <button id="confirmButton" class="confirm-button" style="display: none;">
+        <i class="fas fa-check-circle"></i> Confirm Result
+    </button>
 
     <button id="submitButton" class="submit-button" style="display: none;">
         <i class="fas fa-paper-plane"></i> Submit
@@ -148,33 +159,41 @@
         docReady(function() {
             const resultContainer1 = document.getElementById('scanResult1');
             const resultContainer2 = document.getElementById('scanResult2');
+            const confirmButton = document.getElementById('confirmButton');
             const submitButton = document.getElementById('submitButton');
             const clearButton = document.getElementById('clearButton');
             const html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 250 });
             let countResults = 0;
+            let pendingResult = null;
 
             function onScanSuccess(decodedText, decodedResult) {
-                if (countResults === 0) {
-                    resultContainer1.value = decodedText;
-                    resultContainer1.style.display = 'block';
-                } else if (countResults === 1) {
-                    resultContainer2.value = decodedText;
-                    resultContainer2.style.display = 'block';
-                }
-
-                countResults++;
-
-                if (countResults === 2) {
-                    submitButton.style.display = "flex";
-                    clearButton.style.display = "flex";
+                if (!pendingResult) {
+                    pendingResult = decodedText;
+                    confirmButton.style.display = "flex";
                 }
             }
 
             html5QrcodeScanner.render(onScanSuccess, () => {});
 
+            confirmButton.addEventListener('click', function() {
+                if (countResults === 0) {
+                    resultContainer1.value = pendingResult;
+                    resultContainer1.style.display = 'block';
+                } else if (countResults === 1) {
+                    resultContainer2.value = pendingResult;
+                    resultContainer2.style.display = 'block';
+                    submitButton.style.display = "flex";
+                    clearButton.style.display = "flex";
+                }
+
+                pendingResult = null;
+                confirmButton.style.display = "none";
+                countResults++;
+            });
+
             submitButton.addEventListener('click', function() {
-                const bo = document.getElementById('scanResult1').value;
-                const bt = document.getElementById('scanResult2').value;
+                const bo = resultContainer1.value;
+                const bt = resultContainer2.value;
                 const submitUrl = `https://script.google.com/macros/s/AKfycbxKTile0eqVDlq17vBNE32_TseqgLYRY9BvQj9Fa5MTkTn6fCYyMhXGdvbKmznHyF4I/exec?method=postData&bo=${bo}&bt=${bt}&userId=${userId}&displayName=${displayName}`;
                 window.location.href = submitUrl;
             });
@@ -187,7 +206,7 @@
                 submitButton.style.display = 'none';
                 clearButton.style.display = 'none';
                 countResults = 0;
-                lastResult = null;
+                pendingResult = null;
             });
         });
     </script>
