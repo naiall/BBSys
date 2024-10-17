@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR Code Scanner</title>
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Your existing CSS styles */
+        /* CSS Styles */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f9;
@@ -54,7 +55,7 @@
             margin: 5px 0;
             font-size: 0.9rem;
         }
-        .submit-button, .clear-button, .confirm-button {
+        .submit-button, .clear-button {
             margin-top: 10px;
             padding: 12px 20px;
             color: white;
@@ -75,27 +76,21 @@
         .clear-button {
             background-color: #dc3545;
         }
-        .confirm-button {
-            background-color: #007bff;
-        }
         .submit-button:hover {
             background-color: #218838;
         }
         .clear-button:hover {
             background-color: #c82333;
         }
-        .confirm-button:hover {
-            background-color: #0056b3;
-        }
-        .submit-button i, .clear-button i, .confirm-button i {
+        .submit-button i, .clear-button i {
             margin-right: 8px;
         }
         /* Media Queries for Smaller Screens */
         @media (max-width: 600px) {
-            .data p, .result h2, .submit-button, .clear-button, .confirm-button {
+            .data p, .result h2, .submit-button, .clear-button {
                 font-size: 0.9rem;
             }
-            .submit-button, .clear-button, .confirm-button {
+            .submit-button, .clear-button {
                 padding: 10px 18px;
             }
         }
@@ -116,10 +111,6 @@
             <input type="text" id="scanResult2" placeholder="Result 2" style="display: none;">
         </div>
     </div>
-
-    <button id="confirmButton" class="confirm-button" style="display: none;">
-        <i class="fas fa-check-circle"></i> Confirm Result
-    </button>
 
     <button id="submitButton" class="submit-button" style="display: none;">
         <i class="fas fa-paper-plane"></i> Submit
@@ -159,7 +150,6 @@
         docReady(function() {
             const resultContainer1 = document.getElementById('scanResult1');
             const resultContainer2 = document.getElementById('scanResult2');
-            const confirmButton = document.getElementById('confirmButton');
             const submitButton = document.getElementById('submitButton');
             const clearButton = document.getElementById('clearButton');
             const html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 250 });
@@ -169,27 +159,33 @@
             function onScanSuccess(decodedText, decodedResult) {
                 if (!pendingResult) {
                     pendingResult = decodedText;
-                    confirmButton.style.display = "flex";
+
+                    Swal.fire({
+                        title: 'Scan Result',
+                        text: `You scanned: ${decodedText}`,
+                        icon: 'info',
+                        showCancelButton: true,
+                        confirmButtonText: 'Accept',
+                        cancelButtonText: 'Cancel'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            if (countResults === 0) {
+                                resultContainer1.value = pendingResult;
+                                resultContainer1.style.display = 'block';
+                            } else if (countResults === 1) {
+                                resultContainer2.value = pendingResult;
+                                resultContainer2.style.display = 'block';
+                                submitButton.style.display = "flex";
+                                clearButton.style.display = "flex";
+                            }
+                            countResults++;
+                        }
+                        pendingResult = null;
+                    });
                 }
             }
 
             html5QrcodeScanner.render(onScanSuccess, () => {});
-
-            confirmButton.addEventListener('click', function() {
-                if (countResults === 0) {
-                    resultContainer1.value = pendingResult;
-                    resultContainer1.style.display = 'block';
-                } else if (countResults === 1) {
-                    resultContainer2.value = pendingResult;
-                    resultContainer2.style.display = 'block';
-                    submitButton.style.display = "flex";
-                    clearButton.style.display = "flex";
-                }
-
-                pendingResult = null;
-                confirmButton.style.display = "none";
-                countResults++;
-            });
 
             submitButton.addEventListener('click', function() {
                 const bo = resultContainer1.value;
