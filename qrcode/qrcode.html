@@ -123,17 +123,16 @@
         <p><strong>User ID:</strong> <span id="userId" style="display: none;"></span></p>        
         <p><strong>User Name:</strong> <span id="displayName"></span></p>
     </div> 
-
-    <div id="qr-reader"></div>
-
-    <div class="result">
-        <h2>Scan Results:</h2>
-        <div id="qr-reader-results">
-            <input type="text" id="scanResult1" placeholder="Result 1">
-            <input type="text" id="scanResult2" placeholder="Result 2">
+        <div class="result">
+            <h2>Scan Results:</h2>
+            <div id="qr-reader-results">
+                <label for="scanResult1" style="display: none;">เลขจอง</label>
+                <input type="text" id="scanResult1" placeholder="Result 1" style="display: none; width: 100%; padding: 15px; margin: 10px 0; font-size: 1.2rem; border: 1px solid #ccc; border-radius: 5px;">
+                
+                <label for="scanResult2" style="display: none;">เลขโลหิต</label>
+                <input type="text" id="scanResult2" placeholder="Result 2" style="display: none; width: 100%; padding: 15px; margin: 10px 0; font-size: 1.2rem; border: 1px solid #ccc; border-radius: 5px;">
+            </div>
         </div>
-    </div>
-
     <button id="submitButton" class="submit-button" style="display: none;">
         <i class="fas fa-paper-plane"></i> Submit
     </button>
