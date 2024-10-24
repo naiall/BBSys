@@ -179,34 +179,35 @@
             let pendingResult = null;
 
             function onScanSuccess(decodedText, decodedResult) {
-                if (!pendingResult) {
-                    pendingResult = decodedText;
-
-                    Swal.fire({
-                        title: 'Scan Result',
-                        text: `You scanned: ${decodedText}`,
-                        icon: 'info',
-                        showCancelButton: true,
-                        confirmButtonText: 'Accept',
-                        cancelButtonText: 'Cancel'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            if (countResults === 0) {
-                                resultContainer1.value = pendingResult;
-                                resultContainer1.style.display = 'block';
-                            } else if (countResults === 1) {
-                                resultContainer2.value = pendingResult;
-                                resultContainer2.style.display = 'block';
-                                submitButton.style.display = "flex";
-                                clearButton.style.display = "flex";
-                            }
-                            countResults++;
+                        if (!pendingResult) {
+                            pendingResult = decodedText;
+                    
+                            Swal.fire({
+                                title: 'Scan Result',
+                                text: `You scanned: ${decodedText}`,
+                                icon: 'info',
+                                showCancelButton: true,
+                                confirmButtonText: 'Accept',
+                                cancelButtonText: 'Cancel'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    if (countResults === 0) {
+                                        document.querySelector('label[for="scanResult1"]').style.display = 'block';
+                                        resultContainer1.value = pendingResult;
+                                        resultContainer1.style.display = 'block';
+                                    } else if (countResults === 1) {
+                                        document.querySelector('label[for="scanResult2"]').style.display = 'block';
+                                        resultContainer2.value = pendingResult;
+                                        resultContainer2.style.display = 'block';
+                                        submitButton.style.display = "flex";
+                                        clearButton.style.display = "flex";
+                                    }
+                                    countResults++;
+                                }
+                                pendingResult = null;
+                            });
                         }
-                        pendingResult = null;
-                    });
-                }
-            }
-
+                    }
             html5QrcodeScanner.render(onScanSuccess, () => {});
 
             submitButton.addEventListener('click', function() {
