@@ -7,115 +7,115 @@
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" type="text/javascript"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-   <style>
-    /* General Body Styling */
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f9;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        min-height: 100vh;
-        color: #333;
-        overflow: hidden; /* Ensures no unnecessary scrolling */
-    }
-
-    /* QR Reader, Data, and Result Container */
-    #qr-reader, .data, .result {
-        width: 100%;
-        max-width: 500px;
-        margin: 10px 0;
-        padding: 15px;
-    }
-
-    /* Data Box Styling */
-    .data {
-        background-color: #fff;
-        padding: 15px;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        text-align: center;
-        width: 100%;
-    }
-
-    /* Result Box Styling */
-    .result {
-        background-color: #e9ecef;
-        padding: 15px;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        width: 100%;
-    }
-
-    /* Input Fields */
-    input[type="text"] {
-        width: calc(100% - 30px); /* Full width minus padding */
-        padding: 12px;
-        font-size: 1.2rem;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        margin: 10px 0;
-    }
-
-    /* Buttons */
-    .submit-button, .clear-button {
-        margin-top: 10px;
-        padding: 15px 20px;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 1rem;
-        width: 100%;  /* Full width for better touch targets */
-        max-width: 500px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: background-color 0.3s ease;
-    }
-
-    .submit-button {
-        background-color: #28a745;
-    }
-
-    .clear-button {
-        background-color: #dc3545;
-    }
-
-    .submit-button:hover {
-        background-color: #218838;
-    }
-
-    .clear-button:hover {
-        background-color: #c82333;
-    }
-
-    .submit-button i, .clear-button i {
-        margin-right: 8px;
-    }
-
-    /* Media Queries for Full Smartphone Compatibility */
-    @media (max-width: 600px) {
-        /* Reduce font size and padding for smaller screens */
-        input[type="text"] {
-            padding: 10px;
-            font-size: 1rem;
-        }
-
-        .submit-button, .clear-button {
-            font-size: 0.9rem;
-            padding: 12px;
-        }
-
-        /* Make sure content takes full width on small screens */
-        #qr-reader, .data, .result {
-            width: 95%;  /* Ensures it fills the screen nicely */
-        }
-    }
-</style>
+        <style>
+            /* General Body Styling */
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f4f4f9;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                min-height: 100vh;
+                color: #333;
+                overflow: hidden; /* Ensures no unnecessary scrolling */
+            }
+        
+            /* QR Reader, Data, and Result Container */
+            #qr-reader, .data, .result {
+                width: 100%;
+                max-width: 500px;
+                margin: 10px 0;
+                padding: 15px;
+            }
+        
+            /* Data Box Styling */
+            .data {
+                background-color: #fff;
+                padding: 15px;
+                border-radius: 10px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                text-align: center;
+                width: 100%;
+            }
+        
+            /* Result Box Styling */
+            .result {
+                background-color: #e9ecef;
+                padding: 15px;
+                border-radius: 10px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                width: 100%;
+            }
+        
+            /* Input Fields */
+            input[type="text"] {
+                width: calc(100% - 30px); /* Full width minus padding */
+                padding: 12px;
+                font-size: 1.2rem;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                margin: 10px 0;
+            }
+        
+            /* Buttons */
+            .submit-button, .clear-button {
+                margin-top: 10px;
+                padding: 15px 20px;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 1rem;
+                width: 100%;  /* Full width for better touch targets */
+                max-width: 500px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: background-color 0.3s ease;
+            }
+        
+            .submit-button {
+                background-color: #28a745;
+            }
+        
+            .clear-button {
+                background-color: #dc3545;
+            }
+        
+            .submit-button:hover {
+                background-color: #218838;
+            }
+        
+            .clear-button:hover {
+                background-color: #c82333;
+            }
+        
+            .submit-button i, .clear-button i {
+                margin-right: 8px;
+            }
+        
+            /* Media Queries for Full Smartphone Compatibility */
+            @media (max-width: 600px) {
+                /* Reduce font size and padding for smaller screens */
+                input[type="text"] {
+                    padding: 10px;
+                    font-size: 1rem;
+                }
+        
+                .submit-button, .clear-button {
+                    font-size: 0.9rem;
+                    padding: 12px;
+                }
+        
+                /* Make sure content takes full width on small screens */
+                #qr-reader, .data, .result {
+                    width: 95%;  /* Ensures it fills the screen nicely */
+                }
+            }
+        </style>
 
 </head>
 <body>
@@ -126,16 +126,13 @@
 
     <div id="qr-reader"></div>
 
-        <div class="result">
-            <h2>Scan Results:</h2>
-            <div id="qr-reader-results">
-                <label for="scanResult1" style="display: none;">เลขจอง</label>
-                <input type="text" id="scanResult1" placeholder="Result 1" style="display: none; width: 100%; padding: 15px; margin: 10px 0; font-size: 1.2rem; border: 1px solid #ccc; border-radius: 5px;">
-                
-                <label for="scanResult2" style="display: none;">เลขโลหิต</label>
-                <input type="text" id="scanResult2" placeholder="Result 2" style="display: none; width: 100%; padding: 15px; margin: 10px 0; font-size: 1.2rem; border: 1px solid #ccc; border-radius: 5px;">
-            </div>
+    <div class="result">
+        <h2>Scan Results:</h2>
+        <div id="qr-reader-results">
+            <input type="text" id="scanResult1" placeholder="Result 1">
+            <input type="text" id="scanResult2" placeholder="Result 2">
         </div>
+    </div>
 
     <button id="submitButton" class="submit-button" style="display: none;">
         <i class="fas fa-paper-plane"></i> Submit
