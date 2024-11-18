@@ -108,8 +108,7 @@
     <div class="result">
         <h2>Scan Results:</h2>
         <div id="qr-reader-results">
-            <input type="text" id="scanResult1" placeholder="เลขจอง" style="display: none; width: 100%; padding: 15px; margin: 10px 0; font-size: 1.2rem; border: 1px solid #ccc; border-radius: 5px;">
-            <input type="text" id="scanResult2" placeholder="เลขโลหิต" style="display: none; width: 100%; padding: 15px; margin: 10px 0; font-size: 1.2rem; border: 1px solid #ccc; border-radius: 5px;">
+            <input type="text" id="scanResult" placeholder="เลขจอง หรือ เลขโลหิต" style="display: none; width: 100%; padding: 15px; margin: 10px 0; font-size: 1.2rem; border: 1px solid #ccc; border-radius: 5px;">
         </div>
     </div>
 
@@ -149,18 +148,16 @@
         }
 
         docReady(function() {
-            const resultContainer1 = document.getElementById('scanResult1');
-            const resultContainer2 = document.getElementById('scanResult2');
+            const resultContainer = document.getElementById('scanResult1'); // Use one input for scan result
             const submitButton = document.getElementById('submitButton');
             const clearButton = document.getElementById('clearButton');
             const html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 250 });
-            let countResults = 0;
             let pendingResult = null;
-
+        
             function onScanSuccess(decodedText, decodedResult) {
                 if (!pendingResult) {
                     pendingResult = decodedText;
-
+        
                     Swal.fire({
                         title: 'Scan Result',
                         text: `You scanned: ${decodedText}`,
@@ -170,43 +167,33 @@
                         cancelButtonText: 'Cancel'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            if (countResults === 0) {
-                                resultContainer1.value = pendingResult;
-                                resultContainer1.style.display = 'block';
-                            } else if (countResults === 1) {
-                                resultContainer2.value = pendingResult;
-                                resultContainer2.style.display = 'block';
-                                submitButton.style.display = "flex";
-                                clearButton.style.display = "flex";
-                            }
-                            countResults++;
+                            resultContainer.value = pendingResult;
+                            resultContainer.style.display = 'block';
+                            submitButton.style.display = "flex";
+                            clearButton.style.display = "flex";
                         }
                         pendingResult = null;
                     });
                 }
             }
-
+        
             html5QrcodeScanner.render(onScanSuccess, () => {});
-
+        
             submitButton.addEventListener('click', function() {
-                const bo = resultContainer1.value;
-                const bt = resultContainer2.value;
-                const submitUrl = `https://script.google.com/macros/s/AKfycbxKTile0eqVDlq17vBNE32_TseqgLYRY9BvQj9Fa5MTkTn6fCYyMhXGdvbKmznHyF4I/exec?method=postData&bo=${bo}&bt=${bt}&userId=${userId}&displayName=${displayName}`;
-               // alert(submitUrl); // This will display the URL in an alert box
+                const boBtValue = resultContainer.value;
+                const submitUrl = `${boBtValue}&userId=${userId}&displayName=${displayName}`;
                 window.location.href = submitUrl;
             });
-
+        
             clearButton.addEventListener('click', function() {
-                resultContainer1.value = '';
-                resultContainer2.value = '';
-                resultContainer1.style.display = 'none';
-                resultContainer2.style.display = 'none';
+                resultContainer.value = '';
+                resultContainer.style.display = 'none';
                 submitButton.style.display = 'none';
                 clearButton.style.display = 'none';
-                countResults = 0;
                 pendingResult = null;
             });
         });
+
     </script>
 </body>
 </html>
