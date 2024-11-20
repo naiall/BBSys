@@ -30,6 +30,8 @@
 
         // Fill the input fields with URL parameters if available and generate QR code immediately
         window.onload = function() {
+            initializeLiff('1655717777-MVpyYoWx');
+            
             const bo = getQueryParam('bo');
             const bt = getQueryParam('bt');
 
@@ -38,13 +40,51 @@
             }
         };
 
+        // LIFF Initialization
+        function initializeLiff(myLiffId) {
+            liff.init({ liffId: myLiffId })
+                .then(() => {
+                    // Check if the user is logged in
+                    if (!liff.isLoggedIn()) {
+                        // If not logged in, redirect to LINE login
+                        liff.login();
+                    } else {
+                        // Call your logic function after successful login
+                        lotg();
+                    }
+                })
+                .catch((err) => {
+                    console.error("Error initializing LIFF: ", err);
+                });
+        }
+
+        // Logic after successful login
+        function lotg() {
+            const x = document.getElementById("tex1");
+            const bo = "24024"; // Pre-set or get this value dynamically
+            const bt = "312.67.1.08233"; // Pre-set or get this value dynamically
+
+            liff.getProfile().then(function(profile) {
+                const uid = profile.userId;
+                const uname = profile.displayName;
+
+                // Check if bo and bt match expected values before proceeding
+                if (bo && bt) {
+                    const redirectUrl = `https://naiall.github.io/BBSys/qrcode/qrcode.html?bo=${bo}&bt=${bt}&userId=${uid}&displayName=${uname}`;
+                   // window.location.replace(redirectUrl);
+                } else {
+                    x.innerHTML = "Invalid bo or bt values.";
+                }
+            });
+        }
+
         function generateQRCode(bo, bt) {
             if (!bo || !bt) {
                 alert("Please provide both BO and BT values.");
                 return;
             }
 
-            const qrCodeLink = `https://script.google.com/macros/s/AKfycbxKTile0eqVDlq17vBNE32_TseqgLYRY9BvQj9Fa5MTkTn6fCYyMhXGdvbKmznHyF4I/exec?method=postData&bo=${bo}&bt=${bt}`;
+            const qrCodeLink = `https://script.google.com/macros/s/AKfycbxKTile0eqVDlq17vBNE32_TseqgLYRY9BvQj9Fa5MTkTn6fCYyMhXGdvbKmznHyF4I/exec?method=postData&bo=${bo}&bt=${bt}&userId=${uid}&displayName=${uname}`;
             const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrCodeLink)}`;
 
             // Display QR code and the print button
