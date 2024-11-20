@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator</title>
+</head>
+<body>
+    <h1>QR Code Generator</h1>
+    <p>Enter `bo` and `bt` parameters below to generate a QR Code:</p>
+    <form id="qrForm">
+        <label for="bo">BO:</label>
+        <input type="text" id="bo" name="bo" required>
+        <br><br>
+        <label for="bt">BT:</label>
+        <input type="text" id="bt" name="bt" required>
+        <br><br>
+        <button type="button" onclick="generateQRCode()">Generate QR Code</button>
+    </form>
+    <div id="qrResult" style="margin-top: 20px;"></div>
+
+    <script>
+        function generateQRCode() {
+            const bo = document.getElementById("bo").value;
+            const bt = document.getElementById("bt").value;
+
+            if (!bo || !bt) {
+                alert("Please fill in both BO and BT values.");
+                return;
+            }
+
+            const qrCodeLink = `https://script.google.com/macros/s/AKfycbxKTile0eqVDlq17vBNE32_TseqgLYRY9BvQj9Fa5MTkTn6fCYyMhXGdvbKmznHyF4I/exec?method=postData&bo=${bo}&bt=${bt}`;
+            const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrCodeLink)}`;
+
+            document.getElementById("qrResult").innerHTML = `
+                <h2>Generated QR Code:</h2>
+                <img src="${qrCodeUrl}" alt="QR Code">
+                <br><br>
+                <a href="${qrCodeLink}" target="_blank">Link to Script</a>
+                <br><br>
+                <button onclick="window.print();">Print QR Code</button>
+            `;
+        }
+    </script>
+</body>
+</html>
