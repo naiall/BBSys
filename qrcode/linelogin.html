@@ -188,13 +188,13 @@
                 liff.init({ liffId: myLiffId })
                     .then(() => {
                         // Check if the user is logged in
-                        if (!liff.isLoggedIn()) {
+                     //   if (!liff.isLoggedIn()) {
                             // If not logged in, redirect to LINE login
-                            liff.login();
-                        } else {
+                    //        liff.login();
+                   //     } else {
                             // Call your logic function after successful login
                             lotg();
-                        }
+                    //    }
                     })
                     .catch((err) => {
                         console.error("Error initializing LIFF: ", err);
