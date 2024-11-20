@@ -179,16 +179,23 @@
             window.onload = function() {
                 initializeLiff('1655717777-MVpyYoWx');
             }
- 
             function initializeLiff(myLiffId) {
                 liff.init({ liffId: myLiffId })
                     .then(() => {
-                        lotg();
+                        // Check if the user is logged in
+                        if (!liff.isLoggedIn()) {
+                            // If not logged in, redirect to LINE login
+                            liff.login();
+                        } else {
+                            // Call your logic function after successful login
+                            lotg();
+                        }
                     })
                     .catch((err) => {
                         console.error("Error initializing LIFF: ", err);
                     });
-            }
+            } 
+
 
             function lotg() {
                 const x = document.getElementById("tex1");
