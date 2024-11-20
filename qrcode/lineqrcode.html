@@ -51,6 +51,8 @@
                     } else {
                         // Call your logic function after successful login
                         lotg();
+                        //generateQRCode();
+                        
                     }
                 })
                 .catch((err) => {
@@ -70,8 +72,9 @@
 
                 // Check if bo and bt match expected values before proceeding
                 if (bo && bt) {
-                    const redirectUrl = `https://naiall.github.io/BBSys/qrcode/qrcode.html?bo=${bo}&bt=${bt}&userId=${uid}&displayName=${uname}`;
+                   // const redirectUrl = `https://naiall.github.io/BBSys/qrcode/qrcode.html?bo=${bo}&bt=${bt}&userId=${uid}&displayName=${uname}`;
                    // window.location.replace(redirectUrl);
+                    generateQRCode();
                 } else {
                     x.innerHTML = "Invalid bo or bt values.";
                 }
