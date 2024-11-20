@@ -120,53 +120,58 @@
         <i class="fas fa-redo"></i> Clear Scan Results
     </button>
 
-  <script>
-    function getQueryParams() {
-        const params = {};
-        const queryString = window.location.search.substring(1);
-        const pairs = queryString.split("&");
-        for (let i = 0; i < pairs.length; i++) {
-            const pair = pairs[i].split("=");
-            params[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
+    <script>
+        // Function to get query parameters from the URL
+        function getQueryParams() {
+            const params = {};
+            const queryString = window.location.search.substring(1);
+            const pairs = queryString.split("&");
+            for (let i = 0; i < pairs.length; i++) {
+                const pair = pairs[i].split("=");
+                params[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
+            }
+            return params;
         }
-        return params;
-    }
 
-    const params = getQueryParams();
-    const userId = params.userId || "N/A"; 
-    const displayName = params.displayName || "N/A"; 
+        // Extract user information from URL parameters
+        const params = getQueryParams();
+        const userId = params.userId || "N/A"; 
+        const displayName = params.displayName || "N/A"; 
 
-    document.getElementById("userId").textContent = userId;
-    document.getElementById("displayName").textContent = displayName;
+        document.getElementById("userId").textContent = userId;
+        document.getElementById("displayName").textContent = displayName;
 
-    function docReady(fn) {
-        if (document.readyState === "complete" || document.readyState === "interactive") {
-            setTimeout(fn, 1);
-        } else {
-            document.addEventListener("DOMContentLoaded", fn);
-        }
-    }
-
-    docReady(function() {
-        const resultContainer = document.getElementById('scanResult'); // Input for scan result
-        const html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 250 });
-        let pendingResult = null;
-
-        function onScanSuccess(decodedText, decodedResult) {
-            if (!pendingResult) {
-                pendingResult = decodedText;
-                resultContainer.value = pendingResult;
-                
-                // Automatically submit the scan result
-                const boBtValue = pendingResult;
-                const submitUrl = `${boBtValue}&userId=${userId}&displayName=${encodeURIComponent(displayName)}`;
-                window.location.href = submitUrl;
+        // Function to ensure the DOM is ready before executing the rest of the script
+        function docReady(fn) {
+            if (document.readyState === "complete" || document.readyState === "interactive") {
+                setTimeout(fn, 1);
+            } else {
+                document.addEventListener("DOMContentLoaded", fn);
             }
         }
 
-        html5QrcodeScanner.render(onScanSuccess, () => {});
-    });
-</script>
+        // Execute script when DOM is ready
+        docReady(function() {
+            const resultContainer = document.getElementById('scanResult'); // Input for scan result
+            const html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 250 });
+            let pendingResult = null;
 
+            // Callback when QR code is successfully scanned
+            function onScanSuccess(decodedText, decodedResult) {
+                if (!pendingResult) {
+                    pendingResult = decodedText;
+                    resultContainer.value = pendingResult;
+
+                    // Automatically submit the scan result
+                    const boBtValue = pendingResult;
+                    const submitUrl = `${boBtValue}&userId=${userId}&displayName=${encodeURIComponent(displayName)}`;
+                    window.location.href = submitUrl; // Submit the result immediately
+                }
+            }
+
+            // Start the QR scanner
+            html5QrcodeScanner.render(onScanSuccess, () => {});
+        });
+    </script>
 </body>
 </html>
