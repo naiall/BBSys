@@ -30,56 +30,21 @@
 
         // Fill the input fields with URL parameters if available and generate QR code immediately
         window.onload = function() {
-            initializeLiff('1655717777-MVpyYoWx');
-        };
-
-        // LIFF Initialization
-        function initializeLiff(myLiffId) {
-            liff.init({ liffId: myLiffId })
-                .then(() => {
-                    // Check if the user is logged in
-                    if (!liff.isLoggedIn()) {
-                        // If not logged in, redirect to LINE login
-                        liff.login();
-                    } else {
-                        // Call your logic function after successful login
-                        alert("Please provide both BO and BT values, and ensure the user is logged in.");
-                        lotg();
-                    }
-                })
-                .catch((err) => {
-                    console.error("Error initializing LIFF: ", err);
-                });
-        }
-
-        // Logic after successful login
-        function lotg() {
             const bo = getQueryParam('bo');
             const bt = getQueryParam('bt');
 
-            // Fetch user profile
-            liff.getProfile().then(function(profile) {
-                const uid = profile.userId;
-                const uname = profile.displayName;
+            if (bo && bt) {
+                generateQRCode(bo, bt); // Generate QR code immediately if parameters are present
+            }
+        };
 
-                // Call generateQRCode if bo and bt are valid
-                if (bo && bt) {
-                    generateQRCode(bo, bt, uid, uname); // Generate QR code with the provided values
-                } else {
-                    console.error("Invalid bo or bt values.");
-                }
-            });
-        }
-
-        // Function to generate the QR code
-        function generateQRCode(bo, bt, uid, uname) {
-            if (!bo || !bt || !uid || !uname) {
-                alert("Please provide both BO and BT values, and ensure the user is logged in.");
+        function generateQRCode(bo, bt) {
+            if (!bo || !bt) {
+                alert("Please provide both BO and BT values.");
                 return;
             }
 
-            // Construct the QR code link
-            const qrCodeLink = `https://naiall.github.io/BBSys/qrcode/lineqrcode.html?bo=${bo}&bt=${bt}&userId=${uid}&displayName=${uname}`;
+            const qrCodeLink = `https://script.google.com/macros/s/AKfycbxKTile0eqVDlq17vBNE32_TseqgLYRY9BvQj9Fa5MTkTn6fCYyMhXGdvbKmznHyF4I/exec?method=postData&bo=${bo}&bt=${bt}`;
             const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrCodeLink)}`;
 
             // Display QR code and the print button
