@@ -33,10 +33,11 @@
         window.onload = function() {
             const bo = getQueryParam('bo');
             const bt = getQueryParam('bt');
-            const uid = getQueryParam('uid');
-            const uname = getQueryParam('uname');            
+            const userId = getQueryParam('uid');
+            const displayName = getQueryParam('uname');     
+            //&userId=${uid}&displayName=${uname}
             if (bo && bt && uid && uname) {
-                generateQRCode(bo, bt, uid, uname); // Generate QR code immediately if parameters are present
+                generateQRCode(bo, bt, userId, displayName); // Generate QR code immediately if parameters are present
             }
         };
 
