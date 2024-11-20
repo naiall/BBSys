@@ -7,7 +7,7 @@
 </head>
 <body>
     <h1>QR Code Generator</h1>
-    <p>Enter `bo` and `bt` parameters below to generate a QR Code:</p>
+    <p>QR Code will be generated automatically if `bo` and `bt` parameters are provided in the URL.</p>
     <form id="qrForm">
         <label for="bo">BO:</label>
         <input type="text" id="bo" name="bo" required>
@@ -26,13 +26,17 @@
             return urlParams.get(param);
         }
 
-        // Fill the input fields with URL parameters if available
+        // Fill the input fields with URL parameters if available and generate QR code immediately
         window.onload = function() {
             const bo = getQueryParam('bo');
             const bt = getQueryParam('bt');
 
             if (bo) document.getElementById('bo').value = bo;
             if (bt) document.getElementById('bt').value = bt;
+
+            if (bo && bt) {
+                generateQRCode(); // Generate QR code immediately if parameters are present
+            }
         };
 
         function generateQRCode() {
