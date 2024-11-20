@@ -4,22 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR Code Generator</title>
-    <style>
-        #qrForm {
-            display: none;
-        }
-        #qrResult {
-            display: none;
-        }
-    </style>
 </head>
 <body>
-    <div id="qrResult" style="margin-top: 20px;">
-        <h2>Generated QR Code:</h2>
-        <img id="qrCodeImage" src="" alt="QR Code">
+    <h1>QR Code Generator</h1>
+    <p>QR Code will be generated automatically if `bo` and `bt` parameters are provided in the URL.</p>
+    <form id="qrForm">
+        <label for="bo">BO:</label>
+        <input type="text" id="bo" name="bo" required>
         <br><br>
-        <button onclick="window.print();">Print QR Code</button>
-    </div>
+        <label for="bt">BT:</label>
+        <input type="text" id="bt" name="bt" required>
+        <br><br>
+        <button type="button" onclick="generateQRCode()">Generate QR Code</button>
+    </form>
+    <div id="qrResult" style="margin-top: 20px;"></div>
 
     <script>
         // Function to get the query parameter value from the URL
@@ -30,60 +28,37 @@
 
         // Fill the input fields with URL parameters if available and generate QR code immediately
         window.onload = function() {
-            initializeLiff('1655717777-MVpyYoWx');
-        };
-
-        // LIFF Initialization
-        function initializeLiff(myLiffId) {
-            liff.init({ liffId: myLiffId })
-                .then(() => {
-                    // Check if the user is logged in
-                    if (!liff.isLoggedIn()) {
-                        // If not logged in, redirect to LINE login
-                        liff.login();
-                    } else {
-                        // Call your logic function after successful login
-                        lotg();
-                    }
-                })
-                .catch((err) => {
-                    console.error("Error initializing LIFF: ", err);
-                });
-        }
-
-        // Logic after successful login
-        function lotg() {
             const bo = getQueryParam('bo');
             const bt = getQueryParam('bt');
 
-            // Fetch user profile
-            liff.getProfile().then(function(profile) {
-                const uid = profile.userId;
-                const uname = profile.displayName;
+            if (bo) document.getElementById('bo').value = bo;
+            if (bt) document.getElementById('bt').value = bt;
 
-                // Call generateQRCode if bo and bt are valid
-                if (bo && bt) {
-                    generateQRCode(bo, bt, uid, uname); // Generate QR code with the provided values
-                } else {
-                    console.error("Invalid bo or bt values.");
-                }
-            });
-        }
+            if (bo && bt) {
+                generateQRCode(); // Generate QR code immediately if parameters are present
+            }
+        };
 
-        // Function to generate the QR code
-        function generateQRCode(bo, bt, uid, uname) {
-            if (!bo || !bt || !uid || !uname) {
-                alert("Please provide both BO and BT values, and ensure the user is logged in.");
+        function generateQRCode() {
+            const bo = document.getElementById("bo").value;
+            const bt = document.getElementById("bt").value;
+
+            if (!bo || !bt) {
+                alert("Please fill in both BO and BT values.");
                 return;
             }
 
-            // Construct the QR code link
-            const qrCodeLink = `https://naiall.github.io/BBSys/qrcode/lineqrcode.html?bo=${bo}&bt=${bt}&userId=${uid}&displayName=${uname}`;
+            const qrCodeLink = `https://script.google.com/macros/s/AKfycbxKTile0eqVDlq17vBNE32_TseqgLYRY9BvQj9Fa5MTkTn6fCYyMhXGdvbKmznHyF4I/exec?method=postData&bo=${bo}&bt=${bt}`;
             const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrCodeLink)}`;
 
-            // Display QR code and the print button
-            document.getElementById("qrResult").style.display = "block";
-            document.getElementById("qrCodeImage").src = qrCodeUrl;
+            document.getElementById("qrResult").innerHTML = `
+                <h2>Generated QR Code:</h2>
+                <img src="${qrCodeUrl}" alt="QR Code">
+                <br><br>
+                <a href="${qrCodeLink}" target="_blank">Link to Script</a>
+                <br><br>
+                <button onclick="window.print();">Print QR Code</button>
+            `;
         }
     </script>
 </body>
