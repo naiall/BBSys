@@ -29,32 +29,13 @@
             return urlParams.get(param);
         }
 
-        // Initialize LIFF and handle login if necessary
-        function initializeLiff(myLiffId) {
-            liff.init({ liffId: myLiffId })
-                .then(() => {
-                    // Check if the user is logged in
-                    if (!liff.isLoggedIn()) {
-                        // If not logged in, redirect to LINE login
-                        liff.login();
-                    }
-                })
-                .catch((err) => {
-                    console.error("Error initializing LIFF: ", err);
-                });
-        }
-
-        // Fill the input fields with URL parameters if available and generate QR code immediately
+       // Fill the input fields with URL parameters if available and generate QR code immediately
         window.onload = function() {
             const bo = getQueryParam('bo');
             const bt = getQueryParam('bt');
-            initializeLiff('1655717777-MVpyYoWx');
             if (bo && bt) {
                 generateQRCode(bo, bt); // Generate QR code immediately if parameters are present
             }
-            
-            // Initialize LIFF with the appropriate LIFF ID (replace with your actual LIFF ID)
-           
         };
 
         function generateQRCode(bo, bt) {
