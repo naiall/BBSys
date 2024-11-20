@@ -20,6 +20,21 @@
     <div id="qrResult" style="margin-top: 20px;"></div>
 
     <script>
+        // Function to get the query parameter value from the URL
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        // Fill the input fields with URL parameters if available
+        window.onload = function() {
+            const bo = getQueryParam('bo');
+            const bt = getQueryParam('bt');
+
+            if (bo) document.getElementById('bo').value = bo;
+            if (bt) document.getElementById('bt').value = bt;
+        };
+
         function generateQRCode() {
             const bo = document.getElementById("bo").value;
             const bt = document.getElementById("bt").value;
