@@ -176,6 +176,11 @@
         </svg>
 
         <script>
+        // Function to get the query parameter value from the URL
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }            
             window.onload = function() {
                 initializeLiff('1655717777-MVpyYoWx');
             }
@@ -199,8 +204,8 @@
 
             function lotg() {
                 const x = document.getElementById("tex1");
-                const bo = "24187"//document.getElementById("productCode").value;  // รับค่าจาก input ที่มี id="productCode"
-                const bt = "312.67.1.22726" //document.getElementById("productName").value;  // รับค่าจาก input ที่มี id="productName"
+                //const bo = "24187"//document.getElementById("productCode").value;  // รับค่าจาก input ที่มี id="productCode"
+                //const bt = "312.67.1.22726" //document.getElementById("productName").value;  // รับค่าจาก input ที่มี id="productName"
             
                 liff.getProfile().then(function(profile) {
                     const uid = profile.userId;
