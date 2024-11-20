@@ -86,10 +86,24 @@
                 if (!pendingResult) {
                     pendingResult = decodedText;
 
-                    // Automatically submit the scan result
-                    const boBtValue = pendingResult;
-                    const submitUrl = `${boBtValue}&userId=${userId}&displayName=${encodeURIComponent(displayName)}`;
-                    window.location.href = submitUrl;
+                    // Show SweetAlert with "กรุณารอ" message
+                    Swal.fire({
+                        title: 'กรุณารอ',
+                        text: 'กำลังส่งข้อมูล...',
+                        icon: 'info',
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        didOpen: () => {
+                            Swal.showLoading(); // Show loading animation
+                        }
+                    });
+
+                    // Automatically submit the scan result after showing the alert
+                    setTimeout(() => {
+                        const boBtValue = pendingResult;
+                        const submitUrl = `${boBtValue}&userId=${userId}&displayName=${encodeURIComponent(displayName)}`;
+                        window.location.href = submitUrl;
+                    }, 2000); // Delay submission for 2 seconds
                 }
             }
 
