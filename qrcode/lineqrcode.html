@@ -14,50 +14,52 @@
     </style>
 </head>
 <body>
-    <div id="qrResult" style="margin-top: 20px;">
-        <h2>Generated QR Code:</h2>
-        <img id="qrCodeImage" src="" alt="QR Code">
-        <br><br>
-        <button onclick="window.print();">Print QR Code</button>
-    </div>
+<div id="qrResult" style="margin-top: 20px;">
+    <h2>Generated QR Code:</h2>
+    <img id="qrCodeImage" src="" alt="QR Code">
+    <p id="qrText"></p> <!-- Placeholder for additional text -->
+    <br><br>
+    <button onclick="window.print();">Print QR Code</button>
+</div>
 
-    <script src="https://static.line-scdn.net/liff/2.1/sdk.js"></script>
-    <script>
-        // Function to get the query parameter value from the URL
-        function getQueryParam(param) {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(param);
+<script>
+    // Function to get the query parameter value from the URL
+    function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+    }
+
+    // Fill the input fields with URL parameters if available and generate QR code immediately
+    window.onload = function() {
+        const bo = getQueryParam('bo');
+        const bt = getQueryParam('bt');
+        const userId = getQueryParam('uid');
+        const displayName = getQueryParam('uname');     
+        if (bo && bt) {
+            generateQRCode(bo, bt, userId, displayName); // Generate QR code immediately if parameters are present
+        }
+    };
+
+    function generateQRCode(bo, bt) {
+        if (!bo || !bt) {
+            alert("Please provide both BO and BT values.");
+            return;
         }
 
-       // Fill the input fields with URL parameters if available and generate QR code immediately
-        window.onload = function() {
-            const bo = getQueryParam('bo');
-            const bt = getQueryParam('bt');
-            const userId = getQueryParam('uid');
-            const displayName = getQueryParam('uname');     
-            //&userId=${uid}&displayName=${uname}
-            if (bo && bt) {
-                generateQRCode(bo, bt, userId, displayName); // Generate QR code immediately if parameters are present
-            }
-        };
+        const userId = getQueryParam('userId');
+        const displayName = getQueryParam('displayName');
+        
+        const qrCodeLink = `https://script.google.com/macros/s/AKfycbxKTile0eqVDlq17vBNE32_TseqgLYRY9BvQj9Fa5MTkTn6fCYyMhXGdvbKmznHyF4I/exec?method=postData&bo=${bo}&bt=${bt}&userId=${userId}&displayName=${encodeURIComponent(displayName)}`;
+        const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrCodeLink)}`;
+        
+        // Display QR code and additional text
+        document.getElementById("qrResult").style.display = "block";
+        document.getElementById("qrCodeImage").src = qrCodeUrl;
 
-        function generateQRCode(bo, bt) {
-            if (!bo || !bt) {
-                alert("Please provide both BO and BT values.");
-                return;
-            }
-
-            const userId = getQueryParam('userId');
-            const displayName = getQueryParam('displayName');
-            
-            const qrCodeLink = `https://script.google.com/macros/s/AKfycbxKTile0eqVDlq17vBNE32_TseqgLYRY9BvQj9Fa5MTkTn6fCYyMhXGdvbKmznHyF4I/exec?method=postData&bo=${bo}&bt=${bt}&userId=${userId}&displayName=${encodeURIComponent(displayName)}`;
-            const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrCodeLink)}`;
-            
-            // Display QR code and the print button
-            document.getElementById("qrResult").style.display = "block";
-            document.getElementById("qrCodeImage").src = qrCodeUrl;
-
-        }
-    </script>
+        // Update additional text
+        const qrText = `Generated QR Code: BO = ${bo} AND BT = ${bt}`;
+        document.getElementById("qrText").textContent = qrText;
+    }
+</script>
 </body>
 </html>
