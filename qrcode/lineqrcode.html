@@ -33,8 +33,10 @@
         window.onload = function() {
             const bo = getQueryParam('bo');
             const bt = getQueryParam('bt');
-            if (bo && bt) {
-                generateQRCode(bo, bt); // Generate QR code immediately if parameters are present
+            const uid = getQueryParam('uid');
+            const uname = getQueryParam('uname');            
+            if (bo && bt && uid && uname) {
+                generateQRCode(bo, bt, uid, uname); // Generate QR code immediately if parameters are present
             }
         };
 
@@ -44,7 +46,7 @@
                 return;
             }
 
-            const qrCodeLink = `https://script.google.com/macros/s/AKfycbxKTile0eqVDlq17vBNE32_TseqgLYRY9BvQj9Fa5MTkTn6fCYyMhXGdvbKmznHyF4I/exec?method=postData&bo=${bo}&bt=${bt}`;
+            const qrCodeLink = `https://script.google.com/macros/s/AKfycbxKTile0eqVDlq17vBNE32_TseqgLYRY9BvQj9Fa5MTkTn6fCYyMhXGdvbKmznHyF4I/exec?method=postData&bo=${bo}&bt=${bt}&uid=${uid}&uname=${uname}`;
             const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrCodeLink)}`;
 
             // Display QR code and the print button
