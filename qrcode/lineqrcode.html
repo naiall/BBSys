@@ -15,7 +15,7 @@
 </head>
 <body>
 <div id="qrResult" style="margin-top: 20px;">
-    <h2>Generated QR Code:</h2>
+    <h2>Betong Hospital QR Code:</h2>
     <img id="qrCodeImage" src="" alt="QR Code">
     <p id="qrText"></p> <!-- Placeholder for additional text -->
     <br><br>
@@ -57,7 +57,7 @@
         document.getElementById("qrCodeImage").src = qrCodeUrl;
 
         // Update additional text
-        const qrText = `Generated QR Code: BO = ${bo} AND BT = ${bt}`;
+        const qrText = `Betong MT QR Code: BO = ${bo} AND BT = ${bt}`;
         document.getElementById("qrText").textContent = qrText;
     }
 </script>
