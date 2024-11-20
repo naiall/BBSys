@@ -120,80 +120,53 @@
         <i class="fas fa-redo"></i> Clear Scan Results
     </button>
 
-    <script>
-        function getQueryParams() {
-            const params = {};
-            const queryString = window.location.search.substring(1);
-            const pairs = queryString.split("&");
-            for (let i = 0; i < pairs.length; i++) {
-                const pair = pairs[i].split("=");
-                params[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
-            }
-            return params;
+  <script>
+    function getQueryParams() {
+        const params = {};
+        const queryString = window.location.search.substring(1);
+        const pairs = queryString.split("&");
+        for (let i = 0; i < pairs.length; i++) {
+            const pair = pairs[i].split("=");
+            params[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
         }
+        return params;
+    }
 
-        const params = getQueryParams();
-        const userId = params.userId || "N/A"; 
-        const displayName = params.displayName || "N/A"; 
+    const params = getQueryParams();
+    const userId = params.userId || "N/A"; 
+    const displayName = params.displayName || "N/A"; 
 
-        document.getElementById("userId").textContent = userId;
-        document.getElementById("displayName").textContent = displayName;
+    document.getElementById("userId").textContent = userId;
+    document.getElementById("displayName").textContent = displayName;
 
-        function docReady(fn) {
-            if (document.readyState === "complete" || document.readyState === "interactive") {
-                setTimeout(fn, 1);
-            } else {
-                document.addEventListener("DOMContentLoaded", fn);
-            }
+    function docReady(fn) {
+        if (document.readyState === "complete" || document.readyState === "interactive") {
+            setTimeout(fn, 1);
+        } else {
+            document.addEventListener("DOMContentLoaded", fn);
         }
+    }
 
-        docReady(function() {
-            const resultContainer = document.getElementById('scanResult'); // Input for scan result
-            const submitButton = document.getElementById('submitButton');
-            const clearButton = document.getElementById('clearButton');
-            const html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 250 });
-            let pendingResult = null;
-        
-            function onScanSuccess(decodedText, decodedResult) {
-                if (!pendingResult) {
-                    pendingResult = decodedText;
-        
-                    Swal.fire({
-                        title: 'Scan Result',
-                        text: `You scanned: ${decodedText}`,
-                        icon: 'info',
-                        showCancelButton: true,
-                        confirmButtonText: 'Accept',
-                        cancelButtonText: 'Cancel'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            resultContainer.value = pendingResult;
-                            resultContainer.style.display = 'block';
-                            submitButton.style.display = "flex";
-                            clearButton.style.display = "flex";
-                        }
-                        pendingResult = null;
-                    });
-                }
-            }
-        
-            html5QrcodeScanner.render(onScanSuccess, () => {});
-        
-            submitButton.addEventListener('click', function() {
-                const boBtValue = resultContainer.value;
-                const submitUrl = `${boBtValue}&userId=${userId}&displayName=${displayName}`;
+    docReady(function() {
+        const resultContainer = document.getElementById('scanResult'); // Input for scan result
+        const html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 250 });
+        let pendingResult = null;
+
+        function onScanSuccess(decodedText, decodedResult) {
+            if (!pendingResult) {
+                pendingResult = decodedText;
+                resultContainer.value = pendingResult;
+                
+                // Automatically submit the scan result
+                const boBtValue = pendingResult;
+                const submitUrl = `${boBtValue}&userId=${userId}&displayName=${encodeURIComponent(displayName)}`;
                 window.location.href = submitUrl;
-            });
-        
-            clearButton.addEventListener('click', function() {
-                resultContainer.value = '';
-                resultContainer.style.display = 'none';
-                submitButton.style.display = 'none';
-                clearButton.style.display = 'none';
-                pendingResult = null;
-            });
-        });
+            }
+        }
 
-    </script>
+        html5QrcodeScanner.render(onScanSuccess, () => {});
+    });
+</script>
+
 </body>
 </html>
