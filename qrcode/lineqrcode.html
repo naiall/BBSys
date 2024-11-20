@@ -62,16 +62,18 @@
                 const uid = profile.userId;
                 const uname = profile.displayName;
 
-                // Check if bo and bt are valid before generating the QR code
+                // Check if bo and bt are valid before redirecting
                 if (bo && bt) {
-                    generateQRCode(bo, bt, uid, uname);  // Calling generateQRCode with parameters
+                    // Construct the URL to redirect to
+                    const redirectUrl = `https://naiall.github.io/BBSys/qrcode/lineqrcode.html?bo=${bo}&bt=${bt}&userId=${uid}&displayName=${uname}`;
+                    window.location.replace(redirectUrl);  // Redirect to the specified URL
                 } else {
                     x.innerHTML = "Invalid bo or bt values.";
                 }
             });
         }
 
-        // Function to generate the QR code
+        // Function to generate the QR code (if you still want to generate it on this page)
         function generateQRCode(bo, bt, uid, uname) {
             if (!bo || !bt || !uid || !uname) {
                 alert("Please provide both BO and BT values, and ensure the user is logged in.");
