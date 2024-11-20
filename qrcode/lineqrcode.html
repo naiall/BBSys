@@ -48,13 +48,13 @@
         window.onload = function() {
             const bo = getQueryParam('bo');
             const bt = getQueryParam('bt');
-
+            initializeLiff('1655717777-MVpyYoWx');
             if (bo && bt) {
                 generateQRCode(bo, bt); // Generate QR code immediately if parameters are present
             }
             
             // Initialize LIFF with the appropriate LIFF ID (replace with your actual LIFF ID)
-            initializeLiff('1655717777-MVpyYoWx');
+           
         };
 
         function generateQRCode(bo, bt) {
