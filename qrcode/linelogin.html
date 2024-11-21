@@ -101,29 +101,18 @@
                 const bo = getQueryParam('bo');
                 const bt = getQueryParam('bt');
                 const message = document.getElementById("tex1");
-
+            
+                // ตรวจสอบว่ามีพารามิเตอร์ bo และ bt หรือไม่
                 if (!bo || !bt) {
                     message.innerHTML = "Missing or invalid parameters.";
                     return;
                 }
-
-                liff.getProfile()
-                    .then(profile => {
-                        const uid = profile.userId;
-                        const uname = profile.displayName;
-
-                        if (bo && bt) {
-                            const redirectUrl = `https://naiall.github.io/BBSys/qrcode/lineqrcode.html?bo=${encodeURIComponent(bo)}&bt=${encodeURIComponent(bt)}&userId=${encodeURIComponent(uid)}&displayName=${encodeURIComponent(uname)}`;
-                            window.location.replace(redirectUrl);
-                        } else {
-                            message.innerHTML = "Invalid bo or bt values.";
-                        }
-                    })
-                    .catch(err => {
-                        message.innerHTML = "Error fetching profile: " + err.message;
-                        console.error("Profile Error: ", err);
-                    });
+            
+                // หากพารามิเตอร์ถูกต้อง ให้เปลี่ยนเส้นทางไปยัง URL ที่กำหนด
+                const redirectUrl = `https://naiall.github.io/BBSys/qrcode/lineqrcode.html?bo=${encodeURIComponent(bo)}&bt=${encodeURIComponent(bt)}`;
+                window.location.replace(redirectUrl);
             }
+
         </script>
         <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
     </center>
