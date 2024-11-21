@@ -95,21 +95,8 @@
             }
 
             window.onload = function () {
-                //initializeLiff('1655717777-MVpyYoWx');
                 lotg();
             };
-
-            function initializeLiff(myLiffId) {
-                liff.init({ liffId: myLiffId })
-                    .then(() => {
-                        lotg();
-                    })
-                    .catch((err) => {
-                        document.getElementById("tex1").innerHTML = "Error initializing LIFF: " + err.message;
-                        console.error("LIFF Error: ", err);
-                    });
-            }
-
             function lotg() {
                 const bo = getQueryParam('bo');
                 const bt = getQueryParam('bt');
