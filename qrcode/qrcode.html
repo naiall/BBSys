@@ -1,115 +1,77 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Code Scanner</title>
-    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" type="text/javascript"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            color: #333;
+<script>
+    // Function to extract query parameters from URL
+    function getQueryParams() {
+        const params = {};
+        const queryString = window.location.search.substring(1);
+        const pairs = queryString.split("&");
+        for (let i = 0; i < pairs.length; i++) {
+            const pair = pairs[i].split("=");
+            params[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
         }
-        #qr-reader, .data {
-            width: 90%;
-            max-width: 500px;
-            margin: 10px 0;
-        }
-        .data {
-            background-color: #fff;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-        .data p {
-            margin: 5px 0;
-            font-size: 1rem;
-        }
-    </style>
-</head>
-<body>
-    <div class="data">
-        <p><strong>User Name:</strong> <span id="displayName"></span></p>
-    </div>
-    
-    <span id="userId" style="display: none;"></span> <!-- Hidden User ID -->
-    
-    <div id="qr-reader"></div>
+        return params;
+    }
 
-    <script>
-        // Function to extract query parameters from URL
-        function getQueryParams() {
-            const params = {};
-            const queryString = window.location.search.substring(1);
-            const pairs = queryString.split("&");
-            for (let i = 0; i < pairs.length; i++) {
-                const pair = pairs[i].split("=");
-                params[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
-            }
-            return params;
+    // Extract parameters and set user info
+    const params = getQueryParams();
+    const userId = params.userId || "N/A"; 
+    const displayName = params.displayName || "N/A"; 
+
+    document.getElementById("userId").textContent = userId;
+    document.getElementById("displayName").textContent = displayName;
+
+    // Initialize QR code scanner on document ready
+    function docReady(fn) {
+        if (document.readyState === "complete" || document.readyState === "interactive") {
+            setTimeout(fn, 1);
+        } else {
+            document.addEventListener("DOMContentLoaded", fn);
         }
+    }
 
-        // Extract parameters and set user info
-        const params = getQueryParams();
-        const userId = params.userId || "N/A"; 
-        const displayName = params.displayName || "N/A"; 
+    docReady(function() {
+        const html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 250 });
+        let pendingResult = null;
 
-        document.getElementById("userId").textContent = userId;
-        document.getElementById("displayName").textContent = displayName;
+        // Handle scan success
+        function onScanSuccess(decodedText, decodedResult) {
+            if (!pendingResult) {
+                pendingResult = decodedText;
 
-        // Initialize QR code scanner on document ready
-        function docReady(fn) {
-            if (document.readyState === "complete" || document.readyState === "interactive") {
-                setTimeout(fn, 1);
-            } else {
-                document.addEventListener("DOMContentLoaded", fn);
+                // Show SweetAlert with "กรุณารอ" message
+                Swal.fire({
+                    title: 'กรุณารอ',
+                    text: 'กำลังส่งข้อมูล...',
+                    icon: 'info',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    didOpen: () => {
+                        Swal.showLoading(); // Show loading animation
+                    }
+                });
+
+                // Automatically submit the scan result after showing the alert
+                setTimeout(() => {
+                    const boBtValue = pendingResult;
+                    const submitUrl = `${boBtValue}&userId=${userId}&displayName=${encodeURIComponent(displayName)}`;
+                    window.location.href = submitUrl;
+                }, 2000); // Delay submission for 2 seconds
             }
         }
 
-        docReady(function() {
-            const html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 250 });
-            let pendingResult = null;
+        // Render the QR scanner
+        html5QrcodeScanner.render(onScanSuccess, () => {});
 
-            // Handle scan success
-            function onScanSuccess(decodedText, decodedResult) {
-                if (!pendingResult) {
-                    pendingResult = decodedText;
+        // Start QR code scanning with the back camera
+        const html5QrCode = new Html5Qrcode("qr-reader");
+        const config = { fps: 10, qrbox: 250 };
+        const qrCodeSuccessCallback = onScanSuccess;
 
-                    // Show SweetAlert with "กรุณารอ" message
-                    Swal.fire({
-                        title: 'กรุณารอ',
-                        text: 'กำลังส่งข้อมูล...',
-                        icon: 'info',
-                        allowOutsideClick: false,
-                        showConfirmButton: false,
-                        didOpen: () => {
-                            Swal.showLoading(); // Show loading animation
-                        }
-                    });
-
-                    // Automatically submit the scan result after showing the alert
-                    setTimeout(() => {
-                        const boBtValue = pendingResult;
-                        const submitUrl = `${boBtValue}&userId=${userId}&displayName=${encodeURIComponent(displayName)}`;
-                        window.location.href = submitUrl;
-                    }, 2000); // Delay submission for 2 seconds
-                }
-            }
-
-            // Render the QR scanner
-            html5QrcodeScanner.render(onScanSuccess, () => {});
+        html5QrCode.start(
+            { facingMode: { exact: "environment" } }, // Use back camera
+            config,
+            qrCodeSuccessCallback
+        ).catch(err => {
+            console.error("Error starting QR code scanner:", err);
         });
-    </script>
-</body>
-</html>
+    });
+</script>
