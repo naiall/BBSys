@@ -112,7 +112,7 @@
 
             // Start QR code scanning with the back camera
             const html5QrCode = new Html5Qrcode("qr-reader");
-            const config = { fps: 10, qrbox: 250 };
+            const config = {fps: 10, qrbox: { width: 250, height: 250 }};
             const qrCodeSuccessCallback = onScanSuccess;
 
             html5QrCode.start(
