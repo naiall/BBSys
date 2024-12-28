@@ -10,16 +10,21 @@
     <div id="responseOutput"></div>
 
     <script>
-        // Replace these PHP placeholders with actual server-side data
-        const bo = '<?= bo; ?>';
-        const bt = '<?= bt; ?>';
-        const name_ = '<?= databb.name; ?>';
-        const ward_ = '<?= data.ward; ?>';
-        const userId = '<?= User_ID; ?>';
-        const name_rec = '<?= data.name; ?>';
-        const hn = '<?= databb.hn; ?>';           
-        const group_ = '<?= databb.abo; ?>';
-        const rh_ = '<?= databb.rh; ?>';                
+        // Extract query parameters from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const bo = urlParams.get('bo') || 'N/A';
+        const bt = urlParams.get('bt') || 'N/A';
+        const userId = urlParams.get('User_ID') || 'N/A';
+        const data = JSON.parse(urlParams.get('data') || '{}'); // Deserialize studentData
+
+        // Example: Adjusting extracted data
+        const name_ = data.name || 'Unknown';
+        const ward_ = data.ward || 'Unknown';
+        const name_rec = data.name || 'Unknown';
+        const hn = data.hn || 'Unknown';
+        const group_ = data.group || 'Unknown';
+        const rh_ = data.rh || 'Unknown';
 
         // Generate the current formatted date for submission
         const today = new Date();
@@ -27,7 +32,7 @@
         const month = String(today.getMonth() + 1).padStart(2, '0'); // Month starts from 0
         const year = today.getFullYear() + 543; // Adjust year to Buddhist calendar
 
-        const formattedDate = `${day}/${month}/${year}`;        
+        const formattedDate = `${day}/${month}/${year}`;
 
         Swal.fire({
             title: 'ยืนยันการรับเลือด?',
@@ -73,7 +78,6 @@
             cancelButtonText: 'ยกเลิก'
          }).then((result) => {
             if (result.isConfirmed) {
-                // Send data to Google Apps Script
                 fetch('https://script.google.com/macros/s/AKfycbwfMdrvJkb_Rd2zGKBlyI99XfK6qruMe2-ADfNAEIsbShf9E6agNxeBzU_x9EvJJt-R/exec', {
                     method: 'POST',
                     headers: {
@@ -90,57 +94,12 @@
                 })
                 .then(response => response.text())
                 .then(data => {
-                    document.getElementById('responseOutput').textContent = data;
-
-                    // Show success SweetAlert
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'ส่งข้อมูลสำเร็จ!',
-                        text: 'ข้อมูลได้ถูกส่งเรียบร้อยแล้ว',
-                    }).then(() => {
-                        window.close(); // Close the current tab
-                    });
-
-                    // Call sendToLineBotZZ function
-                    sendToLineBotZZ(bo, bt, name_, name_rec, group_, rh_, userId, ward_, hn);
+                    Swal.fire('Success', 'ข้อมูลได้ถูกส่งเรียบร้อยแล้ว', 'success');
+                    window.close();
                 })
-                .catch(error => {
-                    document.getElementById('responseOutput').textContent = 'Error: ' + error;
-
-                    // Show error SweetAlert
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'เกิดข้อผิดพลาด',
-                        text: 'ไม่สามารถส่งข้อมูลได้',
-                    });
-                });
+                .catch(error => Swal.fire('Error', 'ไม่สามารถส่งข้อมูลได้', 'error'));
             }
         });
-
-        // Define the function to call the LINE Bot directly
-        function sendToLineBotZZ(bo, bt, name, namerec, abo, rh, userId, hn, ward_) {
-            fetch('https://script.google.com/macros/s/AKfycbxKTile0eqVDlq17vBNE32_TseqgLYRY9BvQj9Fa5MTkTn6fCYyMhXGdvbKmznHyF4I/exec', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: new URLSearchParams({
-                    method: 'sendToLineBot',
-                    bo: bo,
-                    bt: bt,
-                    name: name,
-                    namerec: namerec,
-                    abo: abo,
-                    rh: rh,
-                    userId: userId,
-                    hn: hn,
-                    ward_: ward_
-                }),
-            })
-            .then(response => response.text())
-            .then(data => console.log('Sent to LINE Bot:', data))
-            .catch(error => console.error('Error:', error));
-        }
     </script>
 </body>
 </html>
