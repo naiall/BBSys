@@ -43,6 +43,7 @@ MainDorner P Integer
 MainDorner C Integer
 MainDorner thophy String(5)
 MainDorner Dor_comeback String(5)
+MainDorner bloodcomp String(100)
 Dorner_information S Integer
 Dorner_information P Integer
 Dorner_information C Integer
