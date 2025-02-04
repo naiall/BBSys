@@ -48,6 +48,12 @@ Dorner_information S Integer
 Dorner_information P Integer
 Dorner_information C Integer
 Dorner_information donat String(3)
+Dorner_information dnhight String(10)
+Dorner_information hemoglobin_num String(10)
+Dorner_information hematocrit String(10)
+Dorner_information copper_sulfate String(10)
+Dorner_information pulse String(10)
+Dorner_information lungs String(10)
 Bag_data CodeName Integer
 Bag_data Sname String(40)
 BloodImport Hos_Code String(6)
