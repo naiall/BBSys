@@ -10,8 +10,8 @@ const OFFLINE_URL  = 'https://naiall.github.io/BBSys/medlab-pwa/offline.html';
 /* ─── ไฟล์ Static ที่ cache ได้ (โฮสต์บน GitHub Pages) ─── */
 const STATIC_ASSETS = [
   OFFLINE_URL,
-  'https://naiall.github.io/medlab-pwa/icons/icon-192.png',
-  'https://naiall.github.io/medlab-pwa/icons/icon-512.png',
+  'https://naiall.github.io/BBSys/medlab-pwa/icons/icon-192.png',
+  'https://naiall.github.io/BBSys/medlab-pwa/icons/icon-512.png',
   /* Google Fonts — cache ตอน install ทันที */
   'https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap'
 ];
