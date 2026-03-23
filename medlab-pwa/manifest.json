@@ -13,31 +13,31 @@
   "categories": ["medical", "productivity", "utilities"],
   "icons": [
     {
-      "src": "https://naiall.github.io/medlab-pwa/icons/icon-72.png",
+      "src": "https://naiall.github.io/BBSys/medlab-pwa/icons/icon-72.png",
       "sizes": "72x72",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "https://naiall.github.io/medlab-pwa/icons/icon-96.png",
+      "src": "https://naiall.github.io/BBSys/medlab-pwa/icons/icon-96.png",
       "sizes": "96x96",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "https://naiall.github.io/medlab-pwa/icons/icon-128.png",
+      "src": "https://naiall.github.io/BBSys/medlab-pwa/icons/icon-128.png",
       "sizes": "128x128",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "https://naiall.github.io/medlab-pwa/icons/icon-192.png",
+      "src": "https://naiall.github.io/BBSys/medlab-pwa/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "https://naiall.github.io/medlab-pwa/icons/icon-512.png",
+      "src": "https://naiall.github.io/BBSys/medlab-pwa/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
