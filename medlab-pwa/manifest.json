@@ -2,7 +2,7 @@
   "name": "MedLab Inventory — รพ.เบตง",
   "short_name": "MedLab",
   "description": "ระบบคลังพัสดุ ห้องเทคนิคการแพทย์ โรงพยาบาลเบตง",
-  "start_url": "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec",
+  "start_url": "https://script.google.com/macros/s/AKfycbwDrjAoH6zKUfIZzUeesliyUgeYwvprP_sUFYCU0SjKKomXlxqRF1FJcv3oUhHgl1zmag/exec",
   "scope": "/",
   "display": "standalone",
   "orientation": "any",
@@ -13,31 +13,31 @@
   "categories": ["medical", "productivity", "utilities"],
   "icons": [
     {
-      "src": "https://YOUR_GITHUB_PAGES.github.io/medlab-pwa/icons/icon-72.png",
+      "src": "https://naiall.github.io/medlab-pwa/icons/icon-72.png",
       "sizes": "72x72",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "https://YOUR_GITHUB_PAGES.github.io/medlab-pwa/icons/icon-96.png",
+      "src": "https://naiall.github.io/medlab-pwa/icons/icon-96.png",
       "sizes": "96x96",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "https://YOUR_GITHUB_PAGES.github.io/medlab-pwa/icons/icon-128.png",
+      "src": "https://naiall.github.io/medlab-pwa/icons/icon-128.png",
       "sizes": "128x128",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "https://YOUR_GITHUB_PAGES.github.io/medlab-pwa/icons/icon-192.png",
+      "src": "https://naiall.github.io/medlab-pwa/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "https://YOUR_GITHUB_PAGES.github.io/medlab-pwa/icons/icon-512.png",
+      "src": "https://naiall.github.io/medlab-pwa/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
