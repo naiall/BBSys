@@ -5,7 +5,7 @@
  */
 
 const CACHE_NAME   = 'medlab-v1';
-const OFFLINE_URL  = 'https://naiall.github.io/medlab-pwa/offline.html';
+const OFFLINE_URL  = 'https://naiall.github.io/BBSys/medlab-pwa/offline.html';
 
 /* ─── ไฟล์ Static ที่ cache ได้ (โฮสต์บน GitHub Pages) ─── */
 const STATIC_ASSETS = [
