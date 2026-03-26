@@ -3,176 +3,249 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>MedLab Scanner — Professional</title>
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&family=DM+Mono&display=swap" rel="stylesheet">
+    <title>MedLab Smart Scanner V2.7</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&family=DM+Mono&display=swap" rel="stylesheet">
+    
     <script src="https://unpkg.com/html5-qrcode"></script>
+
     <style>
         :root {
-            --bg: #131c2b; --sd: #0b1219; --sl: #1b2739; --t1: #d8eaf8; --t3: #7a9ab8;
-            --cyan: #22d3ee; --red: #f87171;
+            --bg: #131c2b; --sd: #0b1219; --sl: #1b2739;
+            --t1: #d8eaf8; --t2: #7a9ab8; --t3: #3d5570;
+            --cyan: #22d3ee; --green: #34d399; --red: #f87171;
             --nm-in: inset 6px 6px 12px var(--sd), inset -6px -6px 12px var(--sl);
             --nm-out: 8px 8px 16px var(--sd), -8px -8px 16px var(--sl);
+            --rs: 16px;
         }
-        [data-theme="light"] {
-            --bg: #e2ecf4; --sd: #b8c8d8; --sl: #ffffff; --t1: #1a2e44; --t3: #7a9ab2;
-            --cyan: #0891b2; --red: #dc2626;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Sarabun', sans-serif; }
-        body { background: var(--bg); color: var(--t1); min-height: 100vh; padding: 20px; transition: 0.3s; }
 
-        /* Scanner Frame */
-        .scanner-container {
-            position: relative; width: 100%; max-width: 450px; margin: 0 auto;
-            border-radius: 30px; overflow: hidden; box-shadow: var(--nm-out);
+        [data-theme="light"] {
+            --bg: #e2ecf4; --sd: #b8c8d8; --sl: #ffffff;
+            --t1: #1a2e44; --t2: #4a6880; --t3: #7a9ab2;
+            --cyan: #0891b2; --green: #059669; --red: #dc2626;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Sarabun', sans-serif; background: var(--bg); color: var(--t1);
+            min-height: 100vh; padding: 20px; transition: 0.3s;
+        }
+
+        /* Header */
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { font-size: 18px; font-weight: 700; letter-spacing: 1px; color: var(--cyan); }
+        .header p { font-size: 10px; color: var(--t3); text-transform: uppercase; margin-top: 4px; }
+
+        /* Scanner Container */
+        .scanner-wrap {
+            position: relative; width: 100%; max-width: 400px; margin: 0 auto;
+            border-radius: 24px; overflow: hidden; box-shadow: var(--nm-out);
             aspect-ratio: 1/1; background: #000;
         }
         #reader { width: 100% !important; border: none !important; }
-        #reader__scan_region { background: #000; }
         
-        /* Laser Animation */
         .laser {
-            position: absolute; top: 0; left: 0; width: 100%; height: 2px;
-            background: var(--cyan); box-shadow: 0 0 15px var(--cyan);
-            z-index: 10; animation: scan 2s infinite linear; pointer-events: none;
+            position: absolute; top: 50%; left: 0; width: 100%; height: 2px;
+            background: var(--red); box-shadow: 0 0 12px var(--red);
+            z-index: 10; animation: scanAnim 2s infinite ease-in-out; pointer-events: none;
         }
-        @keyframes scan { 0% { top: 10%; } 50% { top: 90%; } 100% { top: 10%; } }
+        @keyframes scanAnim { 0%, 100% { top: 20%; } 50% { top: 80%; } }
 
-        /* UI Elements */
-        .header { text-align: center; margin-bottom: 25px; }
-        .header h1 { font-size: 20px; font-weight: 700; color: var(--t1); letter-spacing: 1px; }
-        .header p { font-size: 12px; color: var(--t3); text-transform: uppercase; margin-top: 5px; }
-
+        /* Result Card */
         .card {
-            background: var(--bg); border-radius: 20px; padding: 20px;
+            background: var(--bg); border-radius: 24px; padding: 22px;
             margin-top: 25px; box-shadow: var(--nm-out); display: none;
-            animation: slideUp 0.4s ease-out;
+            animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        .sku-badge { font-family: 'DM Mono', monospace; background: var(--sd); padding: 5px 12px; border-radius: 8px; color: var(--cyan); font-size: 14px; }
+        .sku-badge { font-family: 'DM Mono', monospace; color: var(--cyan); background: var(--sd); padding: 4px 10px; border-radius: 8px; font-size: 13px; }
+        
+        .fld { margin-bottom: 16px; }
+        .fld label { display: block; font-size: 10px; font-weight: 700; color: var(--t3); text-transform: uppercase; margin-bottom: 6px; padding-left: 4px; }
+        
         .inp {
-            width: 100%; background: var(--bg); border: none; padding: 12px;
-            border-radius: 12px; box-shadow: var(--nm-in); color: var(--t1);
-            font-size: 18px; text-align: center; margin: 15px 0; outline: none;
+            width: 100%; background: var(--bg); border: none; padding: 12px 16px;
+            border-radius: var(--rs); box-shadow: var(--nm-in); color: var(--t1);
+            font-size: 15px; outline: none; transition: 0.2s;
         }
+        .inp:focus { box-shadow: var(--nm-in), 0 0 0 2px var(--cyan); }
+
+        /* Grid System */
+        .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+        /* Quantity Boxes */
+        .qbox { text-align: center; padding: 15px 10px; border-radius: var(--rs); }
+        .qbox input { font-family: 'DM Mono', monospace; font-size: 32px; font-weight: 700; text-align: center; background: transparent; box-shadow: none; padding: 0; }
+
+        /* Buttons */
         .btn {
-            width: 100%; padding: 14px; border-radius: 12px; border: none;
-            font-weight: 700; cursor: pointer; transition: 0.2s; box-shadow: var(--nm-out);
+            width: 100%; padding: 16px; border-radius: var(--rs); border: none;
+            font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s;
+            box-shadow: var(--nm-out); margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 10px;
         }
         .btn-p { background: var(--bg); color: var(--cyan); }
         .btn-p:active { box-shadow: var(--nm-in); transform: scale(0.98); }
-        
-        #status-msg { text-align: center; font-size: 13px; color: var(--t3); margin-top: 15px; }
+        .btn-p:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        #status-msg { text-align: center; font-size: 12px; color: var(--t2); margin-top: 15px; font-style: italic; }
     </style>
 </head>
 <body>
 
     <div class="header">
         <h1>MEDLAB SMART SCANNER</h1>
-        <p>Betong Hospital Inventory System</p>
+        <p>Betong Hospital • Pathology Dept</p>
     </div>
 
-    <div class="scanner-container">
-        <div class="laser"></div>
+    <div class="scanner-wrap" id="scanner-container">
+        <div class="laser" id="laser-line"></div>
         <div id="reader"></div>
     </div>
-    <div id="status-msg">💡 เล็งบาร์โค้ดให้อยู่ในกรอบเพื่อเริ่มทำงาน</div>
+    <div id="status-msg">เล็ง Barcode ให้ตรงเส้นเพื่อสแกน</div>
 
     <div id="resultCard" class="card">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <span style="font-size:11px; font-weight:700; color:var(--t3); text-transform:uppercase;">Product Found</span>
-            <span class="sku-badge" id="display-sku">SKU-XXXX</span>
-        </div>
-        <h2 id="display-name" style="font-size:18px; margin-bottom:5px;">กำลังโหลด...</h2>
-        <p id="display-bal" style="font-size:13px; color:var(--t3); margin-bottom:20px;">คงเหลือ: —</p>
-
-        <div style="margin-bottom:10px;">
-            <label style="font-size:10px; font-weight:700; color:var(--cyan); text-transform:uppercase;">จำนวนที่ต้องการเบิก</label>
-            <input type="number" id="input-qty" class="inp" value="1" min="1" inputmode="numeric">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:15px;">
+            <h2 id="display-name" style="font-size:18px; line-height:1.2; flex:1; padding-right:10px;">รายการพัสดุ</h2>
+            <span class="sku-badge" id="display-sku">SKU</span>
         </div>
 
-        <button class="btn btn-p" onclick="confirmIssue()">💾 ยืนยันการตัดคลัง</button>
-        <button class="btn" style="margin-top:10px; box-shadow:none; color:var(--red); font-size:12px;" onclick="restartScanner()">✕ ยกเลิก</button>
+        <div class="g2 fld">
+            <div>
+                <label>วันที่รับ/จ่ายสินค้า</label>
+                <input type="date" id="res-date" class="inp">
+            </div>
+            <div>
+                <label>LOT NUMBER</label>
+                <input type="text" id="res-lot" class="inp" placeholder="LOT-XXXX">
+            </div>
+        </div>
+
+        <div class="fld">
+            <label>วันหมดอายุ</label>
+            <input type="month" id="res-exp" class="inp">
+        </div>
+
+        <div class="g2 fld">
+            <div class="qbox">
+                <label style="color:var(--green)">รับเข้า (+)</label>
+                <input type="number" id="res-rcv" class="inp" value="0" inputmode="numeric">
+            </div>
+            <div class="qbox">
+                <label style="color:var(--red)">จ่ายออก (-)</label>
+                <input type="number" id="res-iss" class="inp" value="0" inputmode="numeric">
+            </div>
+        </div>
+
+        <div class="fld">
+            <label>หมายเหตุ</label>
+            <textarea id="res-note" class="inp" rows="2" placeholder="ระบุเพิ่มเติม..."></textarea>
+        </div>
+
+        <button class="btn btn-p" id="saveBtn" onclick="sendData()">
+            <span>💾</span> บันทึกรายการลงคลัง
+        </button>
+        
+        <button class="btn" style="box-shadow:none; color:var(--red); font-size:13px;" onclick="restartScanner()">
+            ✕ ยกเลิกและสแกนใหม่
+        </button>
     </div>
 
     <script>
+        // ระบุ API URL ของคุณที่นี่
         const GAS_API = "https://script.google.com/macros/s/AKfycbwDrjAoH6zKUfIZzUeesliyUgeYwvprP_sUFYCU0SjKKomXlxqRF1FJcv3oUhHgl1zmag/exec";
         let html5QrCode;
 
-        // เริ่มต้นเปิดกล้องหลังอัตโนมัติ
-        window.addEventListener('DOMContentLoaded', (event) => {
+        // เริ่มต้นกล้องอัตโนมัติ
+        window.onload = () => {
             startCamera();
-        });
+        };
 
         function startCamera() {
             html5QrCode = new Html5Qrcode("reader");
-            const config = { fps: 20, qrbox: { width: 250, height: 150 } };
+            const config = { fps: 15, qrbox: { width: 280, height: 160 } };
             
-            // เปิดกล้องหลัง (facingMode: environment)
             html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess)
             .catch(err => {
-                document.getElementById('status-msg').innerHTML = "❌ ไม่สามารถเข้าถึงกล้องได้: " + err;
+                document.getElementById('status-msg').innerHTML = "❌ สิทธิ์เข้าถึงกล้องถูกปฏิเสธ: " + err;
             });
         }
 
         function onScanSuccess(decodedText) {
             vibrate();
             html5QrCode.pause(); // หยุดสแกนชั่วคราว
-            document.querySelector('.laser').style.display = 'none';
-            fetchProduct(decodedText);
+            document.getElementById('laser-line').style.display = 'none';
+            document.getElementById('scanner-container').style.display = 'none';
+            fetchProductData(decodedText);
         }
 
-        function fetchProduct(sku) {
-            document.getElementById('resultCard').style.display = 'block';
-            document.getElementById('display-sku').textContent = sku;
-            document.getElementById('status-msg').textContent = "🔍 กำลังดึงข้อมูลจากฐานข้อมูล...";
-
+        function fetchProductData(barcode) {
+            document.getElementById('status-msg').textContent = "🔍 กำลังค้นหา Barcode: " + barcode;
+            
             fetch(GAS_API, {
                 method: "POST",
-                body: JSON.stringify({ action: "search", sku: sku })
+                body: JSON.stringify({ action: "search", barcode: barcode })
             })
             .then(res => res.json())
             .then(data => {
                 if(data.success) {
+                    document.getElementById('resultCard').style.display = 'block';
                     document.getElementById('display-name').textContent = data.name;
-                    document.getElementById('display-bal').textContent = "คงเหลือรวม: " + data.balance + " " + (data.unit || '');
-                    document.getElementById('status-msg').textContent = "✅ พบข้อมูลแล้ว";
+                    document.getElementById('display-sku').textContent = data.sku;
+                    document.getElementById('res-date').value = new Date().toISOString().split('T')[0];
+                    document.getElementById('status-msg').textContent = "📦 พบข้อมูลพัสดุแล้ว";
                 } else {
-                    alert("ไม่พบรหัสพัสดุนี้ในระบบ");
+                    alert("⚠️ ไม่พบ Barcode: " + barcode + " ในฐานข้อมูล");
                     restartScanner();
                 }
             })
-            .catch(err => alert("Error API: " + err));
+            .catch(err => {
+                alert("API Error: " + err);
+                restartScanner();
+            });
         }
 
-        function confirmIssue() {
-            const sku = document.getElementById('display-sku').textContent;
-            const qty = document.getElementById('input-qty').value;
-
-            if(qty <= 0) return alert("ระบุจำนวนให้ถูกต้อง");
-
+        function sendData() {
+            const btn = document.getElementById('saveBtn');
             const payload = {
                 action: "save",
-                sku: sku,
-                issue: qty,
-                receive: 0,
-                date: new Date().toISOString().split('T')[0],
-                userName: "Mobile-Scanner",
-                dept: "LAB",
-                note: "ตัดคลังผ่านการสแกน"
+                sku: document.getElementById('display-sku').textContent,
+                itemName: document.getElementById('display-name').textContent,
+                date: document.getElementById('res-date').value,
+                lot: document.getElementById('res-lot').value.trim(),
+                expiry: document.getElementById('res-exp').value,
+                receive: parseFloat(document.getElementById('res-rcv').value) || 0,
+                issue: parseFloat(document.getElementById('res-iss').value) || 0,
+                note: document.getElementById('res-note').value.trim(),
+                userName: "Scanner-Mobile",
+                dept: "LAB" // แก้ไขตามแผนกจริง
             };
+
+            if(payload.receive === 0 && payload.issue === 0) {
+                alert("กรุณาระบุจำนวน รับเข้า หรือ จ่ายออก");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = "⌛ กำลังบันทึกข้อมูล...";
 
             fetch(GAS_API, { method: "POST", body: JSON.stringify(payload) })
             .then(() => {
-                alert("ตัดคลังสำเร็จ!");
-                restartScanner();
+                alert("✅ บันทึกสำเร็จ!");
+                location.reload();
+            })
+            .catch(err => {
+                alert("บันทึกล้มเหลว: " + err);
+                btn.disabled = false;
+                btn.innerHTML = "💾 บันทึกรายการลงคลัง";
             });
         }
 
         function restartScanner() {
             document.getElementById('resultCard').style.display = 'none';
-            document.querySelector('.laser').style.display = 'block';
-            document.getElementById('status-msg').textContent = "💡 เล็งบาร์โค้ดให้อยู่ในกรอบ";
+            document.getElementById('scanner-container').style.display = 'block';
+            document.getElementById('laser-line').style.display = 'block';
+            document.getElementById('status-msg').textContent = "เล็ง Barcode ให้ตรงเส้นเพื่อสแกน";
             html5QrCode.resume();
         }
 
