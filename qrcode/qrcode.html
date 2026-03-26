@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -124,5 +124,415 @@
             });
         });
     </script>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QR Code Scanner</title>
+
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── Reset & Base ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0b0f1a;
+      --surface:  #131929;
+      --card:     #1a2236;
+      --border:   #263050;
+      --accent:   #00d4ff;
+      --accent2:  #7c3aed;
+      --success:  #10b981;
+      --danger:   #ef4444;
+      --text:     #e2e8f0;
+      --muted:    #64748b;
+      --radius:   16px;
+    }
+
+    html, body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Sarabun', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      overflow-x: hidden;
+    }
+
+    /* ─── Animated Background ───────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 40% at 20% 10%, rgba(0,212,255,.08) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 50% at 80% 90%, rgba(124,58,237,.1) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ─── Layout ────────────────────────────────────────────────── */
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 480px;
+      padding: 24px 16px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* ─── Header ────────────────────────────────────────────────── */
+    .header {
+      text-align: center;
+      padding-top: 8px;
+    }
+    .header .logo {
+      font-family: 'Space Mono', monospace;
+      font-size: .7rem;
+      letter-spacing: .2em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      opacity: .8;
+    }
+    .header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: .02em;
+    }
+
+    /* ─── User Card ─────────────────────────────────────────────── */
+    .user-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .user-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+    .user-info .label {
+      font-size: .7rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-family: 'Space Mono', monospace;
+    }
+    .user-info .name {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-top: 2px;
+    }
+    .user-info .uid {
+      font-size: .72rem;
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+      margin-top: 1px;
+    }
+
+    /* ─── Scanner Box ───────────────────────────────────────────── */
+    .scanner-wrapper {
+      position: relative;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      padding: 16px;
+    }
+
+    .scanner-label {
+      font-size: .72rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      font-family: 'Space Mono', monospace;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .scanner-label::before {
+      content: '';
+      display: inline-block;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse-dot 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: .4; transform: scale(.7); }
+    }
+
+    /* html5-qrcode overrides */
+    #qr-reader {
+      width: 100% !important;
+      border: none !important;
+      background: transparent !important;
+    }
+    #qr-reader video {
+      border-radius: 10px;
+      width: 100% !important;
+    }
+    #qr-reader__scan_region {
+      background: transparent !important;
+    }
+    #qr-reader__dashboard {
+      padding: 10px 0 0 !important;
+    }
+    #qr-reader__dashboard_section_csr button,
+    #qr-reader__dashboard_section_fsr button {
+      background: var(--accent2) !important;
+      color: #fff !important;
+      border: none !important;
+      border-radius: 8px !important;
+      padding: 8px 18px !important;
+      font-family: 'Sarabun', sans-serif !important;
+      font-size: .85rem !important;
+      cursor: pointer !important;
+      margin: 4px !important;
+    }
+    #qr-reader__camera_permission_button {
+      background: var(--accent) !important;
+      color: var(--bg) !important;
+      font-weight: 700 !important;
+    }
+    #qr-reader__status_span {
+      color: var(--muted) !important;
+      font-size: .8rem !important;
+      font-family: 'Sarabun', sans-serif !important;
+    }
+    select { color: var(--text) !important; background: var(--surface) !important; border: 1px solid var(--border) !important; border-radius: 6px !important; padding: 4px 8px !important; }
+
+    /* ─── Corner Frame ──────────────────────────────────────────── */
+    .scan-frame {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 200px; height: 200px;
+      pointer-events: none;
+    }
+    .scan-frame::before,
+    .scan-frame::after,
+    .scan-frame > span::before,
+    .scan-frame > span::after {
+      content: '';
+      position: absolute;
+      width: 24px; height: 24px;
+      border-color: var(--accent);
+      border-style: solid;
+      border-width: 0;
+    }
+    .scan-frame::before    { top:0;    left:0;   border-top-width:3px;    border-left-width:3px;  border-radius: 4px 0 0 0; }
+    .scan-frame::after     { top:0;    right:0;  border-top-width:3px;    border-right-width:3px; border-radius: 0 4px 0 0; }
+    .scan-frame > span::before { bottom:0; left:0;   border-bottom-width:3px; border-left-width:3px;  border-radius: 0 0 0 4px; }
+    .scan-frame > span::after  { bottom:0; right:0;  border-bottom-width:3px; border-right-width:3px; border-radius: 0 0 4px 0; }
+
+    /* ─── Status Bar ────────────────────────────────────────────── */
+    .status-bar {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: .85rem;
+      color: var(--muted);
+      transition: all .3s;
+    }
+    .status-bar.error  { border-color: var(--danger);  color: var(--danger); }
+    .status-bar.success{ border-color: var(--success); color: var(--success); }
+    .status-icon { font-size: 1.1rem; }
+
+    /* ─── SweetAlert2 Theme ─────────────────────────────────────── */
+    .swal2-popup {
+      background: var(--card) !important;
+      color: var(--text) !important;
+      border: 1px solid var(--border) !important;
+      border-radius: var(--radius) !important;
+    }
+    .swal2-title, .swal2-html-container { color: var(--text) !important; }
+    .swal2-confirm {
+      background: var(--accent) !important;
+      color: var(--bg) !important;
+      font-weight: 700 !important;
+    }
+  </style>
+</head>
+<body>
+
+<div class="wrapper">
+  <!-- Header -->
+  <div class="header">
+    <p class="logo">⬡ QR Attendance System</p>
+    <h1>สแกน QR Code</h1>
+  </div>
+
+  <!-- User Card -->
+  <div class="user-card">
+    <div class="user-avatar">👤</div>
+    <div class="user-info">
+      <div class="label">ผู้ใช้งาน</div>
+      <div class="name" id="displayName">—</div>
+      <div class="uid" id="userId">—</div>
+    </div>
+  </div>
+
+  <!-- Scanner -->
+  <div class="scanner-wrapper">
+    <div class="scanner-label">กำลังสแกน</div>
+    <div id="qr-reader"></div>
+    <div class="scan-frame"><span></span></div>
+  </div>
+
+  <!-- Status -->
+  <div class="status-bar" id="statusBar">
+    <span class="status-icon">📷</span>
+    <span id="statusText">กำลังเปิดกล้อง กรุณารอสักครู่...</span>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ── 1. URL Params ──────────────────────────────────────── */
+  function getParams() {
+    return Object.fromEntries(new URLSearchParams(window.location.search));
+  }
+
+  const { userId = "N/A", displayName = "N/A" } = getParams();
+
+  document.getElementById("displayName").textContent = displayName;
+  document.getElementById("userId").textContent = userId !== "N/A" ? `ID: ${userId}` : "";
+
+  /* ── 2. UI Helpers ──────────────────────────────────────── */
+  const statusBar  = document.getElementById("statusBar");
+  const statusText = document.getElementById("statusText");
+
+  function setStatus(msg, type = "") {
+    const icons = { error: "⚠️", success: "✅", "": "📷" };
+    statusBar.className  = `status-bar ${type}`;
+    statusText.textContent = msg;
+    statusBar.querySelector(".status-icon").textContent = icons[type] ?? "📷";
+  }
+
+  /* ── 3. Build Redirect URL safely ───────────────────────── */
+  function buildRedirectUrl(qrValue) {
+    try {
+      const url = new URL(qrValue);                  // throws if invalid URL
+      url.searchParams.set("userId", userId);
+      url.searchParams.set("displayName", displayName);
+      return url.toString();
+    } catch {
+      // QR value is not a full URL — treat as base path / endpoint
+      const sep = qrValue.includes("?") ? "&" : "?";
+      return `${qrValue}${sep}userId=${encodeURIComponent(userId)}&displayName=${encodeURIComponent(displayName)}`;
+    }
+  }
+
+  /* ── 4. Scanner ─────────────────────────────────────────── */
+  let isProcessing = false;
+  let scanner = null;
+
+  function onScanSuccess(decodedText) {
+    if (isProcessing) return;          // debounce — ignore duplicate scans
+    isProcessing = true;
+
+    setStatus("พบ QR Code! กำลังประมวลผล...", "success");
+
+    Swal.fire({
+      title: "กรุณารอ",
+      html: "กำลังส่งข้อมูล...",
+      icon: "info",
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      customClass: { popup: "swal2-popup" },
+      didOpen: () => Swal.showLoading(),
+    });
+
+    // Stop scanner before redirect to free camera resource
+    const redirect = () => {
+      window.location.href = buildRedirectUrl(decodedText);
+    };
+
+    if (scanner) {
+      scanner.stop()
+        .then(redirect)
+        .catch(redirect);   // redirect even if stop() fails
+    } else {
+      setTimeout(redirect, 1800);
+    }
+  }
+
+  function onScanFailure(/* error */) {
+    // Called every frame when no QR found — silent is intentional
+  }
+
+  /* ── 5. Init ────────────────────────────────────────────── */
+  function initScanner() {
+    scanner = new Html5Qrcode("qr-reader");
+
+    const config = {
+      fps: 10,
+      qrbox: { width: 240, height: 240 },
+      aspectRatio: 1.0,
+      showTorchButtonIfSupported: true,
+    };
+
+    scanner
+      .start(
+        { facingMode: { exact: "environment" } },  // back camera preferred
+        config,
+        onScanSuccess,
+        onScanFailure
+      )
+      .then(() => {
+        setStatus("พร้อมสแกน — นำ QR Code เข้าหากล้อง");
+      })
+      .catch(() => {
+        // Fallback: try any available camera
+        scanner
+          .start({ facingMode: "user" }, config, onScanSuccess, onScanFailure)
+          .then(() => setStatus("พร้อมสแกน — นำ QR Code เข้าหากล้อง"))
+          .catch((err) => {
+            setStatus("ไม่สามารถเปิดกล้องได้ กรุณาอนุญาตการเข้าถึงกล้อง", "error");
+            console.error("[QR Scanner] Camera error:", err);
+          });
+      });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initScanner);
+  } else {
+    initScanner();
+  }
+})();
+</script>
 </body>
 </html>
