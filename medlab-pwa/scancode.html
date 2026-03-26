@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scanner — MedLab</title>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <style>
+        /* สไตล์เพิ่มเติมสำหรับหน้าสแกน */
+        #reader { width: 100%; max-width: 500px; margin: 20px auto; border-radius: 20px; overflow: hidden; box-shadow: var(--nm-in); }
+        .scan-result-card { margin-top: 20px; display: none; }
+    </style>
+</head>
+<body class="nm-flat">
+    <div id="content" style="padding: 20px; text-align: center;">
+        <h2 class="sectitle">สแกนรหัสพัสดุ</h2>
+        <p class="secsub">สแกน Barcode หรือ QR Code บนตัวสินค้า</p>
+
+        <div id="reader"></div>
+
+        <div id="resultCard" class="card scan-result-card">
+            <div class="card-t">พบข้อมูลพัสดุ</div>
+            <div class="fld">
+                <label>รหัส SKU</label>
+                <input type="text" id="res-sku" class="inp" readonly>
+            </div>
+            <div class="g2 fld">
+                <div><label>จำนวนรับเข้า</label><input type="number" id="res-rcv" class="inp" value="0"></div>
+                <div><label>จำนวนจ่ายออก</label><input type="number" id="res-iss" class="inp" value="0"></div>
+            </div>
+            <button id="sendBtn" class="btn btn-p btn-full" onclick="sendToGas()">💾 บันทึกลงระบบคลัง</button>
+            <button class="btn btn-g btn-full" style="margin-top:10px;" onclick="restartScan()">✕ สแกนใหม่</button>
+        </div>
+    </div>
+
+    <div id="toast" role="alert"></div>
+
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbwDrjAoH6zKUfIZzUeesliyUgeYwvprP_sUFYCU0SjKKomXlxqRF1FJcv3oUhHgl1zmag/exec";
+        let html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
+
+        function onScanSuccess(decodedText) {
+            html5QrcodeScanner.clear(); // หยุดสแกนชั่วคราว
+            document.getElementById('resultCard').style.display = 'block';
+            document.getElementById('res-sku').value = decodedText;
+            vibrate(); // สั่นเตือนว่าสแกนติด
+        }
+
+        html5QrcodeScanner.render(onScanSuccess);
+
+        function sendToGas() {
+            const btn = document.getElementById('sendBtn');
+            const payload = {
+                sku: document.getElementById('res-sku').value,
+                receive: document.getElementById('res-rcv').value,
+                issue: document.getElementById('res-iss').value,
+                date: new Date().toISOString().split('T')[0],
+                userName: "Scanner-Mobile", // หรือดึงจาก localStorage
+                dept: "LAB",
+                note: "สแกนผ่านมือถือ"
+            };
+
+            btn.disabled = true;
+            btn.textContent = "⏳ กำลังบันทึก...";
+
+            // ใช้ fetch ส่งข้อมูลไปที่ GAS
+            fetch(API_URL, {
+                method: "POST",
+                mode: "no-cors", // จำเป็นสำหรับ GAS
+                body: JSON.stringify(payload)
+            })
+            .then(() => {
+                alert("บันทึกสำเร็จ!");
+                location.reload();
+            })
+            .catch(err => alert("Error: " + err));
+        }
+
+        function restartScan() {
+            location.reload();
+        }
+
+        function vibrate() { if (navigator.vibrate) navigator.vibrate(100); }
+    </script>
+</body>
+</html>
