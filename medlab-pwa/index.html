@@ -3,29 +3,401 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My PWA</title>
+  <title>Report Hub — รพ.เบตง</title>
 
   <!-- PWA -->
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#2196F3">
-
-  <!-- iOS support -->
+  <meta name="theme-color" content="#060b14">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="MyApp">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="MedLab">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body { font-family: 'Sarabun', sans-serif; background-color: #f8fafc; }
+    .view-section { display: none; }
+    .view-active { display: block; animation: fadeIn 0.3s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .loader { border-top-color: #3b82f6; animation: spinner 1.5s linear infinite; }
+    @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    #install-banner { display: none; }
+  </style>
 </head>
-<body>
-  <h1>Hello PWA!</h1>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Install Banner (PWA) -->
+  <div id="install-banner" class="bg-blue-600 text-white px-4 py-3 flex items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <img src="icons/icon-72.png" class="w-8 h-8 rounded-lg" alt="icon">
+      <span class="text-sm font-medium">ติดตั้ง MedLab บนหน้าจอหลักของคุณ</span>
+    </div>
+    <div class="flex gap-2">
+      <button id="install-btn" class="bg-white text-blue-600 px-4 py-1 rounded-lg text-sm font-bold">ติดตั้ง</button>
+      <button onclick="document.getElementById('install-banner').style.display='none'" class="text-white/70 text-sm px-2">✕</button>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="bg-white border-b border-slate-200 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16 items-center">
+        <div class="flex items-center gap-2 cursor-pointer" onclick="switchView('dashboard')">
+          <div class="bg-blue-600 p-2 rounded-lg">
+            <i data-lucide="layout-dashboard" class="text-white w-6 h-6"></i>
+          </div>
+          <div>
+            <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Report Hub</span>
+            <span class="hidden sm:inline text-xs text-slate-400 ml-2">รพ.เบตง</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="navAdminBtn" onclick="switchView('login')" class="text-slate-600 hover:text-blue-600 flex items-center gap-1 font-medium text-sm transition-colors px-3 py-2 rounded-lg hover:bg-slate-50">
+            <i data-lucide="settings" class="w-4 h-4"></i>
+            <span class="hidden sm:inline">จัดการข้อมูล</span>
+          </button>
+          <button id="logoutBtn" onclick="logout()" class="hidden text-red-600 hover:text-red-700 flex items-center gap-1 font-medium text-sm transition-colors px-3 py-2 rounded-lg hover:bg-red-50">
+            <i data-lucide="log-out" class="w-4 h-4"></i>
+            <span class="hidden sm:inline">ออกจากระบบ</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+
+    <!-- 1. DASHBOARD VIEW -->
+    <section id="dashboard-view" class="view-section view-active">
+      <div class="mb-10 text-center">
+        <h1 class="text-3xl font-extrabold text-slate-900 mb-4">ค้นหารายงาน</h1>
+        <p class="text-slate-600 mb-8 max-w-2xl mx-auto text-lg">
+          เข้าถึงข้อมูลสรุปและรายงานสถิติต่างๆ ได้ในที่เดียว รวดเร็วและแม่นยำ
+        </p>
+        <div class="relative max-w-xl mx-auto">
+          <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <i data-lucide="search" class="text-slate-400 w-5 h-5"></i>
+          </div>
+          <input type="text" id="searchInput" oninput="filterReports()"
+            class="block w-full pl-12 pr-4 py-4 bg-white border border-slate-200 rounded-2xl shadow-sm focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all outline-none text-lg"
+            placeholder="พิมพ์ชื่อรายงาน...">
+        </div>
+
+        <!-- Category Filter -->
+        <div id="categoryFilter" class="flex flex-wrap justify-center gap-2 mt-4"></div>
+      </div>
+
+      <div id="loading" class="flex flex-col items-center justify-center py-20">
+        <div class="loader rounded-full border-4 border-t-4 border-slate-200 h-12 w-12 mb-4"></div>
+        <p class="text-slate-500">กำลังดึงข้อมูล...</p>
+      </div>
+
+      <div id="error-box" class="hidden bg-red-50 border border-red-200 rounded-2xl p-6 text-center mb-6">
+        <i data-lucide="wifi-off" class="w-10 h-10 text-red-400 mx-auto mb-3"></i>
+        <p class="text-red-600 font-medium" id="error-msg">ไม่สามารถโหลดข้อมูลได้</p>
+        <button onclick="fetchReports()" class="mt-4 px-6 py-2 bg-red-600 text-white rounded-xl text-sm font-medium hover:bg-red-700">ลองใหม่</button>
+      </div>
+
+      <div id="reportContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+    </section>
+
+    <!-- 2. LOGIN VIEW -->
+    <section id="login-view" class="view-section max-w-md mx-auto py-12">
+      <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-xl">
+        <div class="text-center mb-8">
+          <div class="bg-blue-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="lock" class="text-blue-600 w-8 h-8"></i>
+          </div>
+          <h2 class="text-2xl font-bold text-slate-900">เข้าสู่ระบบจัดการ</h2>
+          <p class="text-slate-500 text-sm mt-1">กรุณาระบุข้อมูลเพื่อเข้าถึงหน้าเพิ่มรายงาน</p>
+        </div>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">ชื่อผู้ใช้</label>
+            <input type="text" id="username" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">รหัสผ่าน</label>
+            <input type="password" id="password" onkeydown="if(event.key==='Enter')handleLogin()"
+              class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all">
+          </div>
+          <button onclick="handleLogin()" class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-blue-100">
+            ยืนยันตัวตน
+          </button>
+          <button onclick="switchView('dashboard')" class="w-full py-3 text-slate-500 hover:text-slate-700 text-sm">← กลับหน้าหลัก</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. ADMIN ADD VIEW -->
+    <section id="admin-view" class="view-section max-w-2xl mx-auto py-8">
+      <div class="flex items-center gap-4 mb-8">
+        <button onclick="switchView('dashboard')" class="p-2 hover:bg-slate-100 rounded-full transition-colors">
+          <i data-lucide="arrow-left" class="w-6 h-6 text-slate-600"></i>
+        </button>
+        <h2 class="text-2xl font-bold text-slate-900">เพิ่มรายงานใหม่</h2>
+      </div>
+
+      <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-xl space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="md:col-span-2">
+            <label class="block text-sm font-medium text-slate-700 mb-1">ชื่อรายงาน</label>
+            <input type="text" id="reportName" placeholder="เช่น รายงานยอดขายประจำปี"
+              class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-4 focus:ring-blue-100 outline-none transition-all">
+          </div>
+          <div class="md:col-span-2">
+            <label class="block text-sm font-medium text-slate-700 mb-1">URL รายงาน</label>
+            <input type="url" id="reportUrl" placeholder="https://..."
+              class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-4 focus:ring-blue-100 outline-none transition-all">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">หมวดหมู่</label>
+            <select id="reportCategory" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-4 focus:ring-blue-100 outline-none transition-all">
+              <option>โปรแกรม</option>
+              <option>Dashboard</option>
+              <option>รายงาน</option>
+              <option>ประกาศ รพ.เบตง</option>
+              <option>ทั่วไป</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-700">
+          <strong>หมายเหตุ:</strong> การเพิ่มข้อมูลต้องทำผ่าน Google Sheets หรือ GAS โดยตรง หน้านี้แสดงเพื่อ reference เท่านั้น
+        </div>
+
+        <a href="https://docs.google.com/spreadsheets/d/1tqQ00x-T0IkjV3M8y8snenIlmlU2G6pWgxAlFSM5BBw/edit" target="_blank"
+          class="w-full flex items-center justify-center px-4 py-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition-all gap-2">
+          <i data-lucide="external-link" class="w-5 h-5"></i>
+          <span>เปิด Google Sheets โดยตรง</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="py-8 border-t border-slate-200 text-center text-slate-400 text-sm">
+    &copy; 2024 Report Hub • งานเทคนิคการแพทย์ รพ.เบตง โดยอรุณ ยอดดี
+  </footer>
+
+  <!-- Toast -->
+  <div id="toast" class="fixed bottom-8 right-8 transform translate-y-20 opacity-0 transition-all duration-300 z-50 pointer-events-none">
+    <div id="toastContent" class="bg-slate-800 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3">
+      <i id="toastIcon" data-lucide="info" class="w-5 h-5 flex-shrink-0"></i>
+      <span id="toastMessage">ข้อความแจ้งเตือน</span>
+    </div>
+  </div>
 
   <script>
-    // Register Service Worker
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('service-worker.js')
-          .then(reg => console.log('SW registered:', reg.scope))
-          .catch(err => console.error('SW error:', err));
-      });
+    /* ── Config ── */
+    const SHEET_ID  = '1tqQ00x-T0IkjV3M8y8snenIlmlU2G6pWgxAlFSM5BBw';
+    const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Reports`;
+
+    /* ── State ── */
+    let allReports   = [];
+    let activeFilter = 'ทั้งหมด';
+    let isLoggedIn   = false;
+    let deferredPrompt = null;
+
+    /* ── Credentials (แก้ได้ตามต้องการ) ── */
+    const ADMIN_USER = 'admin';
+    const ADMIN_PASS = 'medlab2024';
+
+    /* ── Category styles ── */
+    const CAT = {
+      'โปรแกรม':       'bg-green-100 text-green-700',
+      'Dashboard':      'bg-purple-100 text-purple-700',
+      'รายงาน':         'bg-amber-100 text-amber-700',
+      'ประกาศ รพ.เบตง': 'bg-blue-100 text-blue-700',
+      'ทั่วไป':         'bg-gray-100 text-gray-700'
+    };
+
+    /* ══════════════════════════════════
+       INIT
+    ══════════════════════════════════ */
+    window.addEventListener('load', () => {
+      lucide.createIcons();
+      fetchReports();
+      registerSW();
+    });
+
+    /* ══════════════════════════════════
+       SERVICE WORKER
+    ══════════════════════════════════ */
+    function registerSW() {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js')
+          .then(r => console.log('[PWA] SW registered:', r.scope))
+          .catch(e => console.warn('[PWA] SW error:', e));
+      }
+    }
+
+    /* ══════════════════════════════════
+       PWA INSTALL PROMPT
+    ══════════════════════════════════ */
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('install-banner').style.display = 'flex';
+    });
+
+    document.getElementById('install-btn').addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      document.getElementById('install-banner').style.display = 'none';
+      if (outcome === 'accepted') showToast('ติดตั้งสำเร็จ!', 'check-circle', 'bg-green-600 text-white');
+    });
+
+    /* ══════════════════════════════════
+       FETCH FROM GOOGLE SHEETS (gviz)
+    ══════════════════════════════════ */
+    function fetchReports() {
+      document.getElementById('loading').classList.remove('hidden');
+      document.getElementById('error-box').classList.add('hidden');
+      document.getElementById('reportContainer').innerHTML = '';
+
+      fetch(SHEET_URL)
+        .then(r => r.text())
+        .then(text => {
+          /* gviz response: google.visualization.Query.setResponse({...}); */
+          const json = JSON.parse(text.replace(/^.*?setResponse\(/, '').replace(/\);?\s*$/, ''));
+          const rows = json.table.rows;
+          const cols = json.table.cols.map(c => c.label.trim());
+
+          /* คาดว่า columns: ชื่อรายงาน | URL | หมวดหมู่  (ปรับ index ได้) */
+          const iName = cols.findIndex(c => c.includes('ชื่อ') || c.toLowerCase().includes('name'));
+          const iUrl  = cols.findIndex(c => c.toLowerCase().includes('url') || c.includes('ลิงก์'));
+          const iCat  = cols.findIndex(c => c.includes('หมวด') || c.toLowerCase().includes('category'));
+
+          allReports = rows
+            .map(r => ({
+              name:     r.c[iName >= 0 ? iName : 0]?.v || '',
+              url:      r.c[iUrl  >= 0 ? iUrl  : 1]?.v || '',
+              category: r.c[iCat  >= 0 ? iCat  : 2]?.v || 'ทั่วไป'
+            }))
+            .filter(r => r.name && r.url);
+
+          document.getElementById('loading').classList.add('hidden');
+          buildCategoryFilter();
+          displayReports(allReports);
+        })
+        .catch(err => {
+          console.error(err);
+          document.getElementById('loading').classList.add('hidden');
+          document.getElementById('error-box').classList.remove('hidden');
+          document.getElementById('error-msg').textContent = 'ไม่สามารถโหลดข้อมูลได้ — ตรวจสอบ Sheet ว่า Public แล้วหรือยัง';
+        });
+    }
+
+    /* ══════════════════════════════════
+       BUILD CATEGORY FILTER PILLS
+    ══════════════════════════════════ */
+    function buildCategoryFilter() {
+      const cats = ['ทั้งหมด', ...new Set(allReports.map(r => r.category))];
+      const el   = document.getElementById('categoryFilter');
+      el.innerHTML = cats.map(c => `
+        <button onclick="setFilter('${c}')" data-cat="${c}"
+          class="px-4 py-1.5 rounded-full text-sm font-medium border transition-all
+                 ${c === activeFilter ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-600 border-slate-200 hover:border-blue-300'}">
+          ${c}
+        </button>`).join('');
+    }
+
+    function setFilter(cat) {
+      activeFilter = cat;
+      buildCategoryFilter();
+      filterReports();
+    }
+
+    /* ══════════════════════════════════
+       DISPLAY
+    ══════════════════════════════════ */
+    function displayReports(reports) {
+      const container = document.getElementById('reportContainer');
+      if (!reports.length) {
+        container.innerHTML = `<div class="col-span-4 text-center py-20 text-slate-400">
+          <i data-lucide="inbox" class="w-12 h-12 mx-auto mb-3 opacity-30"></i>
+          <p>ไม่พบรายงาน</p></div>`;
+        lucide.createIcons();
+        return;
+      }
+      container.innerHTML = reports.map(r => {
+        const badge = CAT[r.category] || CAT['ทั่วไป'];
+        return `
+          <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col hover:shadow-md hover:-translate-y-0.5 transition-all">
+            <div class="mb-3">
+              <span class="px-3 py-1 rounded-full text-xs font-semibold ${badge}">${r.category}</span>
+            </div>
+            <h3 class="text-base font-bold text-slate-800 mb-4 flex-grow leading-snug">${r.name}</h3>
+            <a href="${r.url}" target="_blank" rel="noopener"
+              class="w-full flex items-center justify-center px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl transition-all gap-2 text-sm">
+              <span>เปิดดูรายงาน</span>
+              <i data-lucide="external-link" class="w-4 h-4"></i>
+            </a>
+          </div>`;
+      }).join('');
+      lucide.createIcons();
+    }
+
+    function filterReports() {
+      const term = document.getElementById('searchInput').value.toLowerCase();
+      let filtered = allReports.filter(r => r.name.toLowerCase().includes(term));
+      if (activeFilter !== 'ทั้งหมด') filtered = filtered.filter(r => r.category === activeFilter);
+      displayReports(filtered);
+    }
+
+    /* ══════════════════════════════════
+       AUTH (client-side simple)
+    ══════════════════════════════════ */
+    function handleLogin() {
+      const u = document.getElementById('username').value;
+      const p = document.getElementById('password').value;
+      if (u === ADMIN_USER && p === ADMIN_PASS) {
+        isLoggedIn = true;
+        document.getElementById('navAdminBtn').classList.add('hidden');
+        document.getElementById('logoutBtn').classList.remove('hidden');
+        showToast('เข้าสู่ระบบสำเร็จ', 'check-circle', 'bg-green-600 text-white');
+        switchView('admin');
+      } else {
+        showToast('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง', 'alert-triangle', 'bg-red-600 text-white');
+      }
+    }
+
+    function logout() {
+      isLoggedIn = false;
+      document.getElementById('navAdminBtn').classList.remove('hidden');
+      document.getElementById('logoutBtn').classList.add('hidden');
+      switchView('dashboard');
+      showToast('ออกจากระบบแล้ว');
+    }
+
+    /* ══════════════════════════════════
+       VIEWS
+    ══════════════════════════════════ */
+    function switchView(name) {
+      if (name === 'admin' && !isLoggedIn) name = 'login';
+      document.querySelectorAll('.view-section').forEach(s => s.classList.remove('view-active'));
+      document.getElementById(`${name}-view`).classList.add('view-active');
+      if (name === 'dashboard') fetchReports();
+      lucide.createIcons();
+    }
+
+    /* ══════════════════════════════════
+       TOAST
+    ══════════════════════════════════ */
+    function showToast(msg, icon = 'info', colorClass = 'bg-slate-800 text-white') {
+      const toast   = document.getElementById('toast');
+      const content = document.getElementById('toastContent');
+      content.className = `${colorClass} px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3`;
+      document.getElementById('toastMessage').textContent = msg;
+      document.getElementById('toastIcon').setAttribute('data-lucide', icon);
+      lucide.createIcons();
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      clearTimeout(toast._t);
+      toast._t = setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 3000);
     }
   </script>
 </body>
