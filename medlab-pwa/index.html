@@ -265,18 +265,17 @@
           /* gviz response: google.visualization.Query.setResponse({...}); */
           const json = JSON.parse(text.replace(/^.*?setResponse\(/, '').replace(/\);?\s*$/, ''));
           const rows = json.table.rows;
-          const cols = json.table.cols.map(c => c.label.trim());
 
-          /* คาดว่า columns: ชื่อรายงาน | URL | หมวดหมู่  (ปรับ index ได้) */
-          const iName = cols.findIndex(c => c.includes('ชื่อ') || c.toLowerCase().includes('name'));
-          const iUrl  = cols.findIndex(c => c.toLowerCase().includes('url') || c.includes('ลิงก์'));
-          const iCat  = cols.findIndex(c => c.includes('หมวด') || c.toLowerCase().includes('category'));
+          /* Sheet มี row แรกเป็น header (Name, URL, Category) — skip ออก */
+          const dataRows = (rows[0]?.c?.[0]?.v || '').toLowerCase() === 'name'
+            ? rows.slice(1)
+            : rows;
 
-          allReports = rows
+          allReports = dataRows
             .map(r => ({
-              name:     r.c[iName >= 0 ? iName : 0]?.v || '',
-              url:      r.c[iUrl  >= 0 ? iUrl  : 1]?.v || '',
-              category: r.c[iCat  >= 0 ? iCat  : 2]?.v || 'ทั่วไป'
+              name:     r.c[0]?.v || '',
+              url:      r.c[1]?.v || '',
+              category: r.c[2]?.v || 'ทั่วไป'
             }))
             .filter(r => r.name && r.url);
 
