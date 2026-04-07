@@ -259,18 +259,26 @@
       document.getElementById('error-box').classList.add('hidden');
       document.getElementById('reportContainer').innerHTML = '';
 
-      fetch(SHEET_URL)
-        .then(r => r.text())
-        .then(text => {
-          /* gviz response: google.visualization.Query.setResponse({...}); */
-          const json = JSON.parse(text.replace(/^.*?setResponse\(/, '').replace(/\);?\s*$/, ''));
+      /* ใช้ JSONP เพื่อหลีก CORS */
+      const cbName = '_sheetCb_' + Date.now();
+      const script = document.createElement('script');
+      const timer  = setTimeout(() => {
+        cleanup();
+        showError('โหลดข้อมูลนานเกินไป — timeout');
+      }, 8000);
+
+      function cleanup() {
+        delete window[cbName];
+        if (script.parentNode) script.parentNode.removeChild(script);
+        clearTimeout(timer);
+      }
+
+      window[cbName] = function(json) {
+        cleanup();
+        try {
           const rows = json.table.rows;
-
-          /* Sheet มี row แรกเป็น header (Name, URL, Category) — skip ออก */
           const dataRows = (rows[0]?.c?.[0]?.v || '').toLowerCase() === 'name'
-            ? rows.slice(1)
-            : rows;
-
+            ? rows.slice(1) : rows;
           allReports = dataRows
             .map(r => ({
               name:     r.c[0]?.v || '',
@@ -278,17 +286,23 @@
               category: r.c[2]?.v || 'ทั่วไป'
             }))
             .filter(r => r.name && r.url);
-
           document.getElementById('loading').classList.add('hidden');
           buildCategoryFilter();
           displayReports(allReports);
-        })
-        .catch(err => {
-          console.error(err);
-          document.getElementById('loading').classList.add('hidden');
-          document.getElementById('error-box').classList.remove('hidden');
-          document.getElementById('error-msg').textContent = 'ไม่สามารถโหลดข้อมูลได้ — ตรวจสอบ Sheet ว่า Public แล้วหรือยัง';
-        });
+        } catch(e) {
+          showError('วิเคราะห์ข้อมูลไม่สำเร็จ: ' + e.message);
+        }
+      };
+
+      script.onerror = () => { cleanup(); showError('ไม่สามารถเชื่อมต่อ Google Sheets — ตรวจสอบว่า Sheet เป็น Public แล้ว'); };
+      script.src = SHEET_URL + '&callback=' + cbName;
+      document.head.appendChild(script);
+    }
+
+    function showError(msg) {
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('error-box').classList.remove('hidden');
+      document.getElementById('error-msg').textContent = msg;
     }
 
     /* ══════════════════════════════════
