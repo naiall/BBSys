@@ -9,6 +9,7 @@ const OFFLINE_URL  = 'https://naiall.github.io/BBSys/medlab-pwa/offline.html';
 
 /* ─── ไฟล์ Static ที่ cache ได้ (โฮสต์บน GitHub Pages) ─── */
 const STATIC_ASSETS = [
+  'https://naiall.github.io/BBSys/medlab-pwa/index.html',   // ✅ เพิ่มบรรทัดนี้
   OFFLINE_URL,
   'https://naiall.github.io/BBSys/medlab-pwa/icons/icon-192.png',
   'https://naiall.github.io/BBSys/medlab-pwa/icons/icon-512.png',
