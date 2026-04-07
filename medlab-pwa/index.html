@@ -2,264 +2,446 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Report Hub — รพ.เบตง</title>
-
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#2563eb">
+  <meta name="theme-color" content="#f5f5f7">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="MedLab">
-
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Report Hub">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Sarabun', sans-serif; background-color: #f8fafc; }
-    .view-section { display: none; }
-    .view-active { display: block; animation: fadeIn 0.3s ease-in-out; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    .loader { border-top-color: #3b82f6; animation: spinner 1.5s linear infinite; }
-    @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    #install-banner { display: none; }
+    :root {
+      --bg:#f5f5f7; --card:#fff; --text:#1a1a2e; --muted:#b0b0c0;
+      --accent:#ff6b4a; --border:rgba(0,0,0,0.07); --r:18px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+    html,body{height:100%;overflow:hidden;}
+    body{
+      font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);
+      max-width:480px;margin:0 auto;
+      height:100dvh;display:flex;flex-direction:column;
+    }
+
+    /* Install Banner */
+    #install-banner{
+      display:none;background:#1e40af;color:#fff;
+      padding:10px 16px;align-items:center;justify-content:space-between;gap:12px;flex-shrink:0;
+    }
+    #install-banner span{font-size:13px;font-weight:600;flex:1;}
+    #install-btn{background:#fff;color:#1e40af;border:none;border-radius:99px;padding:5px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Sarabun',sans-serif;}
+    #install-close{background:none;border:none;color:rgba(255,255,255,.7);font-size:18px;cursor:pointer;}
+
+    /* Header */
+    .app-header{background:var(--bg);padding:14px 18px 10px;flex-shrink:0;}
+    .hdr-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+    .app-title{font-size:24px;font-weight:800;color:var(--text);}
+    .hdr-icons{display:flex;gap:10px;}
+    .hdr-icon{width:36px;height:36px;border-radius:50%;background:var(--card);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+    .hdr-icon svg{width:16px;height:16px;}
+    .search-wrap{position:relative;}
+    .search-wrap svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--muted);pointer-events:none;}
+    #searchInput{
+      width:100%;background:var(--card);border:0.5px solid var(--border);
+      border-radius:12px;padding:10px 14px 10px 38px;
+      font-size:14px;font-family:'Sarabun',sans-serif;color:var(--text);outline:none;
+    }
+    #searchInput::placeholder{color:var(--muted);}
+
+    /* Tabs */
+    .tabs{display:flex;padding:10px 18px 0;overflow-x:auto;flex-shrink:0;}
+    .tabs::-webkit-scrollbar{display:none;}
+    .tab{
+      font-size:13px;font-weight:700;color:var(--muted);
+      padding:6px 14px 6px 0;white-space:nowrap;
+      position:relative;cursor:pointer;border:none;background:none;
+      font-family:'Sarabun',sans-serif;
+    }
+    .tab.on{color:var(--text);}
+    .tab.on::after{content:'';position:absolute;bottom:0;left:0;width:20px;height:3px;background:var(--accent);border-radius:99px;}
+
+    /* Body */
+    .body{flex:1;overflow-y:auto;padding:12px 18px;-webkit-overflow-scrolling:touch;}
+    .body::-webkit-scrollbar{display:none;}
+
+    /* Grid */
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    .card{
+      background:var(--card);border-radius:var(--r);padding:14px;
+      display:flex;flex-direction:column;min-height:120px;
+      border:0.5px solid var(--border);cursor:pointer;
+      animation:fadeUp .3s ease both;
+    }
+    .card:active{transform:scale(.97);}
+    .card-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
+    .card-title{font-size:12px;font-weight:700;color:var(--text);line-height:1.4;flex:1;padding-right:6px;}
+    .cicon{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .cicon svg{width:15px;height:15px;}
+
+    /* Bars */
+    .bars{display:flex;align-items:flex-end;gap:3px;height:38px;margin:4px 0 8px;}
+    .b{border-radius:3px 3px 2px 2px;}
+
+    /* Open pill */
+    .open-pill{
+      display:flex;align-items:center;gap:5px;background:var(--accent);
+      border-radius:99px;padding:5px 11px;width:fit-content;margin-top:auto;text-decoration:none;
+    }
+    .open-pill svg{width:11px;height:11px;}
+    .open-pill span{color:#fff;font-size:10px;font-weight:700;font-family:'Sarabun',sans-serif;}
+
+    /* Wide card */
+    .card-wide{
+      background:var(--card);border-radius:14px;padding:12px 14px;
+      display:flex;align-items:center;gap:12px;margin-bottom:9px;
+      border:0.5px solid var(--border);cursor:pointer;text-decoration:none;
+      animation:fadeUp .3s ease both;
+    }
+    .card-wide:active{transform:scale(.98);}
+    .cicon-lg{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .cicon-lg svg{width:19px;height:19px;}
+    .cw-info{flex:1;min-width:0;}
+    .cw-name{font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .cw-cat{font-size:10px;color:var(--muted);margin-top:2px;}
+    .cw-arrow{color:#d0d0e0;font-size:22px;line-height:1;}
+
+    .sec-label{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin:14px 0 8px;}
+
+    /* States */
+    #loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 0;gap:12px;}
+    .spinner{width:36px;height:36px;border-radius:50%;border:3px solid #e0e0e8;border-top-color:var(--accent);animation:spin 1s linear infinite;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+    #loading p{font-size:13px;color:var(--muted);}
+    #error-box{display:none;background:#fff0ed;border:0.5px solid #ffc5b8;border-radius:14px;padding:24px;text-align:center;margin-bottom:12px;}
+    #error-box svg{width:32px;height:32px;color:var(--accent);margin-bottom:8px;}
+    #error-box p{font-size:13px;color:#c0392b;margin-bottom:12px;}
+    #retry-btn{background:var(--accent);color:#fff;border:none;border-radius:99px;padding:8px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Sarabun',sans-serif;}
+    #empty{display:none;padding:50px 0;text-align:center;}
+    #empty svg{width:40px;height:40px;color:var(--muted);margin-bottom:8px;}
+    #empty p{font-size:13px;color:var(--muted);}
+
+    /* Bottom Nav */
+    .bnav{background:var(--card);border-top:0.5px solid var(--border);display:flex;padding:8px 0 max(14px,env(safe-area-inset-bottom));flex-shrink:0;align-items:center;}
+    .ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--muted);font-weight:600;cursor:pointer;border:none;background:none;font-family:'Sarabun',sans-serif;}
+    .ni.on{color:var(--text);}
+    .ni svg{width:20px;height:20px;}
+    .ndot{width:4px;height:4px;border-radius:50%;background:var(--accent);margin-top:1px;}
+    .fab{width:46px;height:46px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-top:-20px;flex-shrink:0;box-shadow:0 4px 14px rgba(255,107,74,.4);border:none;cursor:pointer;}
+    .fab svg{width:20px;height:20px;}
+
+    /* Login sheet */
+    #login-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:flex-end;justify-content:center;}
+    #login-overlay.show{display:flex;}
+    .login-sheet{background:var(--card);border-radius:24px 24px 0 0;padding:24px 24px max(24px,env(safe-area-inset-bottom));width:100%;max-width:480px;animation:slideUp .3s ease;}
+    @keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+    .sheet-handle{width:36px;height:4px;background:#e0e0e8;border-radius:99px;margin:0 auto 20px;}
+    .login-sheet h2{font-size:18px;font-weight:800;margin-bottom:4px;}
+    .login-sheet p{font-size:13px;color:var(--muted);margin-bottom:20px;}
+    .field-label{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:5px;}
+    .field-input{width:100%;background:var(--bg);border:0.5px solid var(--border);border-radius:12px;padding:11px 14px;font-size:14px;font-family:'Sarabun',sans-serif;color:var(--text);outline:none;margin-bottom:14px;}
+    .field-input:focus{border-color:#1e40af;}
+    .login-btn{width:100%;background:#1e40af;color:#fff;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Sarabun',sans-serif;margin-bottom:10px;}
+    .cancel-btn{width:100%;background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;font-family:'Sarabun',sans-serif;padding:8px;}
+    .admin-link{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:#16a34a;color:#fff;border-radius:12px;padding:13px;font-size:14px;font-weight:700;text-decoration:none;margin-bottom:10px;}
+    .admin-link svg{width:17px;height:17px;}
+
+    /* Toast */
+    #toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:#1a1a2e;color:#fff;padding:10px 20px;border-radius:99px;font-size:13px;font-weight:600;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;white-space:nowrap;z-index:300;}
+    #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
   </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body>
 
-  <div id="install-banner" class="bg-blue-600 text-white px-4 py-3 flex items-center justify-between gap-4">
-    <div class="flex items-center gap-3">
-      <div class="bg-white/20 p-2 rounded-lg"><i data-lucide="download" class="w-5 h-5"></i></div>
-      <span class="text-sm font-medium">ติดตั้ง MedLab บนหน้าจอหลัก</span>
+  <div id="install-banner">
+    <span>ติดตั้ง Report Hub บนหน้าจอหลัก</span>
+    <button id="install-btn">ติดตั้ง</button>
+    <button id="install-close">✕</button>
+  </div>
+
+  <div class="app-header">
+    <div class="hdr-row">
+      <div class="app-title">Report Hub</div>
+      <div class="hdr-icons">
+        <div class="hdr-icon" id="loginTrigger">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+        </div>
+        <div class="hdr-icon" onclick="fetchReports()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        </div>
+      </div>
     </div>
-    <div class="flex gap-2">
-      <button id="install-btn" class="bg-white text-blue-600 px-4 py-1 rounded-lg text-sm font-bold">ติดตั้ง</button>
-      <button onclick="document.getElementById('install-banner').style.display='none'" class="text-white/70 text-sm px-2">✕</button>
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="searchInput" placeholder="ค้นหารายงาน..." oninput="filterReports()">
     </div>
   </div>
 
-  <nav class="bg-white border-b border-slate-200 sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between h-16 items-center">
-        <div class="flex items-center gap-2 cursor-pointer" onclick="switchView('dashboard')">
-          <div class="bg-blue-600 p-2 rounded-lg">
-            <i data-lucide="layout-dashboard" class="text-white w-6 h-6"></i>
-          </div>
-          <div>
-            <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Report Hub</span>
-            <span class="hidden sm:inline text-xs text-slate-400 ml-2">รพ.เบตง</span>
-          </div>
-        </div>
-        <div class="flex items-center gap-2">
-          <button id="navAdminBtn" onclick="switchView('login')" class="text-slate-600 hover:text-blue-600 flex items-center gap-1 font-medium text-sm transition-colors px-3 py-2 rounded-lg hover:bg-slate-50">
-            <i data-lucide="settings" class="w-4 h-4"></i>
-            <span class="hidden sm:inline">จัดการข้อมูล</span>
-          </button>
-          <button id="logoutBtn" onclick="logout()" class="hidden text-red-600 hover:text-red-700 flex items-center gap-1 font-medium text-sm transition-colors px-3 py-2 rounded-lg hover:bg-red-50">
-            <i data-lucide="log-out" class="w-4 h-4"></i>
-            <span class="hidden sm:inline">ออกจากระบบ</span>
-          </button>
-        </div>
-      </div>
+  <div class="tabs">
+    <button class="tab on" onclick="setFilter('ทั้งหมด',this)">ทั้งหมด</button>
+    <button class="tab" onclick="setFilter('โปรแกรม',this)">โปรแกรม</button>
+    <button class="tab" onclick="setFilter('Dashboard',this)">Dashboard</button>
+    <button class="tab" onclick="setFilter('รายงาน',this)">รายงาน</button>
+    <button class="tab" onclick="setFilter('ประกาศ รพ.เบตง',this)">ประกาศ</button>
+  </div>
+
+  <div class="body" id="mainBody">
+    <div id="loading"><div class="spinner"></div><p>กำลังโหลดข้อมูล...</p></div>
+    <div id="error-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <p id="error-msg">ไม่สามารถโหลดข้อมูลได้</p>
+      <button id="retry-btn" onclick="fetchReports()">ลองใหม่</button>
     </div>
-  </nav>
+    <div id="empty">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <p>ไม่พบรายงาน</p>
+    </div>
+    <div id="reportContainer"></div>
+  </div>
 
-  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+  <div class="bnav">
+    <button class="ni on" id="navHome" onclick="goHome()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>หน้าหลัก</span><div class="ndot"></div>
+    </button>
+    <button class="ni" onclick="setFilterNav('โปรแกรม')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      <span>หมวดหมู่</span>
+    </button>
+    <button class="fab" onclick="document.getElementById('searchInput').focus()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    </button>
+    <button class="ni" onclick="setFilterNav('Dashboard')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      <span>Dashboard</span>
+    </button>
+    <button class="ni" id="navAdmin" onclick="openLogin()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+      <span>บัญชี</span>
+    </button>
+  </div>
 
-    <section id="dashboard-view" class="view-section view-active">
-      <div class="mb-10 text-center">
-        <h1 class="text-3xl font-extrabold text-slate-900 mb-4">ค้นหารายงาน</h1>
-        <div class="relative max-w-xl mx-auto mb-6">
-          <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-            <i data-lucide="search" class="text-slate-400 w-5 h-5"></i>
-          </div>
-          <input type="text" id="searchInput" oninput="filterReports()"
-            class="block w-full pl-12 pr-4 py-4 bg-white border border-slate-200 rounded-2xl shadow-sm focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all outline-none text-lg"
-            placeholder="พิมพ์ชื่อรายงาน...">
-        </div>
-        <div id="categoryFilter" class="flex flex-wrap justify-center gap-2"></div>
+  <div id="login-overlay" onclick="if(event.target===this)closeLogin()">
+    <div class="login-sheet">
+      <div class="sheet-handle"></div>
+      <h2 id="sheetTitle">เข้าสู่ระบบ</h2>
+      <p id="sheetSub">สำหรับผู้ดูแลระบบ</p>
+      <div id="loginFields">
+        <div class="field-label">ชื่อผู้ใช้</div>
+        <input type="text" id="username" class="field-input" placeholder="username">
+        <div class="field-label">รหัสผ่าน</div>
+        <input type="password" id="password" class="field-input" placeholder="password" onkeydown="if(event.key==='Enter')handleLogin()">
+        <button class="login-btn" onclick="handleLogin()">ยืนยันตัวตน</button>
       </div>
-
-      <div id="loading" class="flex flex-col items-center justify-center py-20">
-        <div class="loader rounded-full border-4 border-t-4 border-slate-200 h-12 w-12 mb-4"></div>
-        <p class="text-slate-500">กำลังดึงข้อมูลจาก Google Sheets...</p>
-      </div>
-
-      <div id="error-box" class="hidden bg-red-50 border border-red-200 rounded-2xl p-6 text-center mb-6">
-        <i data-lucide="alert-circle" class="w-10 h-10 text-red-400 mx-auto mb-3"></i>
-        <p class="text-red-600 font-medium" id="error-msg">ไม่สามารถโหลดข้อมูลได้</p>
-        <button onclick="fetchReports()" class="mt-4 px-6 py-2 bg-red-600 text-white rounded-xl text-sm font-medium">ลองใหม่อีกครั้ง</button>
-      </div>
-
-      <div id="reportContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
-    </section>
-
-    <section id="login-view" class="view-section max-w-md mx-auto py-12">
-      <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-xl">
-        <div class="text-center mb-8">
-          <div class="bg-blue-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-            <i data-lucide="lock" class="text-blue-600 w-8 h-8"></i>
-          </div>
-          <h2 class="text-2xl font-bold text-slate-900">เข้าสู่ระบบ</h2>
-        </div>
-        <div class="space-y-4">
-          <input type="text" id="username" placeholder="ชื่อผู้ใช้" class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:border-blue-500">
-          <input type="password" id="password" placeholder="รหัสผ่าน" onkeydown="if(event.key==='Enter')handleLogin()" class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:border-blue-500">
-          <button onclick="handleLogin()" class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg">ยืนยันตัวตน</button>
-          <button onclick="switchView('dashboard')" class="w-full py-2 text-slate-400 text-sm">ยกเลิก</button>
-        </div>
-      </div>
-    </section>
-
-    <section id="admin-view" class="view-section max-w-2xl mx-auto py-8">
-      <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-xl">
-        <h2 class="text-2xl font-bold mb-6">จัดการข้อมูลรายงาน</h2>
-        <p class="text-slate-600 mb-6 font-medium">ระบบใช้ Google Sheets เป็นฐานข้อมูลหลัก กรุณาเพิ่มหรือแก้ไขข้อมูลผ่านปุ่มด้านล่าง:</p>
-        <a href="https://docs.google.com/spreadsheets/d/1tqQ00x-T0IkjV3M8y8snenIlmlU2G6pWgxAlFSM5BBw/edit" target="_blank"
-          class="flex items-center justify-center gap-3 w-full py-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition-all shadow-lg">
-          <i data-lucide="table"></i>
+      <div id="adminPanel" style="display:none;">
+        <a href="https://docs.google.com/spreadsheets/d/1tqQ00x-T0IkjV3M8y8snenIlmlU2G6pWgxAlFSM5BBw/edit"
+           target="_blank" class="admin-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
           เปิด Google Sheets (Reports)
         </a>
+        <button class="cancel-btn" style="color:#e53935;" onclick="logout()">ออกจากระบบ</button>
       </div>
-    </section>
-  </main>
-
-  <footer class="py-8 text-center text-slate-400 text-sm">
-    &copy; 2026 Report Hub • รพ.เบตง โดย อรุณ ยอดดี
-  </footer>
-
-  <div id="toast" class="fixed bottom-8 right-8 transform translate-y-20 opacity-0 transition-all duration-300 z-50">
-    <div id="toastContent" class="bg-slate-800 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3">
-      <span id="toastMessage"></span>
+      <button class="cancel-btn" onclick="closeLogin()">ยกเลิก</button>
     </div>
   </div>
 
+  <div id="toast"></div>
+
   <script>
-    const SHEET_ID = '1tqQ00x-T0IkjV3M8y8snenIlmlU2G6pWgxAlFSM5BBw';
-    const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
-
-    let allReports = [];
-    let activeFilter = 'ทั้งหมด';
-    let isLoggedIn = false;
-    let deferredPrompt = null;
-
+    const SHEET_ID   = '1tqQ00x-T0IkjV3M8y8snenIlmlU2G6pWgxAlFSM5BBw';
+    const SHEET_URL  = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
     const ADMIN_USER = 'admin';
     const ADMIN_PASS = 'medlab2024';
 
-    const CAT_COLORS = {
-      'โปรแกรม': 'bg-green-100 text-green-700',
-      'Dashboard': 'bg-purple-100 text-purple-700',
-      'รายงาน': 'bg-amber-100 text-amber-700',
-      'ประกาศ รพ.เบตง': 'bg-blue-100 text-blue-700',
-      'ทั่วไป': 'bg-gray-100 text-gray-700'
+    let allReports = [], activeFilter = 'ทั้งหมด', isLoggedIn = false, deferredPrompt = null;
+
+    /* Color per category */
+    const CAT = {
+      'โปรแกรม':       {bg:'#e8f5e9',fg:'#2e7d32',bars:['#a5d6a7','#81c784','#4caf50','#66bb6a','#a5d6a7','#81c784']},
+      'Dashboard':      {bg:'#ede7f6',fg:'#4527a0',bars:['#ce93d8','#ba68c8','#8e24aa','#7b1fa2','#ab47bc','#ce93d8']},
+      'รายงาน':         {bg:'#e0f2f1',fg:'#00695c',bars:['#80cbc4','#4db6ac','#00897b','#26a69a','#80cbc4','#4db6ac']},
+      'ประกาศ รพ.เบตง': {bg:'#e3f2fd',fg:'#0d47a1',bars:['#90caf9','#64b5f6','#1e88e5','#42a5f5','#90caf9','#64b5f6']},
+      'ทั่วไป':         {bg:'#f5f5f5',fg:'#424242',bars:['#bdbdbd','#9e9e9e','#757575','#616161','#bdbdbd','#9e9e9e']},
     };
 
-    window.addEventListener('load', () => {
-      lucide.createIcons();
-      fetchReports();
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js').catch(() => {});
-      }
-    });
+    /* Icons by name keyword */
+    const ICONS = {
+      box:      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><line x1="12" y1="22" x2="12" y2="11"/><path d="M3.27 6.96 12 12.01l8.73-5.05"/></svg>`,
+      calendar: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`,
+      ai:       `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M9 8l2 2 4-4"/></svg>`,
+      blood:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C12 2 5 10 5 15a7 7 0 0 0 14 0C19 10 12 2 12 2z"/></svg>`,
+      send:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/><polyline points="12 12 15 15 12 18"/></svg>`,
+      micro:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.22" y1="4.22" x2="7.05" y2="7.05"/><line x1="16.95" y1="16.95" x2="19.78" y2="19.78"/></svg>`,
+      check:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`,
+      wave:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>`,
+      dash:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>`,
+      announce: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>`,
+      file:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`,
+    };
 
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      document.getElementById('install-banner').style.display = 'flex';
-    });
-
-    document.getElementById('install-btn').addEventListener('click', async () => {
-      if (!deferredPrompt) return;
-      deferredPrompt.prompt();
-      deferredPrompt = null;
-      document.getElementById('install-banner').style.display = 'none';
-    });
-
-    async function fetchReports() {
-      const loading = document.getElementById('loading');
-      const errorBox = document.getElementById('error-box');
-      loading.classList.remove('hidden');
-      errorBox.classList.add('hidden');
-
-      try {
-        const response = await fetch(SHEET_URL);
-        const text = await response.text();
-        const json = JSON.parse(text.substring(text.indexOf("(") + 1, text.lastIndexOf(")")));
-        
-        allReports = json.table.rows.map(r => ({
-          name: r.c[0]?.v || '',
-          url: r.c[1]?.v || '',
-          category: r.c[2]?.v || 'ทั่วไป'
-        })).filter(r => r.name && r.url);
-
-        loading.classList.add('hidden');
-        buildFilters();
-        displayReports(allReports);
-      } catch (e) {
-        loading.classList.add('hidden');
-        errorBox.classList.remove('hidden');
-        console.error(e);
-      }
+    function pickIcon(name, cat) {
+      const n = name.toLowerCase();
+      if (n.includes('คลัง')||n.includes('พัสดุ')||n.includes('inventory')) return ICONS.box;
+      if (n.includes('อัจฉริยะ')||n.includes('ai')) return ICONS.ai;
+      if (n.includes('ตาราง')||n.includes('เวร')||n.includes('duty')) return ICONS.calendar;
+      if (n.includes('เลือด')||n.includes('blood')) return ICONS.blood;
+      if (n.includes('ส่งตรวจ')||n.includes('ภายนอก')) return ICONS.send;
+      if (n.includes('antibiogram')||n.includes('micro')) return ICONS.micro;
+      if (n.includes('qc')||n.includes('pt')||n.includes('ptt')) return ICONS.check;
+      if (n.includes('rlu')||n.includes('bun')||n.includes('cr')) return ICONS.wave;
+      if (cat==='Dashboard') return ICONS.dash;
+      if (cat==='ประกาศ รพ.เบตง') return ICONS.announce;
+      return ICONS.file;
     }
 
-    function buildFilters() {
-      const cats = ['ทั้งหมด', ...new Set(allReports.map(r => r.category))];
-      document.getElementById('categoryFilter').innerHTML = cats.map(c => `
-        <button onclick="setFilter('${c}')" class="px-4 py-1.5 rounded-full text-sm font-medium border transition-all ${c === activeFilter ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-600 border-slate-200'}">
-          ${c}
-        </button>`).join('');
+    const BAR_H = [45,65,100,80,55,70];
+    const PILL = `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`;
+
+    function bars(colors) {
+      return colors.map((c,i)=>`<div class="b" style="width:7px;height:${BAR_H[i]}%;background:${c};"></div>`).join('');
     }
 
-    function setFilter(c) {
-      activeFilter = c;
-      buildFilters();
-      filterReports();
-    }
+    function render(list) {
+      const el = document.getElementById('reportContainer');
+      document.getElementById('empty').style.display = list.length ? 'none' : 'block';
+      if (!list.length) { el.innerHTML = ''; return; }
 
-    function displayReports(reports) {
-      const container = document.getElementById('reportContainer');
-      container.innerHTML = reports.map(r => `
-        <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col">
-          <div class="mb-3">
-            <span class="px-3 py-1 rounded-full text-xs font-semibold ${CAT_COLORS[r.category] || CAT_COLORS['ทั่วไป']}">${r.category}</span>
+      const grid = list.slice(0,6);
+      const wide = list.slice(6);
+      let html = '<div class="grid">';
+      grid.forEach((r,i) => {
+        const c = CAT[r.category]||CAT['ทั่วไป'];
+        html += `<div class="card" style="animation-delay:${i*.05}s" onclick="window.open('${r.url.replace(/'/g,"\\'")}','_blank')">
+          <div class="card-head">
+            <div class="card-title">${r.name}</div>
+            <div class="cicon" style="background:${c.bg};color:${c.fg};">${pickIcon(r.name,r.category)}</div>
           </div>
-          <h3 class="text-base font-bold text-slate-800 mb-4 flex-grow">${r.name}</h3>
-          <a href="${r.url}" target="_blank" class="w-full py-3 bg-blue-600 text-white text-center rounded-xl font-medium text-sm">เปิดดูรายงาน</a>
-        </div>`).join('');
-      lucide.createIcons();
+          <div class="bars">${bars(c.bars)}</div>
+          <a href="${r.url}" target="_blank" rel="noopener" class="open-pill" onclick="event.stopPropagation()">
+            ${PILL}<span>เปิด</span>
+          </a>
+        </div>`;
+      });
+      html += '</div>';
+      if (wide.length) {
+        html += '<div class="sec-label">รายการอื่น</div>';
+        wide.forEach((r,i) => {
+          const c = CAT[r.category]||CAT['ทั่วไป'];
+          html += `<a href="${r.url}" target="_blank" rel="noopener" class="card-wide" style="animation-delay:${(i+6)*.05}s">
+            <div class="cicon-lg" style="background:${c.bg};color:${c.fg};">${pickIcon(r.name,r.category)}</div>
+            <div class="cw-info"><div class="cw-name">${r.name}</div><div class="cw-cat">${r.category}</div></div>
+            <div class="cw-arrow">›</div>
+          </a>`;
+        });
+      }
+      el.innerHTML = html;
     }
 
     function filterReports() {
       const term = document.getElementById('searchInput').value.toLowerCase();
-      let filtered = allReports.filter(r => r.name.toLowerCase().includes(term));
-      if (activeFilter !== 'ทั้งหมด') filtered = filtered.filter(r => r.category === activeFilter);
-      displayReports(filtered);
+      let list = allReports.filter(r => r.name.toLowerCase().includes(term));
+      if (activeFilter !== 'ทั้งหมด') list = list.filter(r => r.category === activeFilter);
+      render(list);
     }
 
-    function handleLogin() {
-      const u = document.getElementById('username').value;
-      const p = document.getElementById('password').value;
-      if (u === ADMIN_USER && p === ADMIN_PASS) {
-        isLoggedIn = true;
-        document.getElementById('navAdminBtn').classList.add('hidden');
-        document.getElementById('logoutBtn').classList.remove('hidden');
-        switchView('admin');
-      } else {
-        alert('รหัสผ่านไม่ถูกต้อง');
+    function setFilter(cat, btn) {
+      activeFilter = cat;
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+      if (btn) btn.classList.add('on');
+      filterReports();
+    }
+
+    function setFilterNav(cat) {
+      activeFilter = cat;
+      const tabs = document.querySelectorAll('.tab');
+      tabs.forEach(t => {
+        t.classList.remove('on');
+        if (t.textContent.trim() === cat || (cat==='Dashboard' && t.textContent.includes('Dashboard'))) t.classList.add('on');
+      });
+      filterReports();
+    }
+
+    async function fetchReports() {
+      document.getElementById('loading').style.display = 'flex';
+      document.getElementById('error-box').style.display = 'none';
+      document.getElementById('reportContainer').innerHTML = '';
+      document.getElementById('empty').style.display = 'none';
+      try {
+        const res  = await fetch(SHEET_URL);
+        const text = await res.text();
+        const json = JSON.parse(text.substring(text.indexOf('(')+1, text.lastIndexOf(')')));
+        const rows = json.table.rows;
+        const data = (rows[0]?.c?.[0]?.v||'').toLowerCase()==='name' ? rows.slice(1) : rows;
+        allReports = data.map(r=>({
+          name:     r.c[0]?.v||'',
+          url:      r.c[1]?.v||'',
+          category: r.c[2]?.v||'ทั่วไป'
+        })).filter(r=>r.name&&r.url);
+        document.getElementById('loading').style.display = 'none';
+        filterReports();
+      } catch(e) {
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('error-box').style.display = 'block';
+        document.getElementById('error-msg').textContent = 'โหลดข้อมูลไม่ได้ — ตรวจสอบการเชื่อมต่อ';
       }
     }
 
+    function openLogin() {
+      document.getElementById('login-overlay').classList.add('show');
+      const f = isLoggedIn;
+      document.getElementById('loginFields').style.display  = f ? 'none'  : 'block';
+      document.getElementById('adminPanel').style.display   = f ? 'block' : 'none';
+      document.getElementById('sheetTitle').textContent = f ? 'จัดการข้อมูล' : 'เข้าสู่ระบบ';
+      document.getElementById('sheetSub').textContent   = f ? 'เปิด Google Sheets เพื่อแก้ไข' : 'สำหรับผู้ดูแลระบบ';
+    }
+    function closeLogin() { document.getElementById('login-overlay').classList.remove('show'); }
+    function handleLogin() {
+      const u = document.getElementById('username').value;
+      const p = document.getElementById('password').value;
+      if (u===ADMIN_USER && p===ADMIN_PASS) {
+        isLoggedIn = true;
+        showToast('เข้าสู่ระบบสำเร็จ');
+        closeLogin();
+      } else { showToast('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง'); }
+    }
     function logout() {
       isLoggedIn = false;
-      document.getElementById('navAdminBtn').classList.remove('hidden');
-      document.getElementById('logoutBtn').classList.add('hidden');
-      switchView('dashboard');
+      document.getElementById('username').value = '';
+      document.getElementById('password').value = '';
+      closeLogin(); showToast('ออกจากระบบแล้ว');
     }
 
-    function switchView(id) {
-      document.querySelectorAll('.view-section').forEach(s => s.classList.remove('view-active'));
-      document.getElementById(`${id}-view`).classList.add('view-active');
-      lucide.createIcons();
+    function goHome() {
+      document.getElementById('searchInput').value = '';
+      setFilter('ทั้งหมด', document.querySelector('.tab'));
+      document.getElementById('mainBody').scrollTo({top:0,behavior:'smooth'});
     }
+
+    function showToast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg; el.classList.add('show');
+      clearTimeout(el._t); el._t = setTimeout(()=>el.classList.remove('show'), 2500);
+    }
+
+    /* PWA */
+    window.addEventListener('beforeinstallprompt', e => {
+      e.preventDefault(); deferredPrompt = e;
+      document.getElementById('install-banner').style.display = 'flex';
+    });
+    document.getElementById('install-btn').onclick = async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt(); deferredPrompt = null;
+      document.getElementById('install-banner').style.display = 'none';
+    };
+    document.getElementById('install-close').onclick = () => {
+      document.getElementById('install-banner').style.display = 'none';
+    };
+    document.getElementById('loginTrigger').onclick = openLogin;
+
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+    window.addEventListener('load', fetchReports);
   </script>
 </body>
 </html>
