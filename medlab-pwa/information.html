@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Btstock V3.0 — ระบบบริหารจัดการคลังสินค้า โรงพยาบาลเบตง</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0f1e;
+    --bg2: #0f1628;
+    --bg3: #151e35;
+    --surface: #1a2540;
+    --surface2: #1f2d4a;
+    --border: rgba(96, 165, 250, 0.12);
+    --border2: rgba(96, 165, 250, 0.22);
+    --accent: #3b82f6;
+    --accent2: #60a5fa;
+    --accent3: #93c5fd;
+    --teal: #2dd4bf;
+    --teal2: #5eead4;
+    --amber: #fbbf24;
+    --green: #34d399;
+    --red: #f87171;
+    --purple: #a78bfa;
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --text3: #64748b;
+    --glow: rgba(59, 130, 246, 0.15);
+    --glow2: rgba(45, 212, 191, 0.1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans Thai', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(59,130,246,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59,130,246,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ========== HEADER ========== */
+  header {
+    position: relative;
+    padding: 80px 40px 60px;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    top: -100px; left: 50%; transform: translateX(-50%);
+    width: 800px; height: 400px;
+    background: radial-gradient(ellipse, rgba(59,130,246,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(59,130,246,0.1);
+    border: 1px solid var(--border2);
+    border-radius: 100px;
+    padding: 6px 18px;
+    font-size: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--accent3);
+    letter-spacing: 0.05em;
+    margin-bottom: 24px;
+    animation: fadeDown 0.6s ease both;
+  }
+
+  .badge .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--teal);
+    box-shadow: 0 0 8px var(--teal);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  h1 {
+    font-size: clamp(36px, 6vw, 64px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-bottom: 12px;
+    animation: fadeDown 0.7s 0.1s ease both;
+  }
+
+  h1 .highlight {
+    background: linear-gradient(135deg, var(--accent2), var(--teal2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .subtitle {
+    font-size: 17px;
+    color: var(--text2);
+    font-weight: 300;
+    margin-bottom: 40px;
+    animation: fadeDown 0.7s 0.2s ease both;
+  }
+
+  .header-tags {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    animation: fadeDown 0.7s 0.3s ease both;
+  }
+
+  .tag {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 12px;
+    color: var(--text2);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  /* ========== BENEFITS STRIP ========== */
+  .benefits {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    z-index: 1;
+    margin-bottom: 80px;
+  }
+
+  .benefit-item {
+    background: var(--bg2);
+    padding: 28px 30px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: background 0.3s;
+  }
+
+  .benefit-item:hover { background: var(--surface); }
+
+  .benefit-icon {
+    font-size: 28px;
+    flex-shrink: 0;
+  }
+
+  .benefit-item h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+
+  .benefit-item p {
+    font-size: 13px;
+    color: var(--text3);
+    line-height: 1.5;
+  }
+
+  /* ========== SECTION ========== */
+  section {
+    padding: 0 40px;
+    max-width: 1200px;
+    margin: 0 auto 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+
+  .section-label .line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .section-label span {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* ========== FEATURE CARDS ========== */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .feature-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+    cursor: default;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--card-accent, var(--accent));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .feature-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--border2);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px var(--border2);
+  }
+
+  .feature-card:hover::before { opacity: 1; }
+
+  .feature-card .card-glow {
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: var(--card-glow, var(--glow));
+    filter: blur(40px);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .feature-card:hover .card-glow { opacity: 1; }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .card-number {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 10px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .card-icon {
+    font-size: 32px;
+    flex-shrink: 0;
+  }
+
+  .card-title-block h3 {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+    margin-bottom: 4px;
+  }
+
+  .card-title-block .card-sub {
+    font-size: 12px;
+    color: var(--text3);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .card-body {
+    color: var(--text2);
+    font-size: 14px;
+    line-height: 1.75;
+  }
+
+  .card-body strong { color: var(--text); font-weight: 500; }
+
+  .card-list {
+    list-style: none;
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .card-list li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 13.5px;
+    color: var(--text2);
+  }
+
+  .card-list li::before {
+    content: '—';
+    color: var(--text3);
+    flex-shrink: 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    margin-top: 2px;
+  }
+
+  .card-list li .pill {
+    display: inline-flex;
+    background: rgba(59,130,246,0.1);
+    border: 1px solid rgba(59,130,246,0.2);
+    border-radius: 4px;
+    padding: 1px 8px;
+    font-size: 11px;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--accent3);
+    margin-right: 4px;
+    flex-shrink: 0;
+  }
+
+  /* ========== WIDE CARD ========== */
+  .feature-card.wide {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+
+  /* ========== WORKFLOW ========== */
+  .workflow-steps {
+    display: flex;
+    gap: 0;
+    align-items: stretch;
+    position: relative;
+  }
+
+  .workflow-step {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-right: none;
+    padding: 24px 20px;
+    position: relative;
+    transition: background 0.3s;
+  }
+
+  .workflow-step:first-child { border-radius: 12px 0 0 12px; }
+  .workflow-step:last-child { border-right: 1px solid var(--border); border-radius: 0 12px 12px 0; }
+  .workflow-step:hover { background: var(--surface2); }
+
+  .workflow-step .step-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+    margin-bottom: 8px;
+  }
+
+  .workflow-step .step-icon { font-size: 24px; margin-bottom: 8px; }
+
+  .workflow-step h4 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .workflow-step p {
+    font-size: 12px;
+    color: var(--text3);
+    line-height: 1.5;
+  }
+
+  .step-arrow {
+    position: absolute;
+    right: -12px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 50%;
+    width: 22px; height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: var(--accent);
+  }
+
+  /* ========== ROLES CARD ========== */
+  .roles-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 20px;
+  }
+
+  .role-card {
+    border-radius: 12px;
+    padding: 22px 24px;
+    border: 1px solid var(--border);
+  }
+
+  .role-card.admin {
+    background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(59,130,246,0.03));
+    border-color: rgba(59,130,246,0.2);
+  }
+
+  .role-card.user {
+    background: linear-gradient(135deg, rgba(45,212,191,0.08), rgba(45,212,191,0.03));
+    border-color: rgba(45,212,191,0.2);
+  }
+
+  .role-card h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .role-card.admin h4 { color: var(--accent2); }
+  .role-card.user h4 { color: var(--teal2); }
+
+  .role-card ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .role-card ul li {
+    font-size: 12.5px;
+    color: var(--text3);
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .role-card ul li::before {
+    content: '✓';
+    color: var(--green);
+    font-size: 11px;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+
+  /* ========== STARS EVAL ========== */
+  .eval-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-top: 20px;
+  }
+
+  .eval-item {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 12px;
+    text-align: center;
+  }
+
+  .eval-item .eval-letter {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .eval-item .eval-name {
+    font-size: 11px;
+    color: var(--text3);
+  }
+
+  .stars { color: var(--amber); font-size: 10px; margin-top: 4px; }
+
+  /* ========== ALERT BOX ========== */
+  .alert-demo {
+    background: rgba(251,191,36,0.06);
+    border: 1px solid rgba(251,191,36,0.2);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-top: 20px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .alert-demo .alert-icon { font-size: 22px; flex-shrink: 0; }
+
+  .alert-demo .alert-content h5 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--amber);
+    margin-bottom: 4px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .alert-demo .alert-content p {
+    font-size: 12.5px;
+    color: var(--text3);
+    line-height: 1.5;
+  }
+
+  /* ========== STATUS CHIPS ========== */
+  .status-chips {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 100px;
+    padding: 5px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid;
+  }
+
+  .chip.pending { background: rgba(251,191,36,0.1); border-color: rgba(251,191,36,0.3); color: var(--amber); }
+  .chip.done { background: rgba(52,211,153,0.1); border-color: rgba(52,211,153,0.3); color: var(--green); }
+  .chip.cancel { background: rgba(248,113,113,0.1); border-color: rgba(248,113,113,0.3); color: var(--red); }
+
+  /* ========== MANUAL SECTION ========== */
+  .manual-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 8px;
+  }
+
+  .manual-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+
+  .manual-card:hover {
+    border-color: var(--border2);
+    transform: translateY(-2px);
+  }
+
+  .manual-card .mc-step {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+    margin-bottom: 10px;
+  }
+
+  .manual-card .mc-icon { font-size: 26px; margin-bottom: 10px; }
+
+  .manual-card h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .manual-card p {
+    font-size: 12.5px;
+    color: var(--text3);
+    line-height: 1.6;
+  }
+
+  /* ========== FOOTER ========== */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  footer .footer-brand {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px;
+    color: var(--text3);
+  }
+
+  footer .footer-brand span { color: var(--accent2); }
+
+  footer .footer-right {
+    font-size: 12px;
+    color: var(--text3);
+    text-align: right;
+  }
+
+  /* ========== ANIMATIONS ========== */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .feature-card, .manual-card, .workflow-step {
+    animation: fadeUp 0.5s ease both;
+  }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 900px) {
+    header { padding: 60px 24px 40px; }
+    section { padding: 0 24px; }
+    .features-grid { grid-template-columns: 1fr; }
+    .feature-card.wide { grid-template-columns: 1fr; gap: 24px; }
+    .benefits { grid-template-columns: 1fr; }
+    .manual-grid { grid-template-columns: 1fr; }
+    .eval-grid { grid-template-columns: repeat(3, 1fr); }
+    .workflow-steps { flex-direction: column; }
+    .workflow-step { border-right: 1px solid var(--border); border-bottom: none; }
+    .workflow-step:first-child { border-radius: 12px 12px 0 0; }
+    .workflow-step:last-child { border-bottom: 1px solid var(--border); border-radius: 0 0 12px 12px; }
+    .step-arrow { display: none; }
+    footer { flex-direction: column; gap: 16px; text-align: center; }
+    footer .footer-right { text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="badge"><span class="dot"></span> SYSTEM OVERVIEW V3.0</div>
+  <h1>Btstock<br><span class="highlight">V3.0</span></h1>
+  <p class="subtitle">ระบบบริหารจัดการคลังสินค้า โรงพยาบาลเบตง<br>ห้องปฏิบัติการเทคนิคการแพทย์</p>
+  <div class="header-tags">
+    <span class="tag">Paperless 100%</span>
+    <span class="tag">LA / ISO 15189</span>
+    <span class="tag">Google Apps Script</span>
+    <span class="tag">Telegram Alerts</span>
+    <span class="tag">Real-time</span>
+  </div>
+</header>
+
+<!-- BENEFITS STRIP -->
+<div class="benefits">
+  <div class="benefit-item">
+    <div class="benefit-icon">⚡</div>
+    <div>
+      <h4>ลดเวลาทำงาน</h4>
+      <p>รวมแผนจัดซื้อ ตรวจรับ และบัตรคุมไว้ในระบบเดียว</p>
+    </div>
+  </div>
+  <div class="benefit-item">
+    <div class="benefit-icon">🔍</div>
+    <div>
+      <h4>โปร่งใส ตรวจสอบได้</h4>
+      <p>ทุก Transaction ถูกบันทึกละเอียด รองรับ Auditor</p>
+    </div>
+  </div>
+  <div class="benefit-item">
+    <div class="benefit-icon">🔔</div>
+    <div>
+      <h4>ไม่มีของขาดสต๊อก</h4>
+      <p>แจ้งเตือน Telegram อัตโนมัติเมื่อถึงจุด Min</p>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION: FEATURES -->
+<section>
+  <div class="section-label">
+    <div class="line"></div>
+    <span>ฟีเจอร์หลักของระบบ</span>
+    <div class="line"></div>
+  </div>
+
+  <div class="features-grid">
+
+    <!-- Card 1: Roles -->
+    <div class="feature-card" style="--card-accent: #60a5fa; --card-glow: rgba(59,130,246,0.15);">
+      <div class="card-glow"></div>
+      <div class="card-header">
+        <span class="card-number">01</span>
+        <div class="card-icon">🔐</div>
+        <div class="card-title-block">
+          <h3>สิทธิ์การใช้งาน & ฐานข้อมูล</h3>
+          <span class="card-sub">Master Data & Roles</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <p>ระบบแบ่งผู้ใช้งาน 2 ระดับ เพื่อความปลอดภัยและความเป็นระเบียบของข้อมูล</p>
+        <div class="roles-grid">
+          <div class="role-card admin">
+            <h4>🛡️ Admin / Store</h4>
+            <ul>
+              <li>จัดการพัสดุทุกแผนก</li>
+              <li>สร้างและติดตาม PO</li>
+              <li>ดูรายงานภาพรวม</li>
+              <li>จัดการคู่ค้า</li>
+            </ul>
+          </div>
+          <div class="role-card user">
+            <h4>👤 User / นักเทคฯ</h4>
+            <ul>
+              <li>ดูพัสดุเฉพาะแผนกตน</li>
+              <li>เบิก-จ่าย สต๊อก</li>
+              <li>ดูบัตรคุมพัสดุ</li>
+              <li>ดาวน์โหลดรายงาน</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2: PO -->
+    <div class="feature-card" style="--card-accent: #2dd4bf; --card-glow: rgba(45,212,191,0.12);">
+      <div class="card-glow"></div>
+      <div class="card-header">
+        <span class="card-number">02</span>
+        <div class="card-icon">📋</div>
+        <div class="card-title-block">
+          <h3>ใบสั่งซื้อล่วงหน้า</h3>
+          <span class="card-sub">Purchase Orders (PO)</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <p>เปลี่ยนตารางแผนจัดซื้อจาก Excel มาเป็นระบบดิจิทัล พร้อมคำนวณงบประมาณอัตโนมัติ</p>
+        <ul class="card-list">
+          <li>ออกเลข PO อัตโนมัติ เช่น <span class="pill">PO-6904001</span></li>
+          <li>คำนวณราคารวมจากจำนวน × ราคาต่อหน่วย</li>
+          <li>รองรับแผนรายไตรมาส Q1–Q4</li>
+        </ul>
+        <div class="status-chips">
+          <span class="chip pending">⏳ รอรับของ</span>
+          <span class="chip done">✅ รับของครบแล้ว</span>
+          <span class="chip cancel">❌ ยกเลิก</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3: QC (wide) -->
+    <div class="feature-card wide" style="--card-accent: #a78bfa; --card-glow: rgba(167,139,250,0.12);">
+      <div class="card-glow"></div>
+      <div>
+        <div class="card-header">
+          <span class="card-number">03</span>
+          <div class="card-icon">🧪</div>
+          <div class="card-title-block">
+            <h3>ตรวจรับพัสดุ & ควบคุมคุณภาพ</h3>
+            <span class="card-sub">Receiving & QC</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <p>เมื่อบริษัทนำของมาส่ง เจ้าหน้าที่กดรับของจากใบสั่งซื้อได้เลย ระบบจะบันทึกข้อมูล QC ตามมาตรฐานงานเทคนิคการแพทย์ครบถ้วน</p>
+          <ul class="card-list">
+            <li>บันทึก <strong>LOT Number</strong> และ <strong>วันหมดอายุ</strong></li>
+            <li>บันทึก <strong>อุณหภูมินำส่ง (°C)</strong> และ <strong>สภาพหีบห่อ (1–5)</strong></li>
+            <li>ยอดพัสดุวิ่งเข้าแผนกเจ้าของ<strong>อัตโนมัติ</strong> ไม่ต้องบันทึกซ้ำ</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:12px; color: var(--text3); font-family: 'IBM Plex Mono', monospace; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.08em;">ขั้นตอนการรับของ</p>
+        <div class="workflow-steps">
+          <div class="workflow-step">
+            <div class="step-num">STEP 01</div>
+            <div class="step-icon">📄</div>
+            <h4>เปิด PO</h4>
+            <p>เลือกใบสั่งซื้อที่ต้องการรับของ</p>
+            <div class="step-arrow">›</div>
+          </div>
+          <div class="workflow-step">
+            <div class="step-num">STEP 02</div>
+            <div class="step-icon">🔎</div>
+            <h4>กรอก QC</h4>
+            <p>LOT, EXP, อุณหภูมิ, สภาพหีบห่อ</p>
+            <div class="step-arrow">›</div>
+          </div>
+          <div class="workflow-step">
+            <div class="step-num">STEP 03</div>
+            <div class="step-icon">✅</div>
+            <h4>ยืนยันรับ</h4>
+            <p>PO เปลี่ยนสถานะ "ครบแล้ว"</p>
+            <div class="step-arrow">›</div>
+          </div>
+          <div class="workflow-step">
+            <div class="step-num">STEP 04</div>
+            <div class="step-icon">📦</div>
+            <h4>สต๊อกอัปเดต</h4>
+            <p>ยอดวิ่งเข้าแผนกเจ้าของอัตโนมัติ</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 4: Telegram -->
+    <div class="feature-card" style="--card-accent: #fbbf24; --card-glow: rgba(251,191,36,0.1);">
+      <div class="card-glow"></div>
+      <div class="card-header">
+        <span class="card-number">04</span>
+        <div class="card-icon">📡</div>
+        <div class="card-title-block">
+          <h3>แจ้งเตือนสต๊อกวิกฤต</h3>
+          <span class="card-sub">Telegram Alerts</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <p>ระบบตรวจสอบยอดคงเหลือทุกครั้งที่มีการเบิก-จ่าย หากพบว่าต่ำกว่าหรือเท่ากับจุด Min จะส่งการแจ้งเตือนทันที</p>
+        <div class="alert-demo">
+          <div class="alert-icon">⚠️</div>
+          <div class="alert-content">
+            <h5>🔴 แจ้งเตือน: สต๊อกวิกฤต</h5>
+            <p><strong style="color: var(--amber);">HE-001</strong> Complete Blood Count Reagent<br>
+            แผนก: Hematology | คงเหลือ: <strong style="color: var(--red);">2 กล่อง</strong> (Min: 5)</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 5: Supplier Eval -->
+    <div class="feature-card" style="--card-accent: #34d399; --card-glow: rgba(52,211,153,0.1);">
+      <div class="card-glow"></div>
+      <div class="card-header">
+        <span class="card-number">05</span>
+        <div class="card-icon">🏆</div>
+        <div class="card-title-block">
+          <h3>ประเมินคู่ค้า 5 มิติ</h3>
+          <span class="card-sub">Supplier Evaluation (LA/ISO)</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <p>รองรับมาตรฐาน LA/ISO ด้วยระบบประเมินบริษัทผู้ขายอย่างเป็นระบบ คะแนน 1–5 ดาว ใน 5 มิติ</p>
+        <div class="eval-grid">
+          <div class="eval-item">
+            <div class="eval-letter" style="color: var(--accent2);">Q</div>
+            <div class="eval-name">คุณภาพ</div>
+            <div class="stars">★★★★★</div>
+          </div>
+          <div class="eval-item">
+            <div class="eval-letter" style="color: var(--teal2);">S</div>
+            <div class="eval-name">บริการ</div>
+            <div class="stars">★★★★☆</div>
+          </div>
+          <div class="eval-item">
+            <div class="eval-letter" style="color: var(--green);">P</div>
+            <div class="eval-name">ราคา</div>
+            <div class="stars">★★★☆☆</div>
+          </div>
+          <div class="eval-item">
+            <div class="eval-letter" style="color: var(--amber);">D</div>
+            <div class="eval-name">ส่งมอบ</div>
+            <div class="stars">★★★★☆</div>
+          </div>
+          <div class="eval-item">
+            <div class="eval-letter" style="color: var(--purple);">T</div>
+            <div class="eval-name">ความน่าเชื่อ</div>
+            <div class="stars">★★★★★</div>
+          </div>
+        </div>
+        <p style="font-size:12.5px; margin-top:14px;">ผลลัพธ์แสดงเป็น Emoji: <strong>🏆 ดีเลิศ &nbsp; 👍 ผ่าน &nbsp; 👎 ต้องปรับปรุง</strong></p>
+      </div>
+    </div>
+
+    <!-- Card 6: Report -->
+    <div class="feature-card" style="--card-accent: #f87171; --card-glow: rgba(248,113,113,0.1);">
+      <div class="card-glow"></div>
+      <div class="card-header">
+        <span class="card-number">06</span>
+        <div class="card-icon">📊</div>
+        <div class="card-title-block">
+          <h3>รายงานสรุปคงคลัง</h3>
+          <span class="card-sub">Stock Reports (LA/ISO)</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <p>ดาวน์โหลดรายงานบัตรคุมพัสดุประจำเดือนเป็นไฟล์ Excel ได้ตลอดเวลา</p>
+        <ul class="card-list">
+          <li>ยอดยกมาจากเดือนก่อนหน้า<strong>อัตโนมัติ</strong></li>
+          <li>แยกหมวด <strong>=== ซื้อปกติ ===</strong></li>
+          <li>แยกหมวด <strong>=== ได้รับจัดสรร (ฟรี/บริจาค) ===</strong></li>
+          <li>พร้อมพรินต์เก็บแฟ้มให้ Auditor ตรวจสอบ</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SECTION: MANUAL -->
+<section>
+  <div class="section-label">
+    <div class="line"></div>
+    <span>คู่มือการใช้งาน</span>
+    <div class="line"></div>
+  </div>
+
+  <div class="manual-grid">
+    <div class="manual-card">
+      <div class="mc-step">STEP 01</div>
+      <div class="mc-icon">🔑</div>
+      <h4>เข้าสู่ระบบ</h4>
+      <p>เลือก Role ที่กำหนด (Admin หรือ User) ระบบจะแสดงเมนูและข้อมูลตามสิทธิ์โดยอัตโนมัติ</p>
+    </div>
+    <div class="manual-card">
+      <div class="mc-step">STEP 02</div>
+      <div class="mc-icon">⚙️</div>
+      <h4>ตั้งค่าพัสดุ</h4>
+      <p>เพิ่มรายการพัสดุ ตั้งค่า Min และราคาต่อหน่วย ระบบจะสร้างรหัส SKU ให้อัตโนมัติ</p>
+    </div>
+    <div class="manual-card">
+      <div class="mc-step">STEP 03</div>
+      <div class="mc-icon">📝</div>
+      <h4>สร้างใบสั่งซื้อ</h4>
+      <p>เลือกบริษัท พัสดุ และจำนวน ระบบคำนวณยอดเงินให้อัตโนมัติ พร้อมกำหนด Due Date</p>
+    </div>
+    <div class="manual-card">
+      <div class="mc-step">STEP 04</div>
+      <div class="mc-icon">📦</div>
+      <h4>ตรวจรับพัสดุ</h4>
+      <p>กดรับของจาก PO กรอก LOT / EXP / อุณหภูมิ / สภาพหีบห่อ แล้วยืนยัน สต๊อกจะอัปเดตทันที</p>
+    </div>
+    <div class="manual-card">
+      <div class="mc-step">STEP 05</div>
+      <div class="mc-icon">🔄</div>
+      <h4>เบิก-จ่าย พัสดุ</h4>
+      <p>ค้นหาพัสดุ กรอกจำนวนที่จ่ายออก ระบบบันทึกบัตรคุมและคำนวณยอดคงเหลือสะสมให้</p>
+    </div>
+    <div class="manual-card">
+      <div class="mc-step">STEP 06</div>
+      <div class="mc-icon">📁</div>
+      <h4>ออกรายงาน</h4>
+      <p>เลือกเดือนที่ต้องการ กดดาวน์โหลด ได้ไฟล์ .csv พร้อมพิมพ์เก็บแฟ้มประจำเดือน</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">
+    <span>Btstock</span> V3.0 &nbsp;·&nbsp; MedLab Inventory System
+  </div>
+  <div class="footer-right">
+    โรงพยาบาลเบตง ห้องปฏิบัติการเทคนิคการแพทย์<br>
+    <span style="color: var(--text3); font-size: 11px; font-family: 'IBM Plex Mono', monospace;">LA / ISO 15189 Compliant</span>
+  </div>
+</footer>
+
+</body>
+</html>
