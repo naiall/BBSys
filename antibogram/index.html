@@ -1,72 +1,85 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="th" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cumulative Antibiogram · โรงพยาบาลเบตง</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <style>
+/* ========== THEME VARS ========== */
+[data-theme="light"] {
+  --bg-app: #f0efea;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f7f7f5;
+  --bg-tertiary: #ebeae5;
+  --border-1: rgba(0,0,0,0.08);
+  --border-2: rgba(0,0,0,0.15);
+  --border-3: rgba(0,0,0,0.25);
+  --text-1: #1a1a1a;
+  --text-2: #5f5e5a;
+  --text-3: #888780;
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.04);
+  --shadow-hover: 0 4px 12px rgba(0,0,0,0.08);
+}
+[data-theme="dark"] {
+  --bg-app: #0d0d0c;
+  --bg-primary: #1a1a18;
+  --bg-secondary: #242422;
+  --bg-tertiary: #2c2c2a;
+  --border-1: rgba(255,255,255,0.08);
+  --border-2: rgba(255,255,255,0.15);
+  --border-3: rgba(255,255,255,0.3);
+  --text-1: #f0efea;
+  --text-2: #b4b2a9;
+  --text-3: #888780;
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-hover: 0 4px 12px rgba(0,0,0,0.4);
+}
 :root {
-  --color-bg-primary: #ffffff;
-  --color-bg-secondary: #f7f7f5;
-  --color-bg-tertiary: #f0efea;
-  --color-border-tertiary: rgba(0,0,0,0.08);
-  --color-border-secondary: rgba(0,0,0,0.15);
-  --color-border-primary: rgba(0,0,0,0.25);
-  --color-text-primary: #1a1a1a;
-  --color-text-secondary: #5f5e5a;
-  --color-text-tertiary: #888780;
-  --color-text-warning: #854F0B;
-  --color-bg-warning: #FAEEDA;
-  --border-radius-md: 8px;
-  --border-radius-lg: 12px;
-  --font-sans: 'IBM Plex Sans Thai', 'Inter', -apple-system, sans-serif;
   --teal-dark: #0F6E56;
   --teal-mid: #1d9e75;
-  --teal-light: #E1F5EE;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-bg-primary: #1a1a1a;
-    --color-bg-secondary: #242422;
-    --color-bg-tertiary: #2c2c2a;
-    --color-border-tertiary: rgba(255,255,255,0.1);
-    --color-border-secondary: rgba(255,255,255,0.18);
-    --color-border-primary: rgba(255,255,255,0.3);
-    --color-text-primary: #f0efea;
-    --color-text-secondary: #b4b2a9;
-    --color-text-tertiary: #888780;
-  }
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --font-sans: 'IBM Plex Sans Thai', 'Inter', -apple-system, sans-serif;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--bg-app); }
 body {
   font-family: var(--font-sans);
-  background: var(--color-bg-tertiary);
-  color: var(--color-text-primary);
+  color: var(--text-1);
   min-height: 100vh;
-  padding: 1rem;
+  padding: 1rem 0;
   -webkit-font-smoothing: antialiased;
+  transition: background 0.2s, color 0.2s;
 }
-.container { max-width: 1400px; margin: 0 auto; }
+.container {
+  width: 90%;
+  max-width: 1800px;
+  margin: 0 auto;
+}
 
-/* HERO HEADER */
+/* ========== HERO ========== */
 .hero {
   position: relative;
-  padding: 1.75rem 1.75rem 1.5rem;
-  border-radius: var(--border-radius-lg);
+  padding: 1.75rem 2rem 1.5rem;
+  border-radius: var(--radius-lg);
   background: linear-gradient(135deg, #0F6E56 0%, #0a4d3d 100%);
   color: #fff;
   margin-bottom: 1.25rem;
   overflow: hidden;
+  box-shadow: var(--shadow-card);
 }
 .hero::before {
   content: '';
   position: absolute;
-  top: -40px; right: -40px;
-  width: 200px; height: 200px;
+  top: -50px; right: -50px;
+  width: 220px; height: 220px;
   border-radius: 50%;
   background: rgba(255,255,255,.06);
 }
@@ -98,7 +111,7 @@ body {
   gap: 6px;
 }
 .hero-title {
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 600;
   letter-spacing: -0.01em;
   line-height: 1.2;
@@ -109,13 +122,14 @@ body {
   opacity: 0.85;
   margin-top: 4px;
 }
-.hero-right { display: flex; gap: 10px; align-items: center; }
-.refresh-btn {
+.hero-right { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+.hbtn {
   background: rgba(255,255,255,.12);
   border: 0.5px solid rgba(255,255,255,.2);
   color: #fff;
-  padding: 7px 14px;
-  border-radius: var(--border-radius-md);
+  padding: 7px 12px;
+  border-radius: var(--radius-md);
   font-size: 12px;
   cursor: pointer;
   display: flex;
@@ -125,7 +139,9 @@ body {
   font-weight: 500;
   transition: all 0.15s;
 }
-.refresh-btn:hover { background: rgba(255,255,255,.2); }
+.hbtn:hover { background: rgba(255,255,255,.22); transform: translateY(-1px); }
+.hbtn:active { transform: translateY(0); }
+.hbtn.icon-only { padding: 7px 9px; }
 .status-pill {
   display: inline-flex;
   align-items: center;
@@ -133,29 +149,30 @@ body {
   font-size: 11px;
   background: rgba(255,255,255,.15);
   color: #fff;
-  padding: 5px 10px;
+  padding: 6px 11px;
   border-radius: 12px;
   font-weight: 500;
 }
 
-/* WARD TABS */
+/* ========== WARD TABS ========== */
 .ward-tabs {
   display: flex;
   gap: 0;
-  background: var(--color-bg-secondary);
+  background: var(--bg-secondary);
   padding: 4px;
-  border-radius: var(--border-radius-md);
+  border-radius: var(--radius-md);
   margin-bottom: 1rem;
   width: fit-content;
-  border: 0.5px solid var(--color-border-tertiary);
+  border: 0.5px solid var(--border-1);
+  box-shadow: var(--shadow-card);
 }
 .wtab {
-  padding: 7px 18px;
+  padding: 8px 18px;
   border: none;
   background: transparent;
   font-size: 13px;
   cursor: pointer;
-  color: var(--color-text-secondary);
+  color: var(--text-2);
   border-radius: 6px;
   display: flex;
   align-items: center;
@@ -165,29 +182,30 @@ body {
   transition: all 0.12s;
 }
 .wtab.active {
-  background: var(--color-bg-primary);
-  color: var(--color-text-primary);
+  background: var(--bg-primary);
+  color: var(--text-1);
   box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
 .wtab i { font-size: 15px; }
-.wtab:hover:not(.active) { color: var(--color-text-primary); }
+.wtab:hover:not(.active) { color: var(--text-1); }
 
-/* FILTERS */
+/* ========== FILTERS ========== */
 .filters {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-  gap: 10px;
+  gap: 12px;
   margin-bottom: 1.25rem;
-  padding: 14px;
-  background: var(--color-bg-primary);
-  border: 0.5px solid var(--color-border-tertiary);
-  border-radius: var(--border-radius-lg);
+  padding: 16px;
+  background: var(--bg-primary);
+  border: 0.5px solid var(--border-1);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
 }
 .f-cell { display: flex; flex-direction: column; gap: 5px; }
 .f-label {
   font-size: 10px;
   font-weight: 600;
-  color: var(--color-text-secondary);
+  color: var(--text-2);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   display: flex;
@@ -197,24 +215,24 @@ body {
 .f-label i { font-size: 13px; color: var(--teal-mid); }
 .f-input {
   font-size: 13px;
-  padding: 8px 10px;
-  height: 36px;
+  padding: 9px 11px;
+  height: 38px;
   font-family: inherit;
-  border: 0.5px solid var(--color-border-tertiary);
-  border-radius: var(--border-radius-md);
-  background: var(--color-bg-secondary);
-  color: var(--color-text-primary);
+  border: 0.5px solid var(--border-1);
+  border-radius: var(--radius-md);
+  background: var(--bg-secondary);
+  color: var(--text-1);
   width: 100%;
   transition: all 0.12s;
 }
-.f-input:hover { border-color: var(--color-border-secondary); }
+.f-input:hover { border-color: var(--border-2); }
 .f-input:focus {
   outline: none;
   border-color: var(--teal-dark);
-  box-shadow: 0 0 0 3px rgba(15,110,86,0.12);
+  box-shadow: 0 0 0 3px rgba(15,110,86,0.15);
 }
 
-/* METRIC CARDS */
+/* ========== METRICS ========== */
 .metric-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -222,32 +240,37 @@ body {
   margin-bottom: 1.25rem;
 }
 .metric {
-  background: var(--color-bg-primary);
-  border: 0.5px solid var(--color-border-tertiary);
-  border-radius: var(--border-radius-lg);
+  background: var(--bg-primary);
+  border: 0.5px solid var(--border-1);
+  border-radius: var(--radius-lg);
   padding: 14px 16px;
   position: relative;
   overflow: hidden;
   transition: all 0.15s;
+  box-shadow: var(--shadow-card);
 }
-.metric:hover { border-color: var(--color-border-secondary); transform: translateY(-1px); }
+.metric:hover {
+  border-color: var(--border-2);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-hover);
+}
 .metric-icon {
   position: absolute;
   top: 12px; right: 12px;
   width: 30px; height: 30px;
-  border-radius: var(--border-radius-md);
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 15px;
 }
-.m-teal .metric-icon { background: #1d9e7518; color: #0F6E56; }
-.m-blue .metric-icon { background: #378ADD18; color: #185FA5; }
-.m-purple .metric-icon { background: #7F77DD18; color: #534AB7; }
-.m-amber .metric-icon { background: #EF9F2718; color: #854F0B; }
+.m-teal .metric-icon { background: #1d9e7522; color: #1d9e75; }
+.m-blue .metric-icon { background: #378ADD22; color: #378ADD; }
+.m-purple .metric-icon { background: #7F77DD22; color: #7F77DD; }
+.m-amber .metric-icon { background: #EF9F2722; color: #EF9F27; }
 .metric-label {
   font-size: 10px;
-  color: var(--color-text-secondary);
+  color: var(--text-2);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   font-weight: 600;
@@ -256,16 +279,16 @@ body {
 .metric-value {
   font-size: 24px;
   font-weight: 600;
-  color: var(--color-text-primary);
+  color: var(--text-1);
   line-height: 1;
 }
 .metric-sub {
   font-size: 11px;
-  color: var(--color-text-tertiary);
+  color: var(--text-3);
   margin-top: 5px;
 }
 
-/* LEGEND */
+/* ========== LEGEND ========== */
 .legend-row {
   display: flex;
   justify-content: space-between;
@@ -280,31 +303,33 @@ body {
   align-items: center;
   gap: 5px;
   font-size: 11px;
-  color: var(--color-text-secondary);
-  background: var(--color-bg-secondary);
-  padding: 4px 10px;
-  border-radius: var(--border-radius-md);
+  color: var(--text-2);
+  background: var(--bg-primary);
+  padding: 5px 11px;
+  border-radius: var(--radius-md);
+  border: 0.5px solid var(--border-1);
 }
 .legend-dot { width: 9px; height: 9px; border-radius: 2px; }
-.table-info { font-size: 11px; color: var(--color-text-tertiary); }
+.table-info { font-size: 11px; color: var(--text-3); }
 
-/* TABLE */
+/* ========== TABLE ========== */
 .table-wrap {
-  background: var(--color-bg-primary);
-  border: 0.5px solid var(--color-border-tertiary);
-  border-radius: var(--border-radius-lg);
+  background: var(--bg-primary);
+  border: 0.5px solid var(--border-1);
+  border-radius: var(--radius-lg);
   overflow: hidden;
+  box-shadow: var(--shadow-card);
 }
-.table-scroll { overflow: auto; max-height: 600px; }
+.table-scroll { overflow: auto; max-height: 650px; }
 table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 12px; }
 thead th {
-  background: var(--color-bg-secondary);
-  color: var(--color-text-secondary);
+  background: var(--bg-secondary);
+  color: var(--text-2);
   font-weight: 600;
   font-size: 10px;
-  padding: 10px 7px;
+  padding: 11px 7px;
   text-align: center;
-  border-bottom: 0.5px solid var(--color-border-tertiary);
+  border-bottom: 0.5px solid var(--border-1);
   position: sticky;
   top: 0;
   z-index: 2;
@@ -314,19 +339,19 @@ thead th {
 }
 thead th:first-child {
   text-align: left;
-  min-width: 200px;
+  min-width: 220px;
   position: sticky;
   left: 0;
   z-index: 3;
-  background: var(--color-bg-secondary);
+  background: var(--bg-secondary);
   padding-left: 16px;
 }
 thead th:nth-child(2) { min-width: 44px; }
-.group-bar { background: var(--color-bg-tertiary); border-bottom: 0.5px solid var(--color-border-tertiary); }
+.group-bar { background: var(--bg-tertiary); border-bottom: 0.5px solid var(--border-1); }
 .group-bar td {
   padding: 5px 7px;
   font-size: 9px;
-  color: var(--color-text-tertiary);
+  color: var(--text-3);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   font-weight: 600;
@@ -338,16 +363,16 @@ thead th:nth-child(2) { min-width: 44px; }
   padding-left: 16px;
   position: sticky;
   left: 0;
-  background: var(--color-bg-tertiary);
+  background: var(--bg-tertiary);
   z-index: 1;
 }
 tbody tr { transition: background 0.1s; }
-tbody tr:hover { background: var(--color-bg-secondary); }
+tbody tr:hover { background: var(--bg-secondary); }
 tbody td {
   padding: 9px 7px;
-  border-bottom: 0.5px solid var(--color-border-tertiary);
+  border-bottom: 0.5px solid var(--border-1);
   text-align: center;
-  color: var(--color-text-primary);
+  color: var(--text-1);
 }
 tbody td:first-child {
   text-align: left;
@@ -355,21 +380,21 @@ tbody td:first-child {
   font-weight: 500;
   position: sticky;
   left: 0;
-  background: var(--color-bg-primary);
+  background: var(--bg-primary);
   z-index: 1;
   white-space: nowrap;
   padding-left: 16px;
   padding-right: 12px;
 }
-tbody tr:hover td:first-child { background: var(--color-bg-secondary); }
+tbody tr:hover td:first-child { background: var(--bg-secondary); }
 tbody td:nth-child(2) {
   font-weight: 600;
-  color: var(--color-text-secondary);
+  color: var(--text-2);
   font-size: 11px;
 }
 tbody tr:last-child td { border-bottom: none; }
 
-/* SUSCEPTIBILITY PILLS */
+/* ========== PILLS ========== */
 .sh {
   border-radius: 4px;
   padding: 3px 7px;
@@ -380,17 +405,20 @@ tbody tr:last-child td { border-bottom: none; }
   line-height: 1.2;
   border: 0.5px solid transparent;
 }
-.sg { background: #1d9e7518; color: #0F6E56; border-color: #1d9e7530; }
-.sy { background: #ba751718; color: #854F0B; border-color: #ba751735; }
-.sr { background: #e24b4a18; color: #791F1F; border-color: #e24b4a35; }
+[data-theme="light"] .sg { background: #1d9e7515; color: #0F6E56; border-color: #1d9e7535; }
+[data-theme="light"] .sy { background: #ba751715; color: #854F0B; border-color: #ba751735; }
+[data-theme="light"] .sr { background: #e24b4a15; color: #791F1F; border-color: #e24b4a35; }
+[data-theme="dark"] .sg  { background: #1d9e7530; color: #5DCAA5; border-color: #1d9e7550; }
+[data-theme="dark"] .sy  { background: #ba751730; color: #FAC775; border-color: #ba751750; }
+[data-theme="dark"] .sr  { background: #e24b4a30; color: #F09595; border-color: #e24b4a55; }
 .sw { background: #EF9F2730; color: #854F0B; font-size: 10px; }
-.na { color: var(--color-text-tertiary); font-size: 11px; opacity: 0.4; }
+[data-theme="dark"] .sw { background: #EF9F2740; color: #FAC775; }
+.na { color: var(--text-3); font-size: 11px; opacity: 0.4; }
 
-/* ORGANISM ROW */
+/* ========== ORGANISM ========== */
 .org-name { display: flex; align-items: center; gap: 9px; }
 .org-dot {
-  width: 7px;
-  height: 7px;
+  width: 7px; height: 7px;
   border-radius: 50%;
   flex-shrink: 0;
   background: var(--teal-mid);
@@ -411,8 +439,9 @@ tbody tr:last-child td { border-bottom: none; }
   margin-left: 6px;
   font-weight: 600;
 }
+[data-theme="dark"] .warn-badge { color: #FAC775; }
 
-/* LOADING & ERROR */
+/* ========== LOADING/ERROR ========== */
 .loading-overlay {
   display: flex;
   flex-direction: column;
@@ -420,22 +449,22 @@ tbody tr:last-child td { border-bottom: none; }
   justify-content: center;
   padding: 4rem 2rem;
   gap: 14px;
-  color: var(--color-text-secondary);
+  color: var(--text-2);
   font-size: 13px;
 }
 .spinner {
   width: 30px; height: 30px;
-  border: 2.5px solid var(--color-border-tertiary);
+  border: 2.5px solid var(--border-1);
   border-top-color: var(--teal-mid);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 .err {
-  background: #e24b4a10;
+  background: #e24b4a15;
   color: #791F1F;
   border: 0.5px solid #e24b4a40;
-  border-radius: var(--border-radius-lg);
+  border-radius: var(--radius-lg);
   padding: 1.25rem;
   font-size: 13px;
   text-align: center;
@@ -445,6 +474,7 @@ tbody tr:last-child td { border-bottom: none; }
   align-items: center;
   gap: 10px;
 }
+[data-theme="dark"] .err { color: #F09595; }
 .err i { font-size: 28px; color: #e24b4a; }
 
 .footer {
@@ -452,9 +482,66 @@ tbody tr:last-child td { border-bottom: none; }
   margin-top: 1.5rem;
   padding: 1rem;
   font-size: 11px;
-  color: var(--color-text-tertiary);
+  color: var(--text-3);
 }
-.footer b { color: var(--color-text-secondary); }
+.footer b { color: var(--text-2); }
+
+/* ========== EXPORT MENU ========== */
+.export-wrap { position: relative; }
+.export-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: var(--bg-primary);
+  border: 0.5px solid var(--border-2);
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  padding: 4px;
+  min-width: 180px;
+  z-index: 100;
+  display: none;
+}
+.export-menu.show { display: block; }
+.export-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  font-size: 13px;
+  color: var(--text-1);
+  cursor: pointer;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  transition: background 0.1s;
+}
+.export-item:hover { background: var(--bg-secondary); }
+.export-item i { font-size: 16px; color: var(--text-2); width: 16px; }
+.export-item .ico-xlsx { color: #1d9e75; }
+.export-item .ico-pdf { color: #e24b4a; }
+.export-item .ico-print { color: #378ADD; }
+
+/* ========== PRINT STYLES ========== */
+@media print {
+  body { background: white !important; padding: 0 !important; }
+  .container { width: 100% !important; max-width: none !important; }
+  .hero { background: #0F6E56 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; padding: 1rem 1.5rem !important; margin-bottom: 1rem !important; }
+  .hero::before, .hero::after { display: none; }
+  .hero-right, .ward-tabs, .filters, .legend-row { display: none !important; }
+  .metric-grid { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; page-break-inside: avoid; }
+  .metric { box-shadow: none !important; border: 0.5px solid #ccc !important; }
+  .table-wrap { box-shadow: none !important; border: 0.5px solid #ccc !important; page-break-inside: auto; }
+  .table-scroll { max-height: none !important; overflow: visible !important; }
+  thead th { position: static !important; }
+  tbody td:first-child, thead th:first-child { position: static !important; }
+  .sh { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  tr { page-break-inside: avoid; }
+  .footer { font-size: 9px; }
+  @page { margin: 1cm; size: landscape; }
+}
 </style>
 </head>
 <body>
@@ -470,7 +557,16 @@ tbody tr:last-child td { border-bottom: none; }
       </div>
       <div class="hero-right">
         <span class="status-pill" id="connPill"><i class="ti ti-cloud-download"></i> กำลังโหลด</span>
-        <button class="refresh-btn" onclick="initLoad()"><i class="ti ti-refresh"></i> Refresh</button>
+        <button class="hbtn icon-only" onclick="toggleTheme()" id="themeBtn" title="สลับธีม"><i class="ti ti-moon"></i></button>
+        <button class="hbtn" onclick="initLoad()"><i class="ti ti-refresh"></i> Refresh</button>
+        <div class="export-wrap">
+          <button class="hbtn" onclick="toggleExportMenu(event)"><i class="ti ti-download"></i> Export <i class="ti ti-chevron-down" style="font-size:13px"></i></button>
+          <div class="export-menu" id="exportMenu">
+            <button class="export-item" onclick="exportXLSX()"><i class="ti ti-file-spreadsheet ico-xlsx"></i> Excel (.xlsx)</button>
+            <button class="export-item" onclick="exportPDF()"><i class="ti ti-file-type-pdf ico-pdf"></i> PDF</button>
+            <button class="export-item" onclick="window.print()"><i class="ti ti-printer ico-print"></i> Print</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -549,7 +645,6 @@ tbody tr:last-child td { border-bottom: none; }
   </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script>
 // ============ CONFIG ============
 const SHEET_ID = '1XbcDgw-jdFTn0q01GEyPKomqke62NI87VyjYXQpJmAY';
@@ -594,8 +689,37 @@ function gramClass(org) {
 // ============ STATE ============
 let rawRows = [];
 let currentWard = 'all';
+let lastRenderedData = { shown: [], usedSh: [], groupOf: {} };
 
-// ============ LOADING ============
+// ============ THEME ============
+function toggleTheme() {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const next = cur === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('antibiogram-theme', next);
+  document.querySelector('#themeBtn i').className = next === 'light' ? 'ti ti-moon' : 'ti ti-sun';
+}
+(function initTheme() {
+  const saved = localStorage.getItem('antibiogram-theme');
+  const sys = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  const t = saved || sys;
+  document.documentElement.setAttribute('data-theme', t);
+  document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.querySelector('#themeBtn i');
+    if (btn) btn.className = t === 'light' ? 'ti ti-moon' : 'ti ti-sun';
+  });
+})();
+
+// ============ EXPORT MENU ============
+function toggleExportMenu(e) {
+  e.stopPropagation();
+  document.getElementById('exportMenu').classList.toggle('show');
+}
+document.addEventListener('click', () => {
+  document.getElementById('exportMenu')?.classList.remove('show');
+});
+
+// ============ LOAD ============
 async function initLoad() {
   const pill = document.getElementById('connPill');
   pill.innerHTML = '<i class="ti ti-cloud-download"></i> กำลังโหลด';
@@ -609,9 +733,7 @@ async function initLoad() {
     const result = Papa.parse(text, { header: true, skipEmptyLines: true });
     rawRows = result.data;
     const elapsed = Math.round(performance.now() - t0);
-
     pill.innerHTML = `<i class="ti ti-cloud-check"></i> ${rawRows.length.toLocaleString()} records · ${elapsed}ms`;
-
     setDateRange();
     renderTable();
   } catch(e) {
@@ -654,7 +776,6 @@ function getWardType(row) {
 
 // ============ CLSI M39 LOGIC ============
 function calcAntibiogram(rows) {
-  // First isolate per patient (HN + organism unique within date range)
   const firstMap = {};
   rows.forEach(row => {
     const hn = row.HN || row.hn || '';
@@ -665,7 +786,6 @@ function calcAntibiogram(rows) {
     firstMap[key] = row;
   });
 
-  // Calculate %S per antibiotic per organism
   const orgData = {};
   Object.values(firstMap).forEach(row => {
     const org = row.organism || row.Organism || '';
@@ -683,7 +803,7 @@ function calcAntibiogram(rows) {
 
   return Object.entries(orgData).map(([org, d]) => ({
     organism: org, n: d.n,
-    abx: Object.fromEntries(Object.entries(d.abx).map(([ab, c]) => [ab, { pct: (c.s/c.total)*100, tested: c.total }]))
+    abx: Object.fromEntries(Object.entries(d.abx).map(([ab, c]) => [ab, { pct: (c.s/c.total)*100, tested: c.total, s: c.s }]))
   }));
 }
 
@@ -693,7 +813,7 @@ function setWard(w) {
   renderTable();
 }
 
-// ============ RENDERING ============
+// ============ RENDER ============
 function renderTable() {
   if (!rawRows.length) return;
 
@@ -728,7 +848,6 @@ function renderTable() {
   const totalN = shown.reduce((s,r) => s+r.n, 0);
   const reliableN = shown.filter(r=>r.n>=30).length;
 
-  // Metric cards
   document.getElementById('metrics').innerHTML = `
     <div class="metric m-teal">
       <div class="metric-icon"><i class="ti ti-bacteria"></i></div>
@@ -756,11 +875,9 @@ function renderTable() {
     </div>
   `;
 
-  // Determine which antibiotic columns to show
   const allSh = Object.values(ABX_GROUP).flat();
   const usedSh = allSh.filter(sh => shown.some(r => r.abx[sh] !== undefined));
 
-  // Group header mapping
   const groupOf = {};
   usedSh.forEach(sh => {
     for (const [gname, abs] of Object.entries(ABX_GROUP)) {
@@ -768,16 +885,15 @@ function renderTable() {
     }
   });
 
-  // Build table HTML
+  lastRenderedData = { shown, usedSh, groupOf };
+
   let html = '<table><thead><tr>';
   html += '<th>Organism</th><th>N</th>';
   usedSh.forEach(sh => html += `<th title="${sh}">${sh}</th>`);
   html += '</tr></thead><tbody>';
 
-  // Group header row
   html += '<tr class="group-bar"><td></td><td></td>';
-  let spans = [];
-  let lastG = null;
+  let spans = [], lastG = null;
   usedSh.forEach(sh => {
     const g = groupOf[sh];
     if (g !== lastG) { spans.push({g, count: 1}); lastG = g; }
@@ -786,7 +902,6 @@ function renderTable() {
   spans.forEach(s => html += `<td colspan="${s.count}">${s.g||''}</td>`);
   html += '</tr>';
 
-  // Data rows
   shown.forEach(row => {
     const warn = row.n < 30;
     const gc = warn ? 'warn' : gramClass(row.organism);
@@ -798,13 +913,13 @@ function renderTable() {
       if (!val) { html += `<td><span class="na">—</span></td>`; return; }
       const p = Math.round(val.pct);
       const cls = warn ? 'sw' : p >= 90 ? 'sg' : p >= 70 ? 'sy' : 'sr';
-      html += `<td><span class="sh ${cls}" title="${val.s ?? '?'}/${val.tested} S">${p}%</span></td>`;
+      html += `<td><span class="sh ${cls}" title="${val.s}/${val.tested} S">${p}%</span></td>`;
     });
     html += '</tr>';
   });
 
   if (!shown.length) {
-    html += `<tr><td colspan="${usedSh.length+2}" style="padding:3rem;text-align:center;color:var(--color-text-tertiary)">
+    html += `<tr><td colspan="${usedSh.length+2}" style="padding:3rem;text-align:center;color:var(--text-3)">
       <i class="ti ti-mood-empty" style="font-size:28px;display:block;margin-bottom:8px"></i>
       ไม่พบข้อมูลที่ตรงเงื่อนไข</td></tr>`;
   }
@@ -812,6 +927,150 @@ function renderTable() {
   document.getElementById('tableArea').innerHTML = html;
 
   document.getElementById('tableInfo').textContent = `แสดง ${shown.length} เชื้อ · ${usedSh.length} ยา · เรียงตามจำนวน isolates`;
+}
+
+// ============ EXPORT ============
+function getReportMeta() {
+  const wardName = currentWard === 'all' ? 'All Wards' : currentWard;
+  const dateFrom = document.getElementById('dateFrom').value;
+  const dateTo = document.getElementById('dateTo').value;
+  const spec = document.getElementById('specFilter').value;
+  const stamp = new Date().toISOString().slice(0,10);
+  return { wardName, dateFrom, dateTo, spec, stamp };
+}
+
+function exportXLSX() {
+  const { shown, usedSh, groupOf } = lastRenderedData;
+  if (!shown.length) { alert('ไม่มีข้อมูลให้ export'); return; }
+  const meta = getReportMeta();
+
+  // Header rows: Group row + abx row
+  const groupRow = ['', ''];
+  const headerRow = ['Organism', 'N'];
+  usedSh.forEach(sh => {
+    groupRow.push(groupOf[sh] || '');
+    headerRow.push(sh);
+  });
+
+  const dataRows = shown.map(row => {
+    const arr = [row.organism, row.n];
+    usedSh.forEach(sh => {
+      const v = row.abx[sh];
+      arr.push(v ? Math.round(v.pct) + '%' : '—');
+    });
+    return arr;
+  });
+
+  // Build sheet array with title block
+  const aoa = [
+    [`Cumulative Antibiogram - โรงพยาบาลเบตง`],
+    [`Ward: ${meta.wardName}  |  Date: ${meta.dateFrom} → ${meta.dateTo}  |  Specimen: ${meta.spec}`],
+    [`Generated: ${new Date().toLocaleString('th-TH')}  |  CLSI M39 Standard`],
+    [],
+    groupRow,
+    headerRow,
+    ...dataRows
+  ];
+
+  const ws = XLSX.utils.aoa_to_sheet(aoa);
+
+  // Column widths
+  ws['!cols'] = [{wch: 35}, {wch: 6}, ...usedSh.map(() => ({wch: 7}))];
+
+  // Merge title cells
+  ws['!merges'] = [
+    {s:{r:0,c:0},e:{r:0,c:usedSh.length+1}},
+    {s:{r:1,c:0},e:{r:1,c:usedSh.length+1}},
+    {s:{r:2,c:0},e:{r:2,c:usedSh.length+1}}
+  ];
+
+  // Merge group header cells
+  let col = 2, lastG = null, start = 2;
+  usedSh.forEach((sh, i) => {
+    const g = groupOf[sh];
+    if (g !== lastG) {
+      if (lastG !== null && i - (start - 2) > 1) {
+        ws['!merges'].push({s:{r:4,c:start},e:{r:4,c:i+1}});
+      }
+      start = i + 2;
+      lastG = g;
+    }
+  });
+  if (usedSh.length > 0) {
+    const lastIdx = usedSh.length + 1;
+    if (lastIdx > start) ws['!merges'].push({s:{r:4,c:start},e:{r:4,c:lastIdx}});
+  }
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Antibiogram');
+  XLSX.writeFile(wb, `Antibiogram_${meta.wardName}_${meta.stamp}.xlsx`);
+}
+
+function exportPDF() {
+  const { shown, usedSh, groupOf } = lastRenderedData;
+  if (!shown.length) { alert('ไม่มีข้อมูลให้ export'); return; }
+  const meta = getReportMeta();
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+
+  // Title
+  doc.setFillColor(15, 110, 86);
+  doc.rect(0, 0, 297, 24, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(15);
+  doc.setFont(undefined, 'bold');
+  doc.text('Cumulative Antibiogram - Betong Hospital', 10, 11);
+  doc.setFontSize(9);
+  doc.setFont(undefined, 'normal');
+  doc.text(`Ward: ${meta.wardName}  |  ${meta.dateFrom} -> ${meta.dateTo}  |  Specimen: ${meta.spec}  |  CLSI M39`, 10, 18);
+
+  // Build table headers
+  const head = [
+    ['', '', ...usedSh.map(sh => groupOf[sh] || '')],
+    ['Organism', 'N', ...usedSh]
+  ];
+
+  const body = shown.map(row => {
+    const r = [row.organism, String(row.n)];
+    usedSh.forEach(sh => {
+      const v = row.abx[sh];
+      r.push(v ? Math.round(v.pct) + '%' : '-');
+    });
+    return r;
+  });
+
+  doc.autoTable({
+    head,
+    body,
+    startY: 28,
+    theme: 'grid',
+    styles: { fontSize: 7, cellPadding: 1.5, halign: 'center', lineColor: [200,200,200] },
+    headStyles: { fillColor: [240, 240, 235], textColor: [60,60,60], fontStyle: 'bold', fontSize: 7 },
+    columnStyles: { 0: { halign: 'left', fontStyle: 'italic', cellWidth: 48 }, 1: { cellWidth: 9 } },
+    didParseCell: (data) => {
+      if (data.section === 'body' && data.column.index >= 2) {
+        const txt = data.cell.text[0];
+        if (txt && txt.endsWith('%')) {
+          const p = parseInt(txt);
+          const warn = parseInt(data.row.raw[1]) < 30;
+          if (warn) { data.cell.styles.fillColor = [253, 235, 200]; data.cell.styles.textColor = [120, 70, 10]; }
+          else if (p >= 90) { data.cell.styles.fillColor = [220, 240, 230]; data.cell.styles.textColor = [15, 110, 86]; }
+          else if (p >= 70) { data.cell.styles.fillColor = [250, 235, 210]; data.cell.styles.textColor = [120, 80, 15]; }
+          else { data.cell.styles.fillColor = [250, 220, 220]; data.cell.styles.textColor = [120, 30, 30]; }
+        }
+      }
+    },
+    didDrawPage: (data) => {
+      const ps = doc.internal.pageSize;
+      doc.setFontSize(7);
+      doc.setTextColor(120);
+      doc.text(`Generated: ${new Date().toLocaleString('th-TH')}`, 10, ps.height - 5);
+      doc.text(`Page ${data.pageNumber}`, ps.width - 25, ps.height - 5);
+    }
+  });
+
+  doc.save(`Antibiogram_${meta.wardName}_${meta.stamp}.pdf`);
 }
 
 // ============ INIT ============
