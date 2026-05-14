@@ -613,6 +613,13 @@ tbody tr:last-child td { border-bottom: none; }
         <option value="30" selected>≥30 isolates</option>
       </select>
     </div>
+    <div class="f-cell">
+      <span class="f-label"><i class="ti ti-columns"></i> คอลัมน์ยา</span>
+      <select id="colMode" class="f-input" onchange="renderTable()">
+        <option value="dynamic" selected>เฉพาะที่มีข้อมูล</option>
+        <option value="fixed23">แสดงครบ 23 ตัว</option>
+      </select>
+    </div>
   </div>
 
   <!-- METRICS -->
@@ -675,6 +682,9 @@ const ABX_GROUP = {
   'Aminoglycoside':['AMK','GEN','GEH'],
   'Miscellaneous':['VAN','CLI','ERY','CHL','SXT','TET','TEC']
 };
+
+// 23 ยามาตรฐานที่ต้องแสดงเสมอเมื่อเลือกโหมด fixed23
+const FIXED_23 = ['AMP','AMC','TZP','FOX','CTX','CAZ','CRO','FEP','SCF','IPM','MEM','OXA','PEN','CIP','LVX','AMK','GEN','GEH','VAN','CLI','ERY','SXT','TET'];
 
 const GRAM_NEG = ['Escherichia','Klebsiella','Pseudomonas','Acinetobacter','Proteus','Enterobacter','Citrobacter','Salmonella','Serratia','Stenotrophomonas','Morganella','Plesiomonas','Haemophilus','Providencia','Neisseria','Edwardsiella','Pasteurella','Sphingomonas','Ralstonia'];
 const GRAM_POS = ['Staphylococ','Streptococ','Enterococ','Corynebacter','Bacillus','Micrococcus','Group'];
@@ -775,6 +785,30 @@ function getWardType(row) {
 }
 
 // ============ CLSI M39 LOGIC ============
+// ตรวจหาชื่อคอลัมน์ยาแบบยืดหยุ่น รองรับชื่อหลากหลายแบบใน Google Sheets
+function findAbxValue(row, abxName) {
+  // 1. ลองชื่อตรง
+  if (row[abxName] !== undefined) return row[abxName];
+  
+  // 2. ลองชื่อพิเศษสำหรับ Gentamicin High Dose
+  if (abxName === 'Gentamicin High Dose (120)') {
+    const alts = ['Gentamicin High Dose (120)', 'Gentamicin High Dose', 'Gentamicin 120', 
+                  'GentamicinHighDose', 'Gentamicin_HighDose', 'High Level Gentamicin',
+                  'Gentamicin (120)', 'GEH', 'HLG'];
+    for (const a of alts) if (row[a] !== undefined) return row[a];
+    // ค้นแบบ case-insensitive ในคีย์ทั้งหมด
+    const keys = Object.keys(row);
+    const k = keys.find(k => /gentamicin.*(?:high|120)/i.test(k));
+    if (k) return row[k];
+  }
+  
+  // 3. case-insensitive matching ทั่วไป
+  const lower = abxName.toLowerCase();
+  const keys = Object.keys(row);
+  const match = keys.find(k => k.toLowerCase() === lower);
+  return match ? row[match] : undefined;
+}
+
 function calcAntibiogram(rows) {
   const firstMap = {};
   rows.forEach(row => {
@@ -792,7 +826,8 @@ function calcAntibiogram(rows) {
     if (!orgData[org]) orgData[org] = { n: 0, abx: {} };
     orgData[org].n++;
     ABX_COLS.forEach(ab => {
-      const val = (row[ab] || '').trim().toUpperCase();
+      const raw = findAbxValue(row, ab);
+      const val = (raw || '').toString().trim().toUpperCase();
       if (val !== 'S' && val !== 'I' && val !== 'R') return;
       const sh = SHORT[ab] || ab;
       if (!orgData[org].abx[sh]) orgData[org].abx[sh] = { s: 0, total: 0 };
@@ -876,7 +911,15 @@ function renderTable() {
   `;
 
   const allSh = Object.values(ABX_GROUP).flat();
-  const usedSh = allSh.filter(sh => shown.some(r => r.abx[sh] !== undefined));
+  const colMode = document.getElementById('colMode').value;
+  let usedSh;
+  if (colMode === 'fixed23') {
+    // โหมดแสดงครบ 23 ตัว ตามลำดับมาตรฐาน
+    usedSh = FIXED_23.slice();
+  } else {
+    // โหมด dynamic: แสดงเฉพาะคอลัมน์ที่มีข้อมูล
+    usedSh = allSh.filter(sh => shown.some(r => r.abx[sh] !== undefined));
+  }
 
   const groupOf = {};
   usedSh.forEach(sh => {
@@ -912,7 +955,8 @@ function renderTable() {
       const val = row.abx[sh];
       if (!val) { html += `<td><span class="na">—</span></td>`; return; }
       const p = Math.round(val.pct);
-      const cls = warn ? 'sw' : p >= 90 ? 'sg' : p >= 70 ? 'sy' : 'sr';
+      // ใช้สีตามค่า % จริง แม้ n<30 (badge n<30 แสดงที่ชื่อเชื้อแล้ว)
+      const cls = p >= 90 ? 'sg' : p >= 70 ? 'sy' : 'sr';
       html += `<td><span class="sh ${cls}" title="${val.s}/${val.tested} S">${p}%</span></td>`;
     });
     html += '</tr>';
@@ -1053,9 +1097,8 @@ function exportPDF() {
         const txt = data.cell.text[0];
         if (txt && txt.endsWith('%')) {
           const p = parseInt(txt);
-          const warn = parseInt(data.row.raw[1]) < 30;
-          if (warn) { data.cell.styles.fillColor = [253, 235, 200]; data.cell.styles.textColor = [120, 70, 10]; }
-          else if (p >= 90) { data.cell.styles.fillColor = [220, 240, 230]; data.cell.styles.textColor = [15, 110, 86]; }
+          // ใช้สีตามค่า % จริง
+          if (p >= 90) { data.cell.styles.fillColor = [220, 240, 230]; data.cell.styles.textColor = [15, 110, 86]; }
           else if (p >= 70) { data.cell.styles.fillColor = [250, 235, 210]; data.cell.styles.textColor = [120, 80, 15]; }
           else { data.cell.styles.fillColor = [250, 220, 220]; data.cell.styles.textColor = [120, 30, 30]; }
         }
