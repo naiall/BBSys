@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cumulative Antibiogram · โรงพยาบาลเบตง</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css" rel="stylesheet">
+<style>
+:root {
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f7f7f5;
+  --color-bg-tertiary: #f0efea;
+  --color-border-tertiary: rgba(0,0,0,0.08);
+  --color-border-secondary: rgba(0,0,0,0.15);
+  --color-border-primary: rgba(0,0,0,0.25);
+  --color-text-primary: #1a1a1a;
+  --color-text-secondary: #5f5e5a;
+  --color-text-tertiary: #888780;
+  --color-text-warning: #854F0B;
+  --color-bg-warning: #FAEEDA;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --font-sans: 'IBM Plex Sans Thai', 'Inter', -apple-system, sans-serif;
+  --teal-dark: #0F6E56;
+  --teal-mid: #1d9e75;
+  --teal-light: #E1F5EE;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg-primary: #1a1a1a;
+    --color-bg-secondary: #242422;
+    --color-bg-tertiary: #2c2c2a;
+    --color-border-tertiary: rgba(255,255,255,0.1);
+    --color-border-secondary: rgba(255,255,255,0.18);
+    --color-border-primary: rgba(255,255,255,0.3);
+    --color-text-primary: #f0efea;
+    --color-text-secondary: #b4b2a9;
+    --color-text-tertiary: #888780;
+  }
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-sans);
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+  min-height: 100vh;
+  padding: 1rem;
+  -webkit-font-smoothing: antialiased;
+}
+.container { max-width: 1400px; margin: 0 auto; }
+
+/* HERO HEADER */
+.hero {
+  position: relative;
+  padding: 1.75rem 1.75rem 1.5rem;
+  border-radius: var(--border-radius-lg);
+  background: linear-gradient(135deg, #0F6E56 0%, #0a4d3d 100%);
+  color: #fff;
+  margin-bottom: 1.25rem;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.06);
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -60px; left: 25%;
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.04);
+}
+.hero-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+.hero-eyebrow {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  opacity: 0.75;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.hero-title {
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  margin-top: 6px;
+}
+.hero-sub {
+  font-size: 13px;
+  opacity: 0.85;
+  margin-top: 4px;
+}
+.hero-right { display: flex; gap: 10px; align-items: center; }
+.refresh-btn {
+  background: rgba(255,255,255,.12);
+  border: 0.5px solid rgba(255,255,255,.2);
+  color: #fff;
+  padding: 7px 14px;
+  border-radius: var(--border-radius-md);
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: inherit;
+  font-weight: 500;
+  transition: all 0.15s;
+}
+.refresh-btn:hover { background: rgba(255,255,255,.2); }
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  background: rgba(255,255,255,.15);
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+/* WARD TABS */
+.ward-tabs {
+  display: flex;
+  gap: 0;
+  background: var(--color-bg-secondary);
+  padding: 4px;
+  border-radius: var(--border-radius-md);
+  margin-bottom: 1rem;
+  width: fit-content;
+  border: 0.5px solid var(--color-border-tertiary);
+}
+.wtab {
+  padding: 7px 18px;
+  border: none;
+  background: transparent;
+  font-size: 13px;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: inherit;
+  font-weight: 500;
+  transition: all 0.12s;
+}
+.wtab.active {
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+.wtab i { font-size: 15px; }
+.wtab:hover:not(.active) { color: var(--color-text-primary); }
+
+/* FILTERS */
+.filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 10px;
+  margin-bottom: 1.25rem;
+  padding: 14px;
+  background: var(--color-bg-primary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-lg);
+}
+.f-cell { display: flex; flex-direction: column; gap: 5px; }
+.f-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.f-label i { font-size: 13px; color: var(--teal-mid); }
+.f-input {
+  font-size: 13px;
+  padding: 8px 10px;
+  height: 36px;
+  font-family: inherit;
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-md);
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  width: 100%;
+  transition: all 0.12s;
+}
+.f-input:hover { border-color: var(--color-border-secondary); }
+.f-input:focus {
+  outline: none;
+  border-color: var(--teal-dark);
+  box-shadow: 0 0 0 3px rgba(15,110,86,0.12);
+}
+
+/* METRIC CARDS */
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 1.25rem;
+}
+.metric {
+  background: var(--color-bg-primary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-lg);
+  padding: 14px 16px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.15s;
+}
+.metric:hover { border-color: var(--color-border-secondary); transform: translateY(-1px); }
+.metric-icon {
+  position: absolute;
+  top: 12px; right: 12px;
+  width: 30px; height: 30px;
+  border-radius: var(--border-radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+}
+.m-teal .metric-icon { background: #1d9e7518; color: #0F6E56; }
+.m-blue .metric-icon { background: #378ADD18; color: #185FA5; }
+.m-purple .metric-icon { background: #7F77DD18; color: #534AB7; }
+.m-amber .metric-icon { background: #EF9F2718; color: #854F0B; }
+.metric-label {
+  font-size: 10px;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.metric-value {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  line-height: 1;
+}
+.metric-sub {
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+  margin-top: 5px;
+}
+
+/* LEGEND */
+.legend-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.legend { display: flex; gap: 8px; flex-wrap: wrap; }
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  background: var(--color-bg-secondary);
+  padding: 4px 10px;
+  border-radius: var(--border-radius-md);
+}
+.legend-dot { width: 9px; height: 9px; border-radius: 2px; }
+.table-info { font-size: 11px; color: var(--color-text-tertiary); }
+
+/* TABLE */
+.table-wrap {
+  background: var(--color-bg-primary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+}
+.table-scroll { overflow: auto; max-height: 600px; }
+table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 12px; }
+thead th {
+  background: var(--color-bg-secondary);
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  font-size: 10px;
+  padding: 10px 7px;
+  text-align: center;
+  border-bottom: 0.5px solid var(--color-border-tertiary);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+thead th:first-child {
+  text-align: left;
+  min-width: 200px;
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  background: var(--color-bg-secondary);
+  padding-left: 16px;
+}
+thead th:nth-child(2) { min-width: 44px; }
+.group-bar { background: var(--color-bg-tertiary); border-bottom: 0.5px solid var(--color-border-tertiary); }
+.group-bar td {
+  padding: 5px 7px;
+  font-size: 9px;
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  text-align: center;
+  border: none;
+}
+.group-bar td:first-child {
+  text-align: left;
+  padding-left: 16px;
+  position: sticky;
+  left: 0;
+  background: var(--color-bg-tertiary);
+  z-index: 1;
+}
+tbody tr { transition: background 0.1s; }
+tbody tr:hover { background: var(--color-bg-secondary); }
+tbody td {
+  padding: 9px 7px;
+  border-bottom: 0.5px solid var(--color-border-tertiary);
+  text-align: center;
+  color: var(--color-text-primary);
+}
+tbody td:first-child {
+  text-align: left;
+  font-size: 13px;
+  font-weight: 500;
+  position: sticky;
+  left: 0;
+  background: var(--color-bg-primary);
+  z-index: 1;
+  white-space: nowrap;
+  padding-left: 16px;
+  padding-right: 12px;
+}
+tbody tr:hover td:first-child { background: var(--color-bg-secondary); }
+tbody td:nth-child(2) {
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  font-size: 11px;
+}
+tbody tr:last-child td { border-bottom: none; }
+
+/* SUSCEPTIBILITY PILLS */
+.sh {
+  border-radius: 4px;
+  padding: 3px 7px;
+  display: inline-block;
+  min-width: 42px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+  border: 0.5px solid transparent;
+}
+.sg { background: #1d9e7518; color: #0F6E56; border-color: #1d9e7530; }
+.sy { background: #ba751718; color: #854F0B; border-color: #ba751735; }
+.sr { background: #e24b4a18; color: #791F1F; border-color: #e24b4a35; }
+.sw { background: #EF9F2730; color: #854F0B; font-size: 10px; }
+.na { color: var(--color-text-tertiary); font-size: 11px; opacity: 0.4; }
+
+/* ORGANISM ROW */
+.org-name { display: flex; align-items: center; gap: 9px; }
+.org-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--teal-mid);
+}
+.org-dot.gram-neg { background: #E24B4A; }
+.org-dot.gram-pos { background: #378ADD; }
+.org-dot.warn { background: #EF9F27; }
+.org-italic { font-style: italic; }
+.warn-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 9px;
+  background: #EF9F2725;
+  color: #854F0B;
+  padding: 2px 6px;
+  border-radius: 3px;
+  margin-left: 6px;
+  font-weight: 600;
+}
+
+/* LOADING & ERROR */
+.loading-overlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  gap: 14px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+.spinner {
+  width: 30px; height: 30px;
+  border: 2.5px solid var(--color-border-tertiary);
+  border-top-color: var(--teal-mid);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.err {
+  background: #e24b4a10;
+  color: #791F1F;
+  border: 0.5px solid #e24b4a40;
+  border-radius: var(--border-radius-lg);
+  padding: 1.25rem;
+  font-size: 13px;
+  text-align: center;
+  margin: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.err i { font-size: 28px; color: #e24b4a; }
+
+.footer {
+  text-align: center;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+}
+.footer b { color: var(--color-text-secondary); }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-content">
+      <div>
+        <div class="hero-eyebrow"><i class="ti ti-virus"></i> Cumulative Antibiogram</div>
+        <div class="hero-title">โรงพยาบาลเบตง</div>
+        <div class="hero-sub">รายงานเปอร์เซ็นต์เชื้อที่ไวต่อยา · CLSI M39 Standard</div>
+      </div>
+      <div class="hero-right">
+        <span class="status-pill" id="connPill"><i class="ti ti-cloud-download"></i> กำลังโหลด</span>
+        <button class="refresh-btn" onclick="initLoad()"><i class="ti ti-refresh"></i> Refresh</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- WARD TABS -->
+  <div class="ward-tabs">
+    <button class="wtab active" onclick="setWard('all')" id="tab-all"><i class="ti ti-layout-grid"></i> ทั้งหมด</button>
+    <button class="wtab" onclick="setWard('ICU')" id="tab-ICU"><i class="ti ti-urgent"></i> ICU</button>
+    <button class="wtab" onclick="setWard('IPD')" id="tab-IPD"><i class="ti ti-building-hospital"></i> Non-ICU IPD</button>
+    <button class="wtab" onclick="setWard('OPD')" id="tab-OPD"><i class="ti ti-stethoscope"></i> OPD</button>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filters">
+    <div class="f-cell">
+      <span class="f-label"><i class="ti ti-calendar-event"></i> วันที่เริ่ม</span>
+      <input type="date" id="dateFrom" class="f-input" onchange="renderTable()">
+    </div>
+    <div class="f-cell">
+      <span class="f-label"><i class="ti ti-calendar-event"></i> วันที่สิ้นสุด</span>
+      <input type="date" id="dateTo" class="f-input" onchange="renderTable()">
+    </div>
+    <div class="f-cell">
+      <span class="f-label"><i class="ti ti-flask"></i> สิ่งส่งตรวจ</span>
+      <select id="specFilter" class="f-input" onchange="renderTable()">
+        <option value="all">ทั้งหมด</option>
+        <option value="BLOOD">Blood</option>
+        <option value="URINE">Urine</option>
+        <option value="SPUTUM">Sputum</option>
+        <option value="PUS">Pus</option>
+        <option value="BODY FLUID">Body Fluid</option>
+        <option value="STOOL">Stool</option>
+      </select>
+    </div>
+    <div class="f-cell">
+      <span class="f-label"><i class="ti ti-search"></i> ค้นหาเชื้อ</span>
+      <input type="text" id="orgFilter" class="f-input" placeholder="e.g. E. coli" oninput="renderTable()">
+    </div>
+    <div class="f-cell">
+      <span class="f-label"><i class="ti ti-filter"></i> CLSI Filter</span>
+      <select id="minN" class="f-input" onchange="renderTable()">
+        <option value="1">ทุกเชื้อ</option>
+        <option value="10">≥10 isolates</option>
+        <option value="30" selected>≥30 isolates</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- METRICS -->
+  <div id="metrics" class="metric-grid"></div>
+
+  <!-- LEGEND -->
+  <div class="legend-row">
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#1d9e75"></div>≥90% Susceptible</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#ba7517"></div>70–89%</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#e24b4a"></div>&lt;70%</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#EF9F27"></div>n&lt;30 (ระวัง)</div>
+    </div>
+    <div class="table-info" id="tableInfo"></div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-wrap">
+    <div class="table-scroll" id="tableArea">
+      <div class="loading-overlay">
+        <div class="spinner"></div>
+        <div>กำลังเชื่อมต่อ Google Sheets...</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <b>Cumulative Antibiogram Dashboard</b> · โรงพยาบาลเบตง · ตามมาตรฐาน CLSI M39<br>
+    ใช้กฎ First isolate per patient · แสดงเฉพาะผล Susceptible (S) · ระวังการตีความข้อมูลที่มี n &lt; 30
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script>
+// ============ CONFIG ============
+const SHEET_ID = '1XbcDgw-jdFTn0q01GEyPKomqke62NI87VyjYXQpJmAY';
+const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
+
+const ABX_COLS = ['Amikacin','Amoxicillin/Clavulanate','Ampicillin','Ampicillin/Sulbactam',
+  'Cefazolin','Cefepime','Cefoperazone/Sulbactam','Cefotaxime','Cefoxitin','Ceftazidime',
+  'Ceftriaxone','Cefuroxime','Chloramphenicol','Ciprofloxacin','Clindamycin','Co-Trimoxazole',
+  'Ertapenem','Erythromycin','Gentamicin','Imipenem','Levofloxacin','Meropenem',
+  'Norfloxacin','Oxacillin','Penicillin','Piperacillin/Tazobactam','Tetracycline',
+  'Vancomycin','Gentamicin High Dose (120)','Teicoplanin','Methicillin','Cephalothin','Piperacillin'];
+
+const SHORT = {
+  'Amikacin':'AMK','Amoxicillin/Clavulanate':'AMC','Ampicillin':'AMP','Ampicillin/Sulbactam':'SAM',
+  'Cefazolin':'CZO','Cefepime':'FEP','Cefoperazone/Sulbactam':'SCF','Cefotaxime':'CTX',
+  'Cefoxitin':'FOX','Ceftazidime':'CAZ','Ceftriaxone':'CRO','Cefuroxime':'CXM',
+  'Chloramphenicol':'CHL','Ciprofloxacin':'CIP','Clindamycin':'CLI','Co-Trimoxazole':'SXT',
+  'Ertapenem':'ETP','Erythromycin':'ERY','Gentamicin':'GEN','Imipenem':'IPM',
+  'Levofloxacin':'LVX','Meropenem':'MEM','Norfloxacin':'NOR','Oxacillin':'OXA',
+  'Penicillin':'PEN','Piperacillin/Tazobactam':'TZP','Tetracycline':'TET',
+  'Vancomycin':'VAN','Gentamicin High Dose (120)':'HLG','Teicoplanin':'TEC',
+  'Methicillin':'MET','Cephalothin':'CEP','Piperacillin':'PIP'
+};
+
+const ABX_GROUP = {
+  'β-Lactam':['AMP','AMC','SAM','TZP','CZO','CXM','FOX','CTX','CAZ','CRO','FEP','SCF','ETP','IPM','MEM','OXA','PEN','CEP','PIP','MET'],
+  'Quinolone':['CIP','LVX','NOR'],
+  'Aminoglycoside':['AMK','GEN','HLG'],
+  'Miscellaneous':['VAN','CLI','ERY','CHL','SXT','TET','TEC']
+};
+
+const GRAM_NEG = ['Escherichia','Klebsiella','Pseudomonas','Acinetobacter','Proteus','Enterobacter','Citrobacter','Salmonella','Serratia','Stenotrophomonas','Morganella','Plesiomonas','Haemophilus','Providencia','Neisseria','Edwardsiella','Pasteurella','Sphingomonas','Ralstonia'];
+const GRAM_POS = ['Staphylococ','Streptococ','Enterococ','Corynebacter','Bacillus','Micrococcus','Group'];
+
+function gramClass(org) {
+  const o = org || '';
+  if (GRAM_NEG.some(g => o.includes(g))) return 'gram-neg';
+  if (GRAM_POS.some(g => o.includes(g))) return 'gram-pos';
+  return '';
+}
+
+// ============ STATE ============
+let rawRows = [];
+let currentWard = 'all';
+
+// ============ LOADING ============
+async function initLoad() {
+  const pill = document.getElementById('connPill');
+  pill.innerHTML = '<i class="ti ti-cloud-download"></i> กำลังโหลด';
+  document.getElementById('tableArea').innerHTML = '<div class="loading-overlay"><div class="spinner"></div><div>กำลังโหลดข้อมูลจาก Google Sheets...</div></div>';
+
+  const t0 = performance.now();
+  try {
+    const resp = await fetch(CSV_URL);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const text = await resp.text();
+    const result = Papa.parse(text, { header: true, skipEmptyLines: true });
+    rawRows = result.data;
+    const elapsed = Math.round(performance.now() - t0);
+
+    pill.innerHTML = `<i class="ti ti-cloud-check"></i> ${rawRows.length.toLocaleString()} records · ${elapsed}ms`;
+
+    setDateRange();
+    renderTable();
+  } catch(e) {
+    pill.innerHTML = '<i class="ti ti-alert-circle"></i> โหลดไม่สำเร็จ';
+    document.getElementById('tableArea').innerHTML = `
+      <div class="err">
+        <i class="ti ti-alert-triangle"></i>
+        <div><b>ไม่สามารถโหลดข้อมูลได้:</b> ${e.message}</div>
+        <small>กรุณาตรวจสอบว่า Google Sheets ตั้งค่า "Anyone with the link can view" แล้ว</small>
+      </div>`;
+  }
+}
+
+function setDateRange() {
+  const dates = rawRows.map(r => parseDate(r.Date || r.date)).filter(Boolean).sort((a,b)=>a-b);
+  if (!dates.length) return;
+  const fmt = d => d.toISOString().split('T')[0];
+  document.getElementById('dateFrom').value = fmt(dates[0]);
+  document.getElementById('dateTo').value = fmt(dates[dates.length-1]);
+}
+
+function parseDate(s) {
+  if (!s) return null;
+  const p = s.split('/');
+  if (p.length === 3) {
+    let [d,m,y] = p;
+    if (y.length === 4 && parseInt(y) > 2400) y = String(parseInt(y) - 543);
+    return new Date(`${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`);
+  }
+  return null;
+}
+
+function getWardType(row) {
+  const wn = (row.ward_name || row.Word_name || '').toLowerCase();
+  const w  = (row.ward || '').toUpperCase();
+  if (wn.includes('icu')) return 'ICU';
+  if (w === 'IPD') return 'IPD';
+  return 'OPD';
+}
+
+// ============ CLSI M39 LOGIC ============
+function calcAntibiogram(rows) {
+  // First isolate per patient (HN + organism unique within date range)
+  const firstMap = {};
+  rows.forEach(row => {
+    const hn = row.HN || row.hn || '';
+    const org = row.organism || row.Organism || '';
+    if (!hn || !org) return;
+    const key = `${hn}||${org}`;
+    if (firstMap[key]) return;
+    firstMap[key] = row;
+  });
+
+  // Calculate %S per antibiotic per organism
+  const orgData = {};
+  Object.values(firstMap).forEach(row => {
+    const org = row.organism || row.Organism || '';
+    if (!orgData[org]) orgData[org] = { n: 0, abx: {} };
+    orgData[org].n++;
+    ABX_COLS.forEach(ab => {
+      const val = (row[ab] || '').trim().toUpperCase();
+      if (val !== 'S' && val !== 'I' && val !== 'R') return;
+      const sh = SHORT[ab] || ab;
+      if (!orgData[org].abx[sh]) orgData[org].abx[sh] = { s: 0, total: 0 };
+      orgData[org].abx[sh].total++;
+      if (val === 'S') orgData[org].abx[sh].s++;
+    });
+  });
+
+  return Object.entries(orgData).map(([org, d]) => ({
+    organism: org, n: d.n,
+    abx: Object.fromEntries(Object.entries(d.abx).map(([ab, c]) => [ab, { pct: (c.s/c.total)*100, tested: c.total }]))
+  }));
+}
+
+function setWard(w) {
+  currentWard = w;
+  ['all','ICU','IPD','OPD'].forEach(t => document.getElementById('tab-'+t).classList.toggle('active', t===w));
+  renderTable();
+}
+
+// ============ RENDERING ============
+function renderTable() {
+  if (!rawRows.length) return;
+
+  const dateFrom = document.getElementById('dateFrom').value;
+  const dateTo   = document.getElementById('dateTo').value;
+  const spec     = document.getElementById('specFilter').value;
+  const orgQ     = document.getElementById('orgFilter').value.toLowerCase();
+  const minN     = parseInt(document.getElementById('minN').value);
+
+  const dfrom = dateFrom ? new Date(dateFrom) : null;
+  const dto   = dateTo   ? new Date(dateTo)   : null;
+
+  let rows = rawRows.filter(r => {
+    const ward = getWardType(r);
+    if (currentWard !== 'all' && ward !== currentWard) return false;
+    const sp = (r.specimen || r.Specimen || '').toUpperCase();
+    if (spec !== 'all' && sp !== spec) return false;
+    const d = parseDate(r.Date || r.date);
+    if (d) {
+      if (dfrom && d < dfrom) return false;
+      if (dto   && d > dto)   return false;
+    }
+    return true;
+  });
+
+  const antibiogram = calcAntibiogram(rows).filter(r => {
+    if (orgQ && !r.organism.toLowerCase().includes(orgQ)) return false;
+    return true;
+  }).sort((a,b) => b.n - a.n);
+
+  const shown = antibiogram.filter(r => r.n >= minN);
+  const totalN = shown.reduce((s,r) => s+r.n, 0);
+  const reliableN = shown.filter(r=>r.n>=30).length;
+
+  // Metric cards
+  document.getElementById('metrics').innerHTML = `
+    <div class="metric m-teal">
+      <div class="metric-icon"><i class="ti ti-bacteria"></i></div>
+      <div class="metric-label">First Isolates</div>
+      <div class="metric-value">${totalN.toLocaleString()}</div>
+      <div class="metric-sub">หลัง dedup ตาม HN+เชื้อ</div>
+    </div>
+    <div class="metric m-blue">
+      <div class="metric-icon"><i class="ti ti-microscope"></i></div>
+      <div class="metric-label">Organisms</div>
+      <div class="metric-value">${shown.length}</div>
+      <div class="metric-sub">ชนิดเชื้อที่แสดง</div>
+    </div>
+    <div class="metric m-purple">
+      <div class="metric-icon"><i class="ti ti-shield-check"></i></div>
+      <div class="metric-label">CLSI Reliable</div>
+      <div class="metric-value">${reliableN}</div>
+      <div class="metric-sub">เชื้อที่มี ≥30 isolates</div>
+    </div>
+    <div class="metric m-amber">
+      <div class="metric-icon"><i class="ti ti-database"></i></div>
+      <div class="metric-label">Raw Records</div>
+      <div class="metric-value">${rows.length.toLocaleString()}</div>
+      <div class="metric-sub">ในช่วงวันที่เลือก</div>
+    </div>
+  `;
+
+  // Determine which antibiotic columns to show
+  const allSh = Object.values(ABX_GROUP).flat();
+  const usedSh = allSh.filter(sh => shown.some(r => r.abx[sh] !== undefined));
+
+  // Group header mapping
+  const groupOf = {};
+  usedSh.forEach(sh => {
+    for (const [gname, abs] of Object.entries(ABX_GROUP)) {
+      if (abs.includes(sh)) { groupOf[sh] = gname; break; }
+    }
+  });
+
+  // Build table HTML
+  let html = '<table><thead><tr>';
+  html += '<th>Organism</th><th>N</th>';
+  usedSh.forEach(sh => html += `<th title="${sh}">${sh}</th>`);
+  html += '</tr></thead><tbody>';
+
+  // Group header row
+  html += '<tr class="group-bar"><td></td><td></td>';
+  let spans = [];
+  let lastG = null;
+  usedSh.forEach(sh => {
+    const g = groupOf[sh];
+    if (g !== lastG) { spans.push({g, count: 1}); lastG = g; }
+    else spans[spans.length-1].count++;
+  });
+  spans.forEach(s => html += `<td colspan="${s.count}">${s.g||''}</td>`);
+  html += '</tr>';
+
+  // Data rows
+  shown.forEach(row => {
+    const warn = row.n < 30;
+    const gc = warn ? 'warn' : gramClass(row.organism);
+    html += '<tr>';
+    html += `<td><div class="org-name"><div class="org-dot ${gc}"></div><span><span class="org-italic">${row.organism}</span>${warn?'<span class="warn-badge"><i class="ti ti-alert-triangle"></i>n<30</span>':''}</span></div></td>`;
+    html += `<td>${row.n}</td>`;
+    usedSh.forEach(sh => {
+      const val = row.abx[sh];
+      if (!val) { html += `<td><span class="na">—</span></td>`; return; }
+      const p = Math.round(val.pct);
+      const cls = warn ? 'sw' : p >= 90 ? 'sg' : p >= 70 ? 'sy' : 'sr';
+      html += `<td><span class="sh ${cls}" title="${val.s ?? '?'}/${val.tested} S">${p}%</span></td>`;
+    });
+    html += '</tr>';
+  });
+
+  if (!shown.length) {
+    html += `<tr><td colspan="${usedSh.length+2}" style="padding:3rem;text-align:center;color:var(--color-text-tertiary)">
+      <i class="ti ti-mood-empty" style="font-size:28px;display:block;margin-bottom:8px"></i>
+      ไม่พบข้อมูลที่ตรงเงื่อนไข</td></tr>`;
+  }
+  html += '</tbody></table>';
+  document.getElementById('tableArea').innerHTML = html;
+
+  document.getElementById('tableInfo').textContent = `แสดง ${shown.length} เชื้อ · ${usedSh.length} ยา · เรียงตามจำนวน isolates`;
+}
+
+// ============ INIT ============
+initLoad();
+</script>
+</body>
+</html>
