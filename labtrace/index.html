@@ -576,22 +576,20 @@ function updateGHUrlPreview() {
 
 // ==================== LOAD DATA ====================
 async function loadData() {
-  showBanner('loading');
   showTableState('loading');
-
   if (!GAS_URL) {
-    await delay(600);
+    await delay(400);
     allEq = DEMO;
     showBanner('no-url');
     renderAll();
     return;
   }
-
+  showBanner('connecting');
   try {
-    const data = await fetchJSONP(GAS_URL + '?action=getAll');
+    const data = await fetchJSONP(GAS_URL + '?action=getAll', 12000);
     if (Array.isArray(data)) {
-      allEq = data.length ? data : DEMO;
-      showBanner(data.length ? 'ok' : 'no-url');
+      allEq = data.length ? data : [];
+      showBanner('ok');
     } else {
       throw new Error(data.msg || 'รูปแบบข้อมูลไม่ถูกต้อง');
     }
@@ -615,13 +613,19 @@ function showBanner(type, msg='') {
   document.getElementById('conn-banner').style.display = 'none';
   document.getElementById('conn-ok').style.display     = 'none';
   document.getElementById('conn-err').style.display    = 'none';
-  if (type==='no-url')  document.getElementById('conn-banner').style.display = 'flex';
-  if (type==='ok')      document.getElementById('conn-ok').style.display     = 'flex';
+  if (type==='no-url') {
+    document.getElementById('conn-banner').style.display = 'flex';
+    document.getElementById('conn-msg').textContent = 'ยังไม่ได้ตั้งค่า GAS URL — กำลังใช้ข้อมูลตัวอย่าง';
+  }
+  if (type==='connecting') {
+    document.getElementById('conn-banner').style.display = 'flex';
+    document.getElementById('conn-msg').textContent = '⏳ กำลังเชื่อมต่อ Google Sheets...';
+  }
+  if (type==='ok') document.getElementById('conn-ok').style.display = 'flex';
   if (type==='error') {
-    document.getElementById('conn-err-msg').textContent = 'เชื่อมต่อ GAS ล้มเหลว — ' + msg + ' (ใช้ข้อมูล Demo)';
+    document.getElementById('conn-err-msg').textContent = 'เชื่อมต่อ GAS ล้มเหลว — ' + msg;
     document.getElementById('conn-err').style.display  = 'flex';
   }
-  // ซ่อน banner บน form page
   document.getElementById('form-banner').style.display = GAS_URL ? 'none' : 'flex';
 }
 
@@ -849,17 +853,30 @@ function openSettings(){
 async function saveGASUrl(){
   const url=document.getElementById('gas-url-input').value.trim();
   if(!url){toast('กรุณากรอก URL','fa-triangle-exclamation',true);return;}
+  if(!url.startsWith('https://script.google.com/macros/')){
+    toast('URL ต้องขึ้นต้นด้วย script.google.com/macros/','fa-triangle-exclamation',true);return;
+  }
   const testEl=document.getElementById('gas-test-result');
-  testEl.style.color='var(--text3)';testEl.textContent='⏳ กำลังทดสอบการเชื่อมต่อ...';
+  // บันทึกก่อนเสมอ
+  GAS_URL=url;
+  localStorage.setItem(CFG_KEY,GAS_URL);
+  testEl.style.color='var(--text3)';testEl.textContent='⏳ กำลังทดสอบ...';
   try{
-    const d=await fetchJSONP(url+'?action=getAll',8000);
-    if(Array.isArray(d)||d.ok!==false){
-      GAS_URL=url;localStorage.setItem(CFG_KEY,GAS_URL);
-      testEl.style.color='#5DCAA5';testEl.textContent='✅ เชื่อมต่อสำเร็จ!';
-      setTimeout(()=>{document.getElementById('modal-settings').classList.remove('open');loadData();},1000);
-    } else throw new Error(d.msg||'bad response');
+    const d=await fetchJSONP(url+'?action=getAll',10000);
+    if(Array.isArray(d)){
+      testEl.style.color='#5DCAA5';
+      testEl.textContent='✅ เชื่อมต่อสำเร็จ! พบข้อมูล '+d.length+' รายการ';
+    } else {
+      testEl.style.color='#5DCAA5';
+      testEl.textContent='✅ บันทึก URL แล้ว (Sheet ว่าง — รัน initSheets() ก่อน)';
+    }
+    setTimeout(()=>{document.getElementById('modal-settings').classList.remove('open');loadData();},1200);
   } catch(e){
-    testEl.style.color='var(--red2)';testEl.textContent='❌ '+e.message;
+    // URL บันทึกแล้ว แต่ JSONP ยังทดสอบไม่ผ่าน
+    testEl.style.color='var(--amber2)';
+    testEl.textContent='⚠️ บันทึก URL แล้ว แต่ทดสอบไม่ผ่าน — Who has access อาจยังผิด';
+    // ปิด modal และโหลดต่อเพื่อให้เห็น banner error จริง
+    setTimeout(()=>{document.getElementById('modal-settings').classList.remove('open');loadData();},2000);
   }
 }
 
