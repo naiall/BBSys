@@ -560,13 +560,13 @@ async function postGAS(data) {
 // ==================== INIT ====================
 function init() {
   const p = new URLSearchParams(window.location.search);
-  if (p.get('scan')) {
+  const scanVal = p.get('scan');
+  if (scanVal) {
     showSec('scan'); setActive(document.querySelectorAll('.nav-link')[1]);
-    document.getElementById('scan-in').value = p.get('scan');
-    setTimeout(doScan, 300);
+    document.getElementById('scan-in').value = scanVal;
   }
   updateGHUrlPreview();
-  loadData();
+  loadData().then(() => { if (scanVal) doScan(); });
 }
 
 function updateGHUrlPreview() {
@@ -599,6 +599,7 @@ async function loadData() {
     showBanner('error', e.message);
   }
   renderAll();
+  return allEq;
 }
 
 function delay(ms){ return new Promise(r=>setTimeout(r,ms)); }
@@ -659,7 +660,7 @@ function renderTable() {
       <td><div style="display:flex;align-items:center;gap:9px"><span style="font-size:20px">${eq.icon||'🔧'}</span><div><div class="eq-name">${esc(eq.name)}</div><div class="eq-model">${esc(eq.type||'')}</div></div></div></td>
       <td><span style="font-family:var(--mono);font-size:11px;color:#5DCAA5">${esc(eq.sn)}</span></td>
       <td>${badgeHTML(eq.status)}</td>
-      <td><span style="font-size:12px;color:var(--text2)">${eq.calNext||'—'}</span></td>
+      <td><span style="font-size:12px;color:var(--text2)">${fmtDate(eq.calNext)}</span></td>
       <td><span style="font-size:13px;letter-spacing:2px">${links||'—'}</span></td>
       <td><div style="display:flex;gap:5px">
         <button class="ibtn" onclick="event.stopPropagation();openDetail('${esc(eq.sn)}')" title="รายละเอียด"><i class="fas fa-eye"></i></button>
@@ -720,8 +721,8 @@ function openDetail(sn){
   document.getElementById('m-serial').textContent='S/N: '+eq.sn;
   document.getElementById('m-status').innerHTML=badgeHTML(eq.status);
   document.getElementById('m-loc').textContent=eq.location||'—';
-  document.getElementById('m-caldate').textContent=eq.calDate||'—';
-  document.getElementById('m-calnext').textContent=eq.calNext||'—';
+  document.getElementById('m-caldate').textContent=fmtDate(eq.calDate);
+  document.getElementById('m-calnext').textContent=fmtDate(eq.calNext);
 
   const defs=[
     {key:'manual', cls:'teal', icon:'fa-book-open',      t:'คู่มือการใช้งาน',   d:'User / Service Manual'},
@@ -794,7 +795,7 @@ function doScan(){
   }
   const defs=[{key:'manual',cls:'teal',icon:'fa-book-open',t:'คู่มือการใช้งาน',d:'Manual & Reference'},{key:'cal',cls:'amber',icon:'fa-certificate',t:'ใบสอบเทียบ',d:'Digital Traceability'},{key:'checklist',cls:'blue',icon:'fa-clipboard-check',t:'ฟอร์มตรวจสอบ',d:'Daily Checklist'},{key:'repair',cls:'red',icon:'fa-wrench',t:'แจ้งซ่อม',d:'Repair Request'}];
   const btns=defs.filter(d=>eq[d.key]);
-  res.innerHTML=`<div class="scan-card"><div class="scan-img-area">${eq.icon||'🔧'}</div><div class="scan-info"><div class="scan-eq-name">${esc(eq.name)}</div><div class="scan-meta">${esc(eq.model)} · ${esc(eq.type||'')}</div><div class="scan-chips"><div class="sch">S/N: <span>${esc(eq.sn)}</span></div><div class="sch">สถานะ: <span>${statusLabel(eq.status)}</span></div><div class="sch">ห้อง: <span>${esc(eq.location||'—')}</span></div>${eq.calNext?`<div class="sch">สอบเทียบ: <span>${eq.calNext}</span></div>`:''}</div><div class="scan-btns">${btns.length?btns.map(b=>`<a class="sbtn" href="${esc(eq[b.key])}" target="_blank" rel="noopener"><div class="sbtn-icon ${b.cls}"><i class="fas ${b.icon}"></i></div><div class="sbtn-txt"><div class="sbtn-t">${b.t}</div><div class="sbtn-d">${b.d}</div></div><i class="fas fa-arrow-up-right-from-square sbtn-arr"></i></a>`).join(''):'<div style="text-align:center;padding:1rem;color:var(--text3);font-size:12px">ยังไม่มีลิงก์ข้อมูลประกอบ</div>'}</div>${eq.note?`<div style="margin-top:.9rem;padding:9px 13px;background:var(--bg-card2);border-radius:8px;font-size:12px;color:var(--text2);border:1px solid var(--border-s)"><i class="fas fa-info-circle" style="color:#5DCAA5;margin-right:5px"></i>${esc(eq.note)}</div>`:''}</div></div>`;
+  res.innerHTML=`<div class="scan-card"><div class="scan-img-area">${eq.icon||'🔧'}</div><div class="scan-info"><div class="scan-eq-name">${esc(eq.name)}</div><div class="scan-meta">${esc(eq.model)} · ${esc(eq.type||'')}</div><div class="scan-chips"><div class="sch">S/N: <span>${esc(eq.sn)}</span></div><div class="sch">สถานะ: <span>${statusLabel(eq.status)}</span></div><div class="sch">ห้อง: <span>${esc(eq.location||'—')}</span></div>${eq.calNext?`<div class="sch">สอบเทียบ: <span>${fmtDate(eq.calNext)}</span></div>`:''}</div><div class="scan-btns">${btns.length?btns.map(b=>`<a class="sbtn" href="${esc(eq[b.key])}" target="_blank" rel="noopener"><div class="sbtn-icon ${b.cls}"><i class="fas ${b.icon}"></i></div><div class="sbtn-txt"><div class="sbtn-t">${b.t}</div><div class="sbtn-d">${b.d}</div></div><i class="fas fa-arrow-up-right-from-square sbtn-arr"></i></a>`).join(''):'<div style="text-align:center;padding:1rem;color:var(--text3);font-size:12px">ยังไม่มีลิงก์ข้อมูลประกอบ</div>'}</div>${eq.note?`<div style="margin-top:.9rem;padding:9px 13px;background:var(--bg-card2);border-radius:8px;font-size:12px;color:var(--text2);border:1px solid var(--border-s)"><i class="fas fa-info-circle" style="color:#5DCAA5;margin-right:5px"></i>${esc(eq.note)}</div>`:''}</div></div>`;
 }
 
 // ==================== FORM ====================
@@ -893,6 +894,24 @@ function toast(msg,icon='fa-check-circle',err=false){
   t.classList.add('show');
   clearTimeout(t._t);
   t._t=setTimeout(()=>t.classList.remove('show'),3500);
+}
+
+function fmtDate(d) {
+  if (!d) return '—';
+  try {
+    const s = String(d).trim();
+    // รูปแบบ YYYY-MM-DD
+    if (/^\d{4}-\d{2}-\d{2}/.test(s)) {
+      const [y,m,day] = s.split('-');
+      return day+'/'+m+'/'+y;
+    }
+    // รูปแบบอื่น เช่น Date string จาก GAS
+    const dt = new Date(s);
+    if (!isNaN(dt.getTime())) {
+      return String(dt.getDate()).padStart(2,'0')+'/'+String(dt.getMonth()+1).padStart(2,'0')+'/'+dt.getFullYear();
+    }
+    return s;
+  } catch(e) { return d; }
 }
 
 init();
