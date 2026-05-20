@@ -489,8 +489,10 @@ textarea{resize:vertical;min-height:75px}
 
 <script>
 // ==================== CONFIG ====================
+// แก้เป็น — ใส่ URL ตายตัว
 const CFG_KEY = 'labtrace_gas_url_v2';
-let GAS_URL   = localStorage.getItem(CFG_KEY) || '';
+let GAS_URL   = localStorage.getItem(CFG_KEY) 
+             || 'https://script.google.com/macros/s/AKfycbx-O7wquRo5d9ogdzKUDgAXbh3xlWXvT0EcVFCXhRv7A67BfMK13vhSCRVB5AitomJY/exec';
 let allEq     = [];
 let curFilter = 'all';
 let searchQ   = '';
