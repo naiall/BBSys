@@ -8,27 +8,14 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-:root {
-  --bg:#0A1628;--bg-card:#0F1E35;--bg-card2:#162844;--bg-card3:#1A3050;
-  --border:rgba(29,158,117,.2);--border-s:rgba(255,255,255,.06);
-  --text:#E8F4F0;--text2:#8BAAA0;--text3:#4D6B64;
-  --accent:#1D9E75;--accent-g:rgba(29,158,117,.15);
-  --amber:#EF9F27;--amber2:#FAC775;--amber-g:rgba(239,159,39,.12);
-  --red:#E24B4A;--red2:#F09595;--red-g:rgba(226,75,74,.12);
-  --blue:#378ADD;--blue2:#B5D4F4;--blue-g:rgba(55,138,221,.12);
-  --font:'IBM Plex Sans Thai',sans-serif;
-  --mono:'IBM Plex Mono',monospace;
-  --display:'Space Grotesk',sans-serif;
-  --r:12px;--rl:18px;--rxl:24px;
-}
+:root{--bg:#0A1628;--bg-card:#0F1E35;--bg-card2:#162844;--bg-card3:#1A3050;--border:rgba(29,158,117,.2);--border-s:rgba(255,255,255,.06);--text:#E8F4F0;--text2:#8BAAA0;--text3:#4D6B64;--accent:#1D9E75;--ag:rgba(29,158,117,.15);--amber:#EF9F27;--amber2:#FAC775;--ambg:rgba(239,159,39,.12);--red:#E24B4A;--red2:#F09595;--rbg:rgba(226,75,74,.12);--blue:#378ADD;--blue2:#B5D4F4;--bbg:rgba(55,138,221,.12);--font:'IBM Plex Sans Thai',sans-serif;--mono:'IBM Plex Mono',monospace;--disp:'Space Grotesk',sans-serif;--r:12px;--rl:18px;--rxl:24px}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;font-size:15px;line-height:1.65}
 body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(29,158,117,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(29,158,117,.04) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
 
-/* NAV */
 nav{position:fixed;top:0;left:0;right:0;height:60px;background:rgba(10,22,40,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border-s);display:flex;align-items:center;padding:0 1.5rem;z-index:100;gap:.75rem}
-.nav-logo{display:flex;align-items:center;gap:9px;font-family:var(--display);font-weight:700;font-size:17px;letter-spacing:-.3px;color:var(--text);text-decoration:none}
+.nav-logo{display:flex;align-items:center;gap:9px;font-family:var(--disp);font-weight:700;font-size:17px;letter-spacing:-.3px;color:var(--text);text-decoration:none;cursor:pointer;border:none;background:none}
 .nav-logo-icon{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;flex-shrink:0}
 .nav-badge{font-size:10px;font-family:var(--mono);background:rgba(29,158,117,.15);color:#5DCAA5;border:1px solid rgba(29,158,117,.3);padding:2px 8px;border-radius:100px;letter-spacing:.5px}
 .nav-links{display:flex;align-items:center;gap:0;margin-left:auto}
@@ -38,66 +25,51 @@ nav{position:fixed;top:0;left:0;right:0;height:60px;background:rgba(10,22,40,.92
 .nav-btn{display:flex;align-items:center;gap:7px;background:var(--accent);color:#fff;border:none;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:var(--font);transition:all .2s;margin-left:8px}
 .nav-btn:hover{background:#1a8f68;transform:translateY(-1px)}
 
-/* PAGE */
 .page{position:relative;z-index:1;padding-top:60px}
 .page-section{display:none}.page-section.active{display:block}
-
-/* CONTAINER */
 .container{max-width:1280px;margin:0 auto;padding:2rem 1.5rem}
 
-/* HERO HEADER */
 .page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.75rem;gap:1rem;flex-wrap:wrap}
-.page-title-row{}
 .page-eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:#5DCAA5;font-family:var(--mono);margin-bottom:5px}
-.page-title{font-family:var(--display);font-size:clamp(20px,2.5vw,28px);font-weight:700;letter-spacing:-.4px;color:var(--text);line-height:1.2}
+.page-title{font-family:var(--disp);font-size:clamp(20px,2.5vw,28px);font-weight:700;letter-spacing:-.4px;color:var(--text);line-height:1.2}
 .page-sub{font-size:13px;color:var(--text2);margin-top:3px}
 .page-acts{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
 
-/* BUTTONS */
 .btn{display:inline-flex;align-items:center;gap:7px;border:none;padding:9px 18px;border-radius:9px;font-size:13px;font-weight:500;cursor:pointer;font-family:var(--font);transition:all .2s;text-decoration:none}
 .btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:#1a8f68;transform:translateY(-1px)}
 .btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border-s)}.btn-ghost:hover{background:rgba(255,255,255,.05);color:var(--text)}
 .btn-sm{padding:6px 13px;font-size:12px}
 
-/* STATS */
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-bottom:1.75rem}
 .stat-card{background:var(--bg-card);border:1px solid var(--border-s);border-radius:var(--rl);padding:1.15rem 1.4rem;position:relative;overflow:hidden;transition:transform .2s,border-color .2s}
 .stat-card:hover{transform:translateY(-2px);border-color:var(--border)}
 .stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
-.stat-card.teal::before{background:var(--accent)}
-.stat-card.amber::before{background:var(--amber)}
-.stat-card.red::before{background:var(--red)}
-.stat-card.blue::before{background:var(--blue)}
+.stat-card.teal::before{background:var(--accent)}.stat-card.amber::before{background:var(--amber)}.stat-card.red::before{background:var(--red)}.stat-card.blue::before{background:var(--blue)}
 .stat-lbl{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);font-family:var(--mono);margin-bottom:8px}
-.stat-val{font-family:var(--display);font-size:30px;font-weight:700;line-height:1;margin-bottom:4px}
+.stat-val{font-family:var(--disp);font-size:30px;font-weight:700;line-height:1;margin-bottom:4px}
 .stat-card.teal .stat-val{color:#5DCAA5}.stat-card.amber .stat-val{color:var(--amber2)}.stat-card.red .stat-val{color:var(--red2)}.stat-card.blue .stat-val{color:var(--blue2)}
 .stat-desc{font-size:11px;color:var(--text3)}
 .stat-icon{position:absolute;top:.9rem;right:1.2rem;font-size:26px;opacity:.1}
 
-/* MAIN GRID */
 .main-grid{display:grid;grid-template-columns:1fr 330px;gap:18px}
 .sidebar{display:flex;flex-direction:column;gap:14px}
 
-/* PANEL */
 .panel{background:var(--bg-card);border:1px solid var(--border-s);border-radius:var(--rl);overflow:hidden}
 .panel-hd{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 1.4rem;border-bottom:1px solid var(--border-s)}
-.panel-title{font-family:var(--display);font-size:14px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px}
+.panel-title{font-family:var(--disp);font-size:14px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px}
 .pticon{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px}
-.pticon.teal{background:var(--accent-g);color:#5DCAA5}.pticon.amber{background:var(--amber-g);color:var(--amber2)}.pticon.blue{background:var(--blue-g);color:var(--blue2)}
+.pticon.teal{background:var(--ag);color:#5DCAA5}.pticon.amber{background:var(--ambg);color:var(--amber2)}.pticon.blue{background:var(--bbg);color:var(--blue2)}
 
-/* SEARCH */
 .sw{position:relative;display:flex;align-items:center}
 .sw i{position:absolute;left:10px;font-size:12px;color:var(--text3);pointer-events:none}
 .si{background:rgba(255,255,255,.04);border:1px solid var(--border-s);border-radius:8px;padding:7px 12px 7px 32px;font-size:12px;color:var(--text);font-family:var(--font);width:200px;outline:none;transition:all .2s}
 .si:focus{border-color:rgba(29,158,117,.4);background:rgba(255,255,255,.06)}
 .si::placeholder{color:var(--text3)}
 
-/* FILTER TABS */
-.ftabs{display:flex;padding:.85rem 1.4rem 0;border-bottom:1px solid var(--border-s);gap:0}
+.ftabs{display:flex;padding:.85rem 1.4rem 0;border-bottom:1px solid var(--border-s)}
 .ftab{background:transparent;border:none;padding:7px 14px;font-size:12px;font-weight:500;font-family:var(--font);color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .2s}
 .ftab:hover{color:var(--text2)}.ftab.active{color:#5DCAA5;border-bottom-color:var(--accent)}
 
-/* TABLE */
 .eq-table{width:100%;border-collapse:collapse}
 .eq-table thead tr{border-bottom:1px solid var(--border-s)}
 .eq-table th{text-align:left;padding:9px 14px;font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);font-family:var(--mono);font-weight:500;white-space:nowrap}
@@ -108,31 +80,25 @@ nav{position:fixed;top:0;left:0;right:0;height:60px;background:rgba(10,22,40,.92
 .eq-name{font-weight:500;font-size:13px;color:var(--text);margin-bottom:1px}
 .eq-model{font-size:11px;color:var(--text3);font-family:var(--mono)}
 
-/* BADGE */
 .badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:100px;font-size:11px;font-weight:500;white-space:nowrap}
 .badge::before{content:'';width:5px;height:5px;border-radius:50%;display:inline-block}
 .b-ok{background:rgba(99,153,34,.12);color:#A8E063}.b-ok::before{background:#A8E063}
-.b-warn{background:var(--amber-g);color:var(--amber2)}.b-warn::before{background:var(--amber)}
-.b-bad{background:var(--red-g);color:var(--red2)}.b-bad::before{background:var(--red)}
-.b-cal{background:var(--blue-g);color:var(--blue2)}.b-cal::before{background:var(--blue)}
+.b-warn{background:var(--ambg);color:var(--amber2)}.b-warn::before{background:var(--amber)}
+.b-bad{background:var(--rbg);color:var(--red2)}.b-bad::before{background:var(--red)}
+.b-cal{background:var(--bbg);color:var(--blue2)}.b-cal::before{background:var(--blue)}
 
-/* ICON BTNS */
 .ibtn{width:28px;height:28px;border-radius:6px;border:1px solid var(--border-s);background:transparent;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text3);cursor:pointer;transition:all .2s}
-.ibtn:hover{border-color:rgba(29,158,117,.4);color:#5DCAA5;background:var(--accent-g)}
+.ibtn:hover{border-color:rgba(29,158,117,.4);color:#5DCAA5;background:var(--ag)}
 .ibtn-qr{width:28px;height:28px;border-radius:6px;border:1px solid rgba(55,138,221,.25);background:rgba(55,138,221,.07);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--blue2);cursor:pointer;transition:all .2s}
 .ibtn-qr:hover{background:rgba(55,138,221,.18)}
 
-/* ALERTS */
 .alert-item{display:flex;align-items:flex-start;gap:9px;padding:.9rem 1.4rem;border-bottom:1px solid rgba(255,255,255,.03);cursor:pointer;transition:background .15s}
 .alert-item:hover{background:rgba(255,255,255,.025)}.alert-item:last-child{border-bottom:none}
 .adot{width:7px;height:7px;border-radius:50%;margin-top:5px;flex-shrink:0}
-.adot.red{background:var(--red);box-shadow:0 0 6px rgba(226,75,74,.5)}
-.adot.amber{background:var(--amber);box-shadow:0 0 6px rgba(239,159,39,.5)}
-.adot.blue{background:var(--blue)}
+.adot.red{background:var(--red);box-shadow:0 0 6px rgba(226,75,74,.5)}.adot.amber{background:var(--amber);box-shadow:0 0 6px rgba(239,159,39,.5)}.adot.blue{background:var(--blue)}
 .atxt{font-size:12px;color:var(--text);line-height:1.4;flex:1}
 .atime{font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:1px}
 
-/* CAL PROGRESS */
 .cpwrap{padding:1.15rem 1.4rem}
 .ci{margin-bottom:.85rem}.ci:last-child{margin-bottom:0}
 .ci-hd{display:flex;justify-content:space-between;margin-bottom:5px}
@@ -141,7 +107,6 @@ nav{position:fixed;top:0;left:0;right:0;height:60px;background:rgba(10,22,40,.92
 .pfill{height:100%;border-radius:100px;transition:width .6s ease}
 .f-teal{background:var(--accent)}.f-amber{background:var(--amber)}.f-red{background:var(--red)}
 
-/* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);z-index:200;display:none;align-items:center;justify-content:center;padding:1rem}
 .modal-overlay.open{display:flex}
 .modal{background:var(--bg-card);border:1px solid var(--border-s);border-radius:var(--rxl);width:100%;max-width:660px;max-height:90vh;overflow-y:auto;animation:mIn .25s ease}
@@ -149,7 +114,7 @@ nav{position:fixed;top:0;left:0;right:0;height:60px;background:rgba(10,22,40,.92
 .mhd{padding:1.4rem;border-bottom:1px solid var(--border-s);display:flex;align-items:center;justify-content:space-between}
 .m-eq-row{display:flex;gap:13px;align-items:flex-start}
 .m-img{width:56px;height:56px;background:var(--bg-card2);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:26px;border:1px solid var(--border-s);flex-shrink:0}
-.m-name{font-family:var(--display);font-size:17px;font-weight:600;color:var(--text);margin-bottom:3px}
+.m-name{font-family:var(--disp);font-size:17px;font-weight:600;color:var(--text);margin-bottom:3px}
 .m-model{font-size:12px;font-family:var(--mono);color:#5DCAA5;margin-bottom:5px}
 .m-serial{font-size:11px;color:var(--text3);font-family:var(--mono)}
 .cbtn{width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,.04);border:1px solid var(--border-s);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);font-size:13px;transition:all .2s}
@@ -168,7 +133,6 @@ nav{position:fixed;top:0;left:0;right:0;height:60px;background:rgba(10,22,40,.92
 .acard-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:1px}
 .acard-desc{font-size:11px;color:var(--text3)}
 
-/* FORM */
 .fpage{max-width:780px;margin:0 auto;padding:2rem 1.5rem}
 .fcard{background:var(--bg-card);border:1px solid var(--border-s);border-radius:var(--rxl);padding:1.75rem;margin-bottom:1.1rem}
 .fsect{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#5DCAA5;font-family:var(--mono);margin-bottom:1.1rem;display:flex;align-items:center;gap:8px}
@@ -187,15 +151,14 @@ textarea{resize:vertical;min-height:75px}
 .uiw i{position:absolute;left:11px;font-size:12px;color:var(--text3);pointer-events:none}
 .ffooter{display:flex;justify-content:flex-end;gap:10px;padding-top:.25rem}
 
-/* SCAN PAGE */
 .scan-page{max-width:400px;margin:0 auto;padding:1.5rem}
 .scan-hd{text-align:center;margin-bottom:1.75rem}
-.scan-title{font-family:var(--display);font-size:19px;font-weight:700;color:var(--text);margin-bottom:3px}
+.scan-title{font-family:var(--disp);font-size:19px;font-weight:700;color:var(--text);margin-bottom:3px}
 .scan-sub{font-size:13px;color:var(--text2)}
 .scan-card{background:var(--bg-card);border:1px solid var(--border-s);border-radius:var(--rxl);overflow:hidden}
 .scan-img-area{background:var(--bg-card2);padding:1.75rem;display:flex;align-items:center;justify-content:center;font-size:66px;border-bottom:1px solid var(--border-s);height:148px}
 .scan-info{padding:1.4rem}
-.scan-eq-name{font-family:var(--display);font-size:19px;font-weight:700;color:var(--text);margin-bottom:3px}
+.scan-eq-name{font-family:var(--disp);font-size:19px;font-weight:700;color:var(--text);margin-bottom:3px}
 .scan-meta{font-size:12px;font-family:var(--mono);color:#5DCAA5;margin-bottom:11px}
 .scan-chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:1.1rem;padding-bottom:1.1rem;border-bottom:1px solid var(--border-s)}
 .sch{background:var(--bg-card2);border:1px solid var(--border-s);border-radius:7px;padding:4px 9px;font-size:11px;color:var(--text2);font-family:var(--mono)}
@@ -204,73 +167,65 @@ textarea{resize:vertical;min-height:75px}
 .sbtn{display:flex;align-items:center;gap:11px;padding:12px 14px;background:var(--bg-card2);border:1px solid var(--border-s);border-radius:var(--r);cursor:pointer;text-decoration:none;transition:all .2s;color:inherit}
 .sbtn:hover{border-color:var(--border);background:var(--bg-card3)}
 .sbtn-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
-.sbtn-icon.teal{background:var(--accent-g);color:#5DCAA5}.sbtn-icon.amber{background:var(--amber-g);color:var(--amber2)}.sbtn-icon.blue{background:var(--blue-g);color:var(--blue2)}.sbtn-icon.red{background:var(--red-g);color:var(--red2)}
+.sbtn-icon.teal{background:var(--ag);color:#5DCAA5}.sbtn-icon.amber{background:var(--ambg);color:var(--amber2)}.sbtn-icon.blue{background:var(--bbg);color:var(--blue2)}.sbtn-icon.red{background:var(--rbg);color:var(--red2)}
 .sbtn-txt{flex:1}.sbtn-t{font-size:13px;font-weight:500;color:var(--text);margin-bottom:1px}.sbtn-d{font-size:11px;color:var(--text3)}
 .sbtn-arr{color:var(--text3);font-size:11px}
 
-/* REPORTS */
 .rpage{max-width:1050px;margin:0 auto;padding:2rem 1.5rem}
 .rgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
 .rcard{background:var(--bg-card);border:1px solid var(--border-s);border-radius:var(--rl);padding:1.4rem;cursor:pointer;transition:all .2s}
 .rcard:hover{border-color:var(--border);transform:translateY(-2px)}
 .rcard-icon{width:46px;height:46px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:21px;margin-bottom:.9rem}
-.rcard-icon.teal{background:var(--accent-g);color:#5DCAA5}.rcard-icon.amber{background:var(--amber-g);color:var(--amber2)}.rcard-icon.blue{background:var(--blue-g);color:var(--blue2)}.rcard-icon.red{background:var(--red-g);color:var(--red2)}
-.rcard-title{font-family:var(--display);font-size:14px;font-weight:600;color:var(--text);margin-bottom:5px}
+.rcard-icon.teal{background:var(--ag);color:#5DCAA5}.rcard-icon.amber{background:var(--ambg);color:var(--amber2)}.rcard-icon.blue{background:var(--bbg);color:var(--blue2)}.rcard-icon.red{background:var(--rbg);color:var(--red2)}
+.rcard-title{font-family:var(--disp);font-size:14px;font-weight:600;color:var(--text);margin-bottom:5px}
 .rcard-desc{font-size:12px;color:var(--text2);line-height:1.5}
 .rtag{display:inline-block;margin-top:9px;padding:3px 9px;border-radius:100px;font-size:10px;font-family:var(--mono);font-weight:500}
-.rtag.teal{background:var(--accent-g);color:#5DCAA5;border:1px solid rgba(29,158,117,.3)}
-.rtag.amber{background:var(--amber-g);color:var(--amber2);border:1px solid rgba(239,159,39,.3)}
-.rtag.blue{background:var(--blue-g);color:var(--blue2);border:1px solid rgba(55,138,221,.3)}
+.rtag.teal{background:var(--ag);color:#5DCAA5;border:1px solid rgba(29,158,117,.3)}.rtag.amber{background:var(--ambg);color:var(--amber2);border:1px solid rgba(239,159,39,.3)}.rtag.blue{background:var(--bbg);color:var(--blue2);border:1px solid rgba(55,138,221,.3)}
 
 /* SETTINGS MODAL */
-.smodal{max-width:500px}
-.step-list{display:flex;flex-direction:column;gap:0}
+.smodal{max-width:520px}
+.step-list{display:flex;flex-direction:column}
 .step{display:flex;gap:13px;padding:1rem 0;border-bottom:1px solid var(--border-s)}
 .step:last-child{border-bottom:none}
-.step-num{width:26px;height:26px;border-radius:50%;background:var(--accent-g);border:1px solid rgba(29,158,117,.3);display:flex;align-items:center;justify-content:center;font-size:12px;font-family:var(--mono);color:#5DCAA5;flex-shrink:0;margin-top:1px}
-.step-body{}
+.step-num{width:26px;height:26px;border-radius:50%;background:var(--ag);border:1px solid rgba(29,158,117,.3);display:flex;align-items:center;justify-content:center;font-size:12px;font-family:var(--mono);color:#5DCAA5;flex-shrink:0;margin-top:1px}
 .step-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px}
 .step-desc{font-size:12px;color:var(--text2);line-height:1.5}
-.step-code{font-family:var(--mono);font-size:11px;background:var(--bg-card2);border:1px solid var(--border-s);border-radius:6px;padding:6px 10px;color:#5DCAA5;margin-top:6px;word-break:break-all}
+.step-code{font-family:var(--mono);font-size:11px;background:var(--bg-card2);border:1px solid var(--border-s);border-radius:6px;padding:6px 10px;color:#5DCAA5;margin-top:6px;word-break:break-all;line-height:1.5}
 .gas-input-wrap{display:flex;gap:8px;margin-top:8px}
 .gas-input-wrap input{flex:1;font-family:var(--mono);font-size:12px}
 
 /* BANNER */
-.banner{background:rgba(239,159,39,.07);border:1px solid rgba(239,159,39,.2);border-radius:var(--r);padding:11px 15px;display:flex;align-items:center;gap:9px;font-size:12px;color:var(--amber2);margin-bottom:1.4rem}
-.banner i{color:var(--amber);font-size:15px}
+.banner{background:rgba(239,159,39,.07);border:1px solid rgba(239,159,39,.2);border-radius:var(--r);padding:11px 15px;display:flex;align-items:center;gap:9px;font-size:12px;color:var(--amber2);margin-bottom:1.4rem;flex-wrap:wrap}
+.banner i{color:var(--amber);font-size:15px;flex-shrink:0}
 .banner-ok{background:rgba(29,158,117,.07);border-color:rgba(29,158,117,.2);color:#5DCAA5}
 .banner-ok i{color:var(--accent)}
+.banner-err{background:var(--rbg);border-color:rgba(226,75,74,.3);color:var(--red2)}
+.banner-err i{color:var(--red)}
 
-/* TOAST */
-.toast{position:fixed;bottom:1.75rem;right:1.75rem;background:var(--bg-card2);border:1px solid rgba(29,158,117,.4);border-radius:11px;padding:11px 16px;font-size:13px;color:#5DCAA5;display:flex;align-items:center;gap:9px;z-index:999;transform:translateY(16px);opacity:0;transition:all .3s ease;pointer-events:none;max-width:300px}
+/* QR */
+.qr-modal-body{padding:2rem;display:flex;flex-direction:column;align-items:center;gap:1rem}
+.qr-wrap{width:170px;height:170px;background:#fff;border-radius:14px;display:flex;align-items:center;justify-content:center;padding:10px}
+.qr-url{font-size:11px;font-family:var(--mono);background:var(--bg-card2);border:1px solid var(--border-s);border-radius:7px;padding:7px 12px;color:#5DCAA5;word-break:break-all;text-align:center;width:100%}
+
+.toast{position:fixed;bottom:1.75rem;right:1.75rem;background:var(--bg-card2);border:1px solid rgba(29,158,117,.4);border-radius:11px;padding:11px 16px;font-size:13px;color:#5DCAA5;display:flex;align-items:center;gap:9px;z-index:999;transform:translateY(16px);opacity:0;transition:all .3s ease;pointer-events:none;max-width:320px}
 .toast.show{transform:translateY(0);opacity:1}
+.toast.err{border-color:rgba(226,75,74,.4);color:var(--red2)}
 
-/* SPIN */
 .spin{display:inline-block;width:15px;height:15px;border:2px solid rgba(29,158,117,.25);border-top-color:var(--accent);border-radius:50%;animation:sp .8s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
 
-/* QR DISPLAY */
-.qr-modal-body{padding:2rem;display:flex;flex-direction:column;align-items:center;gap:1rem}
-.qr-wrap{width:170px;height:170px;background:#fff;border-radius:14px;display:flex;align-items:center;justify-content:center;padding:10px}
-.qr-lbl{font-family:var(--mono);font-size:11px;color:var(--text3);text-align:center}
-.qr-url{font-size:11px;font-family:var(--mono);background:var(--bg-card2);border:1px solid var(--border-s);border-radius:7px;padding:7px 12px;color:#5DCAA5;word-break:break-all;text-align:center;width:100%}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border-s);border-radius:3px}
 
-/* SCROLLBAR */
-::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border-s);border-radius:3px}::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.1)}
-
-/* RESPONSIVE */
 @media(max-width:900px){.main-grid{grid-template-columns:1fr}.sidebar{flex-direction:row;flex-wrap:wrap}.sidebar .panel{flex:1;min-width:260px}.m-act-grid{grid-template-columns:1fr}.page-header{flex-direction:column}}
 @media(max-width:640px){nav{padding:0 1rem}.nav-link span{display:none}.container,.fpage,.rpage{padding:1.25rem 1rem}.fgrid{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr 1fr}.m-info-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
-  <a class="nav-logo" href="#" onclick="showSec('dashboard');setActive(this)">
-    <div class="nav-logo-icon">⚗</div>
-    LabTrace
-  </a>
+  <button class="nav-logo" onclick="showSec('dashboard');setActive(document.querySelectorAll('.nav-link')[0])">
+    <div class="nav-logo-icon">⚗</div>LabTrace
+  </button>
   <span class="nav-badge">v1.0</span>
   <div class="nav-links">
     <button class="nav-link active" onclick="showSec('dashboard');setActive(this)"><i class="fas fa-chart-pie"></i><span>แดชบอร์ด</span></button>
@@ -283,11 +238,11 @@ textarea{resize:vertical;min-height:75px}
 
 <div class="page">
 
-<!-- ==================== DASHBOARD ==================== -->
+<!-- DASHBOARD -->
 <section class="page-section active" id="sec-dashboard">
 <div class="container">
   <div class="page-header">
-    <div class="page-title-row">
+    <div>
       <div class="page-eyebrow">ห้องปฏิบัติการ · โรงพยาบาลเบตง</div>
       <div class="page-title">ระบบจัดการครุภัณฑ์ Lab</div>
       <div class="page-sub">Digital Traceability — ติดตามเครื่องมือทางการแพทย์ผ่าน QR Code</div>
@@ -298,15 +253,13 @@ textarea{resize:vertical;min-height:75px}
     </div>
   </div>
 
-  <div id="gas-banner" class="banner" style="display:none">
+  <div id="conn-banner" style="display:none" class="banner">
     <i class="fas fa-triangle-exclamation"></i>
-    ยังไม่ได้ตั้งค่า Google Apps Script URL — กำลังใช้ข้อมูลตัวอย่าง (Demo Mode)
-    <button class="btn btn-sm" style="margin-left:auto;background:rgba(239,159,39,.15);color:var(--amber2);border:1px solid rgba(239,159,39,.3)" onclick="openSettings()">ตั้งค่า</button>
+    <span id="conn-msg">ยังไม่ได้ตั้งค่า — กำลังใช้ข้อมูลตัวอย่าง (Demo Mode)</span>
+    <button class="btn btn-sm" style="margin-left:auto;background:rgba(239,159,39,.15);color:var(--amber2);border:1px solid rgba(239,159,39,.3)" onclick="openSettings()">ตั้งค่า GAS URL</button>
   </div>
-  <div id="gas-ok-banner" class="banner banner-ok" style="display:none">
-    <i class="fas fa-check-circle"></i>
-    เชื่อมต่อ Google Sheets สำเร็จ
-  </div>
+  <div id="conn-ok" style="display:none" class="banner banner-ok"><i class="fas fa-check-circle"></i>เชื่อมต่อ Google Sheets สำเร็จ</div>
+  <div id="conn-err" style="display:none" class="banner banner-err"><i class="fas fa-circle-xmark"></i><span id="conn-err-msg"></span><button class="btn btn-sm" style="margin-left:auto;background:var(--rbg);color:var(--red2);border:1px solid rgba(226,75,74,.3)" onclick="openSettings()">แก้ไข URL</button></div>
 
   <div class="stats-grid">
     <div class="stat-card teal"><i class="fas fa-microscope stat-icon"></i><div class="stat-lbl">ครุภัณฑ์ทั้งหมด</div><div class="stat-val" id="s-total">—</div><div class="stat-desc">รายการในระบบ</div></div>
@@ -331,25 +284,21 @@ textarea{resize:vertical;min-height:75px}
       </div>
       <div id="tbl-loading" style="padding:2rem;text-align:center;color:var(--text3)">
         <div class="spin" style="margin:0 auto 8px"></div>
-        <div style="font-size:12px">กำลังโหลดข้อมูลจาก Google Sheets...</div>
+        <div style="font-size:12px">กำลังโหลดข้อมูล...</div>
       </div>
       <table class="eq-table" id="eq-table" style="display:none">
-        <thead><tr>
-          <th>เครื่องมือ</th><th>Serial No.</th><th>สถานะ</th><th>สอบเทียบ (ถัดไป)</th><th>ลิงก์</th><th></th>
-        </tr></thead>
+        <thead><tr><th>เครื่องมือ</th><th>Serial No.</th><th>สถานะ</th><th>สอบเทียบ (ถัดไป)</th><th>ลิงก์</th><th></th></tr></thead>
         <tbody id="eq-tbody"></tbody>
       </table>
       <div id="tbl-empty" style="display:none;padding:2rem;text-align:center;color:var(--text3);font-size:13px">
-        <i class="fas fa-inbox" style="font-size:26px;margin-bottom:8px;display:block;opacity:.25"></i>
-        ไม่พบข้อมูลครุภัณฑ์
+        <i class="fas fa-inbox" style="font-size:26px;margin-bottom:8px;display:block;opacity:.25"></i>ไม่พบข้อมูลครุภัณฑ์
       </div>
     </div>
-
     <div class="sidebar">
       <div class="panel">
         <div class="panel-hd">
           <div class="panel-title"><div class="pticon amber"><i class="fas fa-bell"></i></div>การแจ้งเตือน</div>
-          <span id="alert-cnt" style="font-size:11px;background:var(--red-g);color:var(--red2);padding:2px 8px;border-radius:100px;font-family:var(--mono)">0</span>
+          <span id="alert-cnt" style="font-size:11px;background:var(--rbg);color:var(--red2);padding:2px 8px;border-radius:100px;font-family:var(--mono)">0</span>
         </div>
         <div id="alert-list"><div style="padding:1.4rem;text-align:center;color:var(--text3);font-size:12px"><i class="fas fa-check-circle" style="font-size:20px;color:var(--accent);display:block;margin-bottom:7px;opacity:.5"></i>ไม่มีการแจ้งเตือน</div></div>
       </div>
@@ -362,13 +311,10 @@ textarea{resize:vertical;min-height:75px}
 </div>
 </section>
 
-<!-- ==================== SCAN ==================== -->
+<!-- SCAN -->
 <section class="page-section" id="sec-scan">
 <div class="scan-page">
-  <div class="scan-hd">
-    <div class="scan-title">สแกน QR Code</div>
-    <div class="scan-sub">กรอก Serial Number หรือ URL param ?scan=SN</div>
-  </div>
+  <div class="scan-hd"><div class="scan-title">สแกน QR Code</div><div class="scan-sub">กรอก Serial Number หรือ URL param ?scan=SN</div></div>
   <div style="display:flex;gap:8px;margin-bottom:1.4rem">
     <input type="text" id="scan-in" placeholder="S/N หรือชื่อเครื่องมือ..." style="flex:1;font-family:var(--mono);letter-spacing:1px" onkeydown="if(event.key==='Enter')doScan()">
     <button class="btn btn-primary" onclick="doScan()"><i class="fas fa-search"></i></button>
@@ -382,55 +328,31 @@ textarea{resize:vertical;min-height:75px}
 </div>
 </section>
 
-<!-- ==================== ADD ==================== -->
+<!-- ADD -->
 <section class="page-section" id="sec-add">
 <div class="fpage">
-  <div class="page-header">
-    <div><div class="page-title">ลงทะเบียนครุภัณฑ์ใหม่</div><div class="page-sub">บันทึกเครื่องมือห้องปฏิบัติการเข้าระบบ Digital Traceability</div></div>
-  </div>
+  <div class="page-header"><div><div class="page-title">ลงทะเบียนครุภัณฑ์ใหม่</div><div class="page-sub">บันทึกเครื่องมือห้องปฏิบัติการเข้าระบบ</div></div></div>
   <div id="form-banner" class="banner" style="display:none">
-    <i class="fas fa-triangle-exclamation"></i>
-    ยังไม่ได้ตั้งค่า GAS URL — ข้อมูลจะไม่ถูกบันทึกลง Google Sheets
+    <i class="fas fa-triangle-exclamation"></i>ยังไม่ได้ตั้งค่า GAS URL — ข้อมูลจะไม่ถูกบันทึกลง Google Sheets
     <button class="btn btn-sm" style="margin-left:auto;background:rgba(239,159,39,.15);color:var(--amber2);border:1px solid rgba(239,159,39,.3)" onclick="openSettings()">ตั้งค่า</button>
   </div>
-
-  <!-- ข้อมูลพื้นฐาน -->
   <div class="fcard">
     <div class="fsect"><i class="fas fa-info-circle" style="color:#5DCAA5"></i>ข้อมูลพื้นฐาน</div>
     <div class="fgrid">
       <div class="fg"><label>ชื่อเครื่องมือ *</label><input type="text" id="f-name" placeholder="เช่น เครื่องตรวจนับเม็ดเลือด"></div>
       <div class="fg"><label>รุ่น (Model) *</label><input type="text" id="f-model" placeholder="เช่น Sysmex XN-550"></div>
       <div class="fg"><label>Serial Number *</label><input type="text" id="f-sn" placeholder="เช่น SN-2025-001"></div>
-      <div class="fg"><label>ประเภท</label>
-        <select id="f-type">
-          <option value="">— เลือกประเภท —</option>
-          <option>Hematology Analyzer</option><option>Automated Analyzer</option>
-          <option>Centrifuge</option><option>Autoclave</option>
-          <option>Microscope</option><option>Incubator</option>
-          <option>Refrigerator</option><option>เครื่องมืออื่นๆ</option>
-        </select>
-      </div>
+      <div class="fg"><label>ประเภท</label><select id="f-type"><option value="">— เลือกประเภท —</option><option>Hematology Analyzer</option><option>Automated Analyzer</option><option>Centrifuge</option><option>Autoclave</option><option>Microscope</option><option>Incubator</option><option>Refrigerator</option><option>เครื่องมืออื่นๆ</option></select></div>
       <div class="fg"><label>สถานที่ตั้ง / ห้อง</label><input type="text" id="f-loc" placeholder="เช่น ห้องโลหิตวิทยา"></div>
-      <div class="fg"><label>สถานะ</label>
-        <select id="f-status">
-          <option value="ok">ปกติ — พร้อมใช้งาน</option>
-          <option value="cal">รอสอบเทียบ</option>
-          <option value="broken">ชำรุด / ส่งซ่อม</option>
-        </select>
-      </div>
+      <div class="fg"><label>สถานะ</label><select id="f-status"><option value="ok">ปกติ — พร้อมใช้งาน</option><option value="cal">รอสอบเทียบ</option><option value="broken">ชำรุด / ส่งซ่อม</option></select></div>
       <div class="fg"><label>วันสอบเทียบล่าสุด</label><input type="date" id="f-caldate"></div>
       <div class="fg"><label>กำหนดสอบเทียบครั้งถัดไป</label><input type="date" id="f-calnext"></div>
       <div class="fg full"><label>หมายเหตุ</label><textarea id="f-note" placeholder="ข้อมูลเพิ่มเติม..."></textarea></div>
     </div>
   </div>
-
-  <!-- Dynamic Button Links -->
   <div class="fcard">
     <div class="fsect"><i class="fas fa-link" style="color:#5DCAA5"></i>ลิงก์ Dynamic Buttons</div>
-    <div style="font-size:12px;color:var(--text2);margin-bottom:1.1rem;background:var(--bg-card2);border-radius:8px;padding:9px 13px;border:1px solid var(--border-s)">
-      <i class="fas fa-lightbulb" style="color:var(--amber);margin-right:5px"></i>
-      กรอกเฉพาะลิงก์ที่มี — ปุ่มจะแสดงผลอัตโนมัติเมื่อสแกน QR Code
-    </div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:1.1rem;background:var(--bg-card2);border-radius:8px;padding:9px 13px;border:1px solid var(--border-s)"><i class="fas fa-lightbulb" style="color:var(--amber);margin-right:5px"></i>กรอกเฉพาะลิงก์ที่มี — ปุ่มจะแสดงอัตโนมัติเมื่อสแกน QR</div>
     <div class="fgrid">
       <div class="fg"><label><i class="fas fa-book-open" style="color:#5DCAA5;margin-right:4px"></i>คู่มือการใช้งาน</label><div class="uiw"><i class="fas fa-link"></i><input type="url" id="f-manual" placeholder="https://drive.google.com/..."></div></div>
       <div class="fg"><label><i class="fas fa-certificate" style="color:var(--amber2);margin-right:4px"></i>ใบสอบเทียบ / Calibration</label><div class="uiw"><i class="fas fa-link"></i><input type="url" id="f-cal" placeholder="https://drive.google.com/..."></div></div>
@@ -438,7 +360,6 @@ textarea{resize:vertical;min-height:75px}
       <div class="fg"><label><i class="fas fa-wrench" style="color:var(--red2);margin-right:4px"></i>ฟอร์มแจ้งซ่อม</label><div class="uiw"><i class="fas fa-link"></i><input type="url" id="f-repair" placeholder="https://forms.google.com/..."></div></div>
     </div>
   </div>
-
   <div class="ffooter">
     <button class="btn btn-ghost" onclick="clearForm()">ล้างข้อมูล</button>
     <button class="btn btn-primary" onclick="submitForm()"><i class="fas fa-save"></i>บันทึกและสร้าง QR</button>
@@ -446,15 +367,13 @@ textarea{resize:vertical;min-height:75px}
 </div>
 </section>
 
-<!-- ==================== REPORTS ==================== -->
+<!-- REPORTS -->
 <section class="page-section" id="sec-reports">
 <div class="rpage">
-  <div class="page-header">
-    <div><div class="page-title">รายงานและเอกสาร</div><div class="page-sub">ออกรายงานครุภัณฑ์ สอบเทียบ และบำรุงรักษา</div></div>
-  </div>
+  <div class="page-header"><div><div class="page-title">รายงานและเอกสาร</div><div class="page-sub">ออกรายงานครุภัณฑ์ สอบเทียบ และบำรุงรักษา</div></div></div>
   <div class="rgrid">
     <div class="rcard" onclick="toast('กำลังสร้างรายงาน...')"><div class="rcard-icon teal"><i class="fas fa-microscope"></i></div><div class="rcard-title">สรุปสถานะครุภัณฑ์ทั้งหมด</div><div class="rcard-desc">รายงานครุภัณฑ์ทุกชิ้นพร้อมสถานะและที่ตั้ง</div><span class="rtag teal">PDF / Excel</span></div>
-    <div class="rcard" onclick="toast('กำลังสร้างรายงาน...')"><div class="rcard-icon amber"><i class="fas fa-gauge-high"></i></div><div class="rcard-title">ทะเบียนการสอบเทียบ</div><div class="rcard-desc">ประวัติ Calibration พร้อม Digital Traceability Link</div><span class="rtag amber">Calibration Log</span></div>
+    <div class="rcard" onclick="toast('กำลังสร้างรายงาน...')"><div class="rcard-icon amber"><i class="fas fa-gauge-high"></i></div><div class="rcard-title">ทะเบียนการสอบเทียบ</div><div class="rcard-desc">ประวัติ Calibration พร้อม Digital Traceability</div><span class="rtag amber">Calibration Log</span></div>
     <div class="rcard" onclick="exportQRSheet()"><div class="rcard-icon blue"><i class="fas fa-qrcode"></i></div><div class="rcard-title">พิมพ์ QR Code Sticker</div><div class="rcard-desc">สร้าง QR Sticker ทุกชิ้นพร้อมชื่อและ Serial Number</div><span class="rtag blue">QR Sheet</span></div>
     <div class="rcard" onclick="toast('กำลังสร้างรายงาน...')"><div class="rcard-icon red"><i class="fas fa-wrench"></i></div><div class="rcard-title">รายงานการซ่อมบำรุง</div><div class="rcard-desc">ประวัติการแจ้งชำรุดและสถานะดำเนินการ</div><span class="rtag amber">Maintenance Log</span></div>
     <div class="rcard" onclick="exportCSV()"><div class="rcard-icon teal"><i class="fas fa-file-export"></i></div><div class="rcard-title">Export ข้อมูล CSV</div><div class="rcard-desc">ส่งออกข้อมูลครุภัณฑ์ทั้งหมดเป็นไฟล์ CSV</div><span class="rtag teal">CSV Export</span></div>
@@ -463,7 +382,7 @@ textarea{resize:vertical;min-height:75px}
 </div>
 </section>
 
-</div><!-- end .page -->
+</div>
 
 <!-- DETAIL MODAL -->
 <div class="modal-overlay" id="modal-detail" onclick="if(event.target===this)this.classList.remove('open')">
@@ -471,11 +390,7 @@ textarea{resize:vertical;min-height:75px}
   <div class="mhd">
     <div class="m-eq-row">
       <div class="m-img" id="m-icon">🔬</div>
-      <div>
-        <div class="m-name" id="m-name">—</div>
-        <div class="m-model" id="m-model">—</div>
-        <div class="m-serial" id="m-serial">—</div>
-      </div>
+      <div><div class="m-name" id="m-name">—</div><div class="m-model" id="m-model">—</div><div class="m-serial" id="m-serial">—</div></div>
     </div>
     <button class="cbtn" onclick="document.getElementById('modal-detail').classList.remove('open')"><i class="fas fa-times"></i></button>
   </div>
@@ -491,7 +406,7 @@ textarea{resize:vertical;min-height:75px}
     <div id="m-note" style="display:none;margin-top:.9rem;padding:9px 13px;background:var(--bg-card2);border-radius:8px;font-size:12px;color:var(--text2);border:1px solid var(--border-s)"></div>
     <div style="margin-top:1rem;display:flex;gap:8px;flex-wrap:wrap">
       <button class="btn btn-ghost btn-sm" onclick="openQRModal(currentSN)"><i class="fas fa-qrcode"></i>ดู QR Code</button>
-      <button class="btn btn-ghost btn-sm" id="m-status-btn" onclick="quickStatus()"><i class="fas fa-sync-alt"></i>เปลี่ยนสถานะ</button>
+      <button class="btn btn-ghost btn-sm" onclick="quickStatus()"><i class="fas fa-sync-alt"></i>เปลี่ยนสถานะ</button>
     </div>
   </div>
 </div>
@@ -506,7 +421,7 @@ textarea{resize:vertical;min-height:75px}
   </div>
   <div class="qr-modal-body">
     <div class="qr-wrap" id="qr-container"></div>
-    <div class="qr-lbl" id="qr-sn-lbl">—</div>
+    <div style="font-family:var(--mono);font-size:11px;color:var(--text3)" id="qr-sn-lbl">—</div>
     <div class="qr-url" id="qr-url-display">—</div>
     <button class="btn btn-primary" style="width:100%" onclick="printQR()"><i class="fas fa-print"></i>พิมพ์ QR Sticker</button>
   </div>
@@ -526,41 +441,41 @@ textarea{resize:vertical;min-height:75px}
         <div class="step-num">1</div>
         <div class="step-body">
           <div class="step-title">สร้าง Google Spreadsheet</div>
-          <div class="step-desc">สร้าง Spreadsheet ใหม่ใน Google Drive แล้วคัดลอก ID จาก URL</div>
-          <div class="step-code">https://docs.google.com/spreadsheets/d/<b style="color:var(--amber2)">YOUR_ID_HERE</b>/edit</div>
+          <div class="step-desc">สร้าง Spreadsheet ใหม่ → คัดลอก ID จาก URL</div>
+          <div class="step-code">docs.google.com/spreadsheets/d/<b style="color:var(--amber2)">SPREADSHEET_ID</b>/edit</div>
         </div>
       </div>
       <div class="step">
         <div class="step-num">2</div>
         <div class="step-body">
-          <div class="step-title">สร้าง Google Apps Script</div>
-          <div class="step-desc">ไปที่ Extensions → Apps Script → วางโค้ดจากไฟล์ Code.gs → บันทึก</div>
-          <div class="step-code">ใส่ SPREADSHEET_ID ที่ได้จากขั้นตอนที่ 1 ในโค้ด Code.gs</div>
+          <div class="step-title">วางโค้ด Code.gs ใน Apps Script</div>
+          <div class="step-desc">Extensions → Apps Script → วาง Code.gs → แก้ SPREADSHEET_ID → Save → รัน initSheets() ครั้งแรก</div>
         </div>
       </div>
       <div class="step">
         <div class="step-num">3</div>
         <div class="step-body">
-          <div class="step-title">Deploy Web App</div>
-          <div class="step-desc">Deploy → New deployment → Web App → Execute as: Me → Who has access: Anyone → Deploy</div>
+          <div class="step-title">Deploy → Web App</div>
+          <div class="step-desc">Deploy → New deployment → Web App<br>Execute as: <b style="color:#5DCAA5">Me</b> | Who has access: <b style="color:#5DCAA5">Anyone</b> → Deploy → Copy URL</div>
         </div>
       </div>
       <div class="step">
         <div class="step-num">4</div>
         <div class="step-body">
           <div class="step-title">วาง Web App URL ด้านล่าง</div>
-          <div class="step-desc">คัดลอก URL ที่ได้จาก Deploy แล้ววางด้านล่าง</div>
           <div class="gas-input-wrap">
-            <input type="url" id="gas-url-input" placeholder="https://script.google.com/macros/s/AKf.../exec">
+            <input type="url" id="gas-url-input" placeholder="https://script.google.com/macros/s/.../exec">
             <button class="btn btn-primary btn-sm" onclick="saveGASUrl()"><i class="fas fa-save"></i>บันทึก</button>
           </div>
+          <div id="gas-test-result" style="margin-top:8px;font-size:11px;font-family:var(--mono);color:var(--text3)"></div>
         </div>
       </div>
       <div class="step">
         <div class="step-num">5</div>
         <div class="step-body">
-          <div class="step-title">อัปโหลดไฟล์บน GitHub Pages</div>
-          <div class="step-desc">วางไฟล์ index.html ใน Repository → Settings → Pages → Branch: main → / (root) → Save<br>URL ของ QR Code จะเป็น: <span id="gh-url-preview" style="color:#5DCAA5">https://username.github.io/repo/?scan=SN</span></div>
+          <div class="step-title">GitHub Pages</div>
+          <div class="step-desc">Upload index.html → Settings → Pages → Branch: main → Save<br>QR URL จะเป็น:</div>
+          <div class="step-code" id="gh-url-ex">https://username.github.io/repo/?scan=SN-001</div>
         </div>
       </div>
     </div>
@@ -568,172 +483,232 @@ textarea{resize:vertical;min-height:75px}
 </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"><i class="fas fa-check-circle" id="toast-icon"></i><span id="toast-msg"></span></div>
 
-<!-- QR CODE LIBRARY -->
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 
 <script>
 // ==================== CONFIG ====================
-// localStorage เก็บ GAS URL ข้ามเซสชัน
-const CFG_KEY = 'labtrace_gas_url';
-let GAS_URL = localStorage.getItem(CFG_KEY) || '';
-let allEq = [];
-let currentFilter = 'all';
-let searchQ = '';
+const CFG_KEY = 'labtrace_gas_url_v2';
+let GAS_URL   = localStorage.getItem(CFG_KEY) || '';
+let allEq     = [];
+let curFilter = 'all';
+let searchQ   = '';
 let currentSN = '';
 
-// ==================== DEMO DATA ====================
+// ==================== DEMO ====================
 const DEMO = [
-  {sn:'SN-2024-001',name:'เครื่องตรวจนับเม็ดเลือด',model:'Sysmex XN-550',type:'Hematology Analyzer',status:'ok',location:'ห้องโลหิตวิทยา',calDate:'2025-01-15',calNext:'2026-01-15',note:'เครื่องหลัก ใช้งานทุกวัน',icon:'🩸',manual:'#',cal:'#',checklist:'#',repair:''},
-  {sn:'SN-2024-002',name:'เครื่องวิเคราะห์เคมีคลินิก',model:'Mindray BS-380',type:'Automated Analyzer',status:'ok',location:'ห้องเคมีคลินิก',calDate:'2024-11-20',calNext:'2025-11-20',note:'',icon:'⚗️',manual:'#',cal:'#',checklist:'#',repair:'#'},
-  {sn:'SN-2023-015',name:'หม้อนึ่งฆ่าเชื้อ Autoclave',model:'Tuttnauer 3840',type:'Autoclave',status:'cal',location:'ห้องเตรียมสิ่งส่งตรวจ',calDate:'2024-06-01',calNext:'2025-06-01',note:'ต้องบันทึกใบรับรองทุกรอบ',icon:'🔩',manual:'',cal:'#',checklist:'#',repair:''},
-  {sn:'SN-2022-008',name:'เครื่องปั่นเหวี่ยงตัวอย่าง',model:'Eppendorf 5804R',type:'Centrifuge',status:'broken',location:'ห้องเตรียมสิ่งส่งตรวจ',calDate:'2024-03-10',calNext:'2025-03-10',note:'ส่งซ่อมบริษัท รอชิ้นส่วน',icon:'🔄',manual:'#',cal:'',checklist:'',repair:'#'},
-  {sn:'SN-2024-010',name:'กล้องจุลทรรศน์',model:'Olympus CX43',type:'Microscope',status:'ok',location:'ห้องจุลชีววิทยา',calDate:'2025-02-01',calNext:'2026-02-01',note:'',icon:'🔬',manual:'#',cal:'',checklist:'',repair:''},
+  {sn:'SN-2024-001',name:'เครื่องตรวจนับเม็ดเลือด',model:'Sysmex XN-550',type:'Hematology Analyzer',status:'ok',location:'ห้องโลหิตวิทยา',calDate:'2025-01-15',calNext:'2026-01-15',note:'เครื่องหลัก ใช้งานทุกวัน',icon:'🩸',manual:'https://example.com',cal:'https://example.com',checklist:'https://example.com',repair:''},
+  {sn:'SN-2024-002',name:'เครื่องวิเคราะห์เคมีคลินิก',model:'Mindray BS-380',type:'Automated Analyzer',status:'ok',location:'ห้องเคมีคลินิก',calDate:'2024-11-20',calNext:'2025-11-20',note:'',icon:'⚗️',manual:'https://example.com',cal:'https://example.com',checklist:'https://example.com',repair:'https://example.com'},
+  {sn:'SN-2023-015',name:'หม้อนึ่งฆ่าเชื้อ Autoclave',model:'Tuttnauer 3840',type:'Autoclave',status:'cal',location:'ห้องเตรียมสิ่งส่งตรวจ',calDate:'2024-06-01',calNext:'2025-06-01',note:'บันทึกใบรับรองทุกรอบ',icon:'🔩',manual:'',cal:'https://example.com',checklist:'https://example.com',repair:''},
+  {sn:'SN-2022-008',name:'เครื่องปั่นเหวี่ยงตัวอย่าง',model:'Eppendorf 5804R',type:'Centrifuge',status:'broken',location:'ห้องเตรียมสิ่งส่งตรวจ',calDate:'2024-03-10',calNext:'2025-03-10',note:'ส่งซ่อมบริษัท รอชิ้นส่วน',icon:'🔄',manual:'https://example.com',cal:'',checklist:'',repair:'https://example.com'},
+  {sn:'SN-2024-010',name:'กล้องจุลทรรศน์',model:'Olympus CX43',type:'Microscope',status:'ok',location:'ห้องจุลชีววิทยา',calDate:'2025-02-01',calNext:'2026-02-01',note:'',icon:'🔬',manual:'https://example.com',cal:'',checklist:'',repair:''},
 ];
+
+// ==================== JSONP FETCH ====================
+// แก้ปัญหา CORS จาก GitHub Pages ไป Google Apps Script
+function fetchJSONP(url, timeout = 10000) {
+  return new Promise((resolve, reject) => {
+    const cbName = 'ltcb_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+    const script = document.createElement('script');
+    const timer  = setTimeout(() => {
+      cleanup();
+      reject(new Error('Timeout — ไม่ได้รับการตอบกลับจาก GAS'));
+    }, timeout);
+
+    window[cbName] = (data) => {
+      cleanup();
+      resolve(data);
+    };
+
+    function cleanup() {
+      clearTimeout(timer);
+      delete window[cbName];
+      if (script.parentNode) script.parentNode.removeChild(script);
+    }
+
+    const sep = url.includes('?') ? '&' : '?';
+    script.src = url + sep + 'callback=' + cbName;
+    script.onerror = () => { cleanup(); reject(new Error('โหลด script ล้มเหลว — ตรวจสอบ GAS URL')); };
+    document.head.appendChild(script);
+  });
+}
+
+// POST ยังใช้ fetch ปกติ แต่ mode: no-cors (ไม่อ่าน response ได้)
+// วิธีทางเลือก: ส่งผ่าน GET+JSONP แทน POST
+async function postGAS(data) {
+  if (!GAS_URL) return { ok: false, msg: 'ไม่ได้ตั้งค่า GAS URL' };
+  // เข้ารหัสเป็น GET เพื่อใช้ JSONP
+  const params = new URLSearchParams({
+    action: data.action,
+    payload: JSON.stringify(data)
+  });
+  try {
+    const result = await fetchJSONP(GAS_URL + '&' + params.toString());
+    return result;
+  } catch(e) {
+    // fallback: no-cors POST (ไม่รู้ result)
+    try {
+      await fetch(GAS_URL, { method:'POST', body:JSON.stringify(data), mode:'no-cors' });
+      return { ok: true, msg: 'ส่งข้อมูลแล้ว (no-cors)' };
+    } catch(e2) {
+      return { ok: false, msg: e2.message };
+    }
+  }
+}
 
 // ==================== INIT ====================
 function init() {
-  // ตรวจ URL param ?scan=
   const p = new URLSearchParams(window.location.search);
   if (p.get('scan')) {
     showSec('scan'); setActive(document.querySelectorAll('.nav-link')[1]);
     document.getElementById('scan-in').value = p.get('scan');
+    setTimeout(doScan, 300);
   }
-  updateBanners();
+  updateGHUrlPreview();
   loadData();
 }
 
-function updateBanners() {
-  document.getElementById('gas-banner').style.display   = GAS_URL ? 'none' : 'flex';
-  document.getElementById('gas-ok-banner').style.display= GAS_URL ? 'flex' : 'none';
-  document.getElementById('form-banner').style.display  = GAS_URL ? 'none' : 'flex';
-  if (GAS_URL) document.getElementById('gas-url-input').value = GAS_URL;
+function updateGHUrlPreview() {
+  const base = window.location.origin + window.location.pathname;
+  document.getElementById('gh-url-ex').textContent = base + '?scan=SN-2024-001';
 }
 
 // ==================== LOAD DATA ====================
 async function loadData() {
-  showLoading();
-  if (GAS_URL) {
-    try {
-      const r = await fetch(GAS_URL + '?action=getAll', {method:'GET'});
-      const d = await r.json();
-      if (Array.isArray(d)) { allEq = d; }
-      else throw new Error('bad response');
-    } catch(e) {
-      toast('โหลดจาก Google Sheets ล้มเหลว — ใช้ข้อมูล Demo', 'fa-triangle-exclamation');
-      allEq = DEMO;
-    }
-  } else {
-    await delay(700);
+  showBanner('loading');
+  showTableState('loading');
+
+  if (!GAS_URL) {
+    await delay(600);
     allEq = DEMO;
+    showBanner('no-url');
+    renderAll();
+    return;
+  }
+
+  try {
+    const data = await fetchJSONP(GAS_URL + '?action=getAll');
+    if (Array.isArray(data)) {
+      allEq = data.length ? data : DEMO;
+      showBanner(data.length ? 'ok' : 'no-url');
+    } else {
+      throw new Error(data.msg || 'รูปแบบข้อมูลไม่ถูกต้อง');
+    }
+  } catch(e) {
+    console.error('GAS error:', e);
+    allEq = DEMO;
+    showBanner('error', e.message);
   }
   renderAll();
 }
 
 function delay(ms){ return new Promise(r=>setTimeout(r,ms)); }
 
-function showLoading(){
-  document.getElementById('tbl-loading').style.display='block';
-  document.getElementById('eq-table').style.display='none';
-  document.getElementById('tbl-empty').style.display='none';
+function showTableState(state) {
+  document.getElementById('tbl-loading').style.display = state==='loading' ? 'block' : 'none';
+  document.getElementById('eq-table').style.display    = 'none';
+  document.getElementById('tbl-empty').style.display   = 'none';
 }
 
-function renderAll(){
+function showBanner(type, msg='') {
+  document.getElementById('conn-banner').style.display = 'none';
+  document.getElementById('conn-ok').style.display     = 'none';
+  document.getElementById('conn-err').style.display    = 'none';
+  if (type==='no-url')  document.getElementById('conn-banner').style.display = 'flex';
+  if (type==='ok')      document.getElementById('conn-ok').style.display     = 'flex';
+  if (type==='error') {
+    document.getElementById('conn-err-msg').textContent = 'เชื่อมต่อ GAS ล้มเหลว — ' + msg + ' (ใช้ข้อมูล Demo)';
+    document.getElementById('conn-err').style.display  = 'flex';
+  }
+  // ซ่อน banner บน form page
+  document.getElementById('form-banner').style.display = GAS_URL ? 'none' : 'flex';
+}
+
+// ==================== RENDER ====================
+function renderAll() {
   renderTable();
   renderStats();
   renderAlerts();
   renderProgress();
 }
 
-// ==================== TABLE ====================
-function renderTable(){
-  const loading=document.getElementById('tbl-loading');
-  const table=document.getElementById('eq-table');
-  const empty=document.getElementById('tbl-empty');
-  const tbody=document.getElementById('eq-tbody');
+function renderTable() {
+  const loading = document.getElementById('tbl-loading');
+  const table   = document.getElementById('eq-table');
+  const empty   = document.getElementById('tbl-empty');
+  const tbody   = document.getElementById('eq-tbody');
 
-  let data=allEq.filter(eq=>{
-    const ms=currentFilter==='all'||eq.status===currentFilter;
-    const mq=!searchQ||eq.name.toLowerCase().includes(searchQ)||eq.sn.toLowerCase().includes(searchQ)||eq.model.toLowerCase().includes(searchQ);
-    return ms&&mq;
+  let data = allEq.filter(eq => {
+    const ms = curFilter==='all' || eq.status===curFilter;
+    const mq = !searchQ || eq.name.toLowerCase().includes(searchQ) || eq.sn.toLowerCase().includes(searchQ) || (eq.model||'').toLowerCase().includes(searchQ);
+    return ms && mq;
   });
 
-  loading.style.display='none';
-  if(!data.length){table.style.display='none';empty.style.display='block';return;}
-  empty.style.display='none';table.style.display='table';
+  loading.style.display = 'none';
+  if (!data.length) { table.style.display='none'; empty.style.display='block'; return; }
+  empty.style.display='none'; table.style.display='table';
 
-  tbody.innerHTML=data.map(eq=>{
-    const links=[eq.manual?'📖':'',eq.cal?'📋':'',eq.checklist?'✅':'',eq.repair?'🔧':''].filter(Boolean).join(' ');
-    return `<tr onclick="openDetail('${eq.sn}')">
-      <td><div style="display:flex;align-items:center;gap:9px"><span style="font-size:20px">${eq.icon||'🔧'}</span><div><div class="eq-name">${eq.name}</div><div class="eq-model">${eq.type||''}</div></div></div></td>
-      <td><span style="font-family:var(--mono);font-size:11px;color:#5DCAA5">${eq.sn}</span></td>
+  tbody.innerHTML = data.map(eq => {
+    const links = [eq.manual?'📖':'', eq.cal?'📋':'', eq.checklist?'✅':'', eq.repair?'🔧':''].filter(Boolean).join(' ');
+    return `<tr onclick="openDetail('${esc(eq.sn)}')">
+      <td><div style="display:flex;align-items:center;gap:9px"><span style="font-size:20px">${eq.icon||'🔧'}</span><div><div class="eq-name">${esc(eq.name)}</div><div class="eq-model">${esc(eq.type||'')}</div></div></div></td>
+      <td><span style="font-family:var(--mono);font-size:11px;color:#5DCAA5">${esc(eq.sn)}</span></td>
       <td>${badgeHTML(eq.status)}</td>
       <td><span style="font-size:12px;color:var(--text2)">${eq.calNext||'—'}</span></td>
-      <td><span style="font-size:12px;letter-spacing:2px" title="ลิงก์ที่มี">${links||'—'}</span></td>
+      <td><span style="font-size:13px;letter-spacing:2px">${links||'—'}</span></td>
       <td><div style="display:flex;gap:5px">
-        <button class="ibtn" onclick="event.stopPropagation();openDetail('${eq.sn}')" title="รายละเอียด"><i class="fas fa-eye"></i></button>
-        <button class="ibtn-qr" onclick="event.stopPropagation();openQRModal('${eq.sn}')" title="QR Code"><i class="fas fa-qrcode"></i></button>
+        <button class="ibtn" onclick="event.stopPropagation();openDetail('${esc(eq.sn)}')" title="รายละเอียด"><i class="fas fa-eye"></i></button>
+        <button class="ibtn-qr" onclick="event.stopPropagation();openQRModal('${esc(eq.sn)}')" title="QR Code"><i class="fas fa-qrcode"></i></button>
       </div></td>
     </tr>`;
   }).join('');
 }
 
-function filterTbl(v){searchQ=v.toLowerCase();renderTable();}
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function filterTbl(v){ searchQ=v.toLowerCase(); renderTable(); }
 function fStatus(s,el){
-  currentFilter=s;
+  curFilter=s;
   document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
   renderTable();
 }
 
-// ==================== STATS ====================
 function renderStats(){
-  const t=allEq.length;
-  const ok=allEq.filter(e=>e.status==='ok').length;
-  const bad=allEq.filter(e=>e.status==='broken').length;
-  const cal=allEq.filter(e=>e.status==='cal').length;
+  const t=allEq.length, ok=allEq.filter(e=>e.status==='ok').length, bad=allEq.filter(e=>e.status==='broken').length, cal=allEq.filter(e=>e.status==='cal').length;
   document.getElementById('s-total').textContent=t;
   document.getElementById('s-ok').textContent=ok;
   document.getElementById('s-bad').textContent=bad;
   document.getElementById('s-cal').textContent=cal;
 }
 
-// ==================== ALERTS ====================
 function renderAlerts(){
   const alerts=[];
   allEq.forEach(eq=>{
-    if(eq.status==='broken') alerts.push({cls:'red',text:`${eq.name} — รอการซ่อมบำรุง`,time:'ด่วน'});
-    if(eq.status==='cal')   alerts.push({cls:'amber',text:`${eq.name} — ครบกำหนดสอบเทียบ`,time:eq.calNext||''});
+    if(eq.status==='broken') alerts.push({cls:'red', text:`${eq.name} — รอการซ่อมบำรุง`, time:'ด่วน'});
+    if(eq.status==='cal')    alerts.push({cls:'amber',text:`${eq.name} — ครบกำหนดสอบเทียบ`, time:eq.calNext||''});
   });
   document.getElementById('alert-cnt').textContent=alerts.length;
   const list=document.getElementById('alert-list');
   if(!alerts.length){list.innerHTML='<div style="padding:1.4rem;text-align:center;color:var(--text3);font-size:12px"><i class="fas fa-check-circle" style="font-size:20px;color:var(--accent);display:block;margin-bottom:7px;opacity:.5"></i>ไม่มีการแจ้งเตือน</div>';return;}
-  list.innerHTML=alerts.slice(0,6).map(a=>`<div class="alert-item"><div class="adot ${a.cls}"></div><div class="atxt">${a.text}<div class="atime">${a.time}</div></div></div>`).join('');
+  list.innerHTML=alerts.slice(0,6).map(a=>`<div class="alert-item"><div class="adot ${a.cls}"></div><div class="atxt">${esc(a.text)}<div class="atime">${a.time}</div></div></div>`).join('');
 }
 
-// ==================== PROGRESS ====================
 function renderProgress(){
-  const t=allEq.length||1;
-  const ok=allEq.filter(e=>e.status==='ok').length;
-  const cal=allEq.filter(e=>e.status==='cal').length;
-  const bad=allEq.filter(e=>e.status==='broken').length;
+  const t=allEq.length||1, ok=allEq.filter(e=>e.status==='ok').length, cal=allEq.filter(e=>e.status==='cal').length, bad=allEq.filter(e=>e.status==='broken').length;
   document.getElementById('cal-prog').innerHTML=[
-    {lbl:'พร้อมใช้งาน',n:ok,cls:'f-teal'},
-    {lbl:'รอสอบเทียบ',n:cal,cls:'f-amber'},
-    {lbl:'ชำรุด/ซ่อม',n:bad,cls:'f-red'},
+    {lbl:'พร้อมใช้งาน',n:ok,cls:'f-teal'},{lbl:'รอสอบเทียบ',n:cal,cls:'f-amber'},{lbl:'ชำรุด/ซ่อม',n:bad,cls:'f-red'}
   ].map(i=>`<div class="ci"><div class="ci-hd"><span class="cn">${i.lbl}</span><span class="cp">${i.n}/${t}</span></div><div class="pbar"><div class="pfill ${i.cls}" style="width:${Math.round(i.n/t*100)}%"></div></div></div>`).join('');
 }
 
-// ==================== STATUS BADGE ====================
+// ==================== BADGE ====================
 function statusLabel(s){return{ok:'ปกติ',cal:'รอสอบเทียบ',broken:'ชำรุด/ซ่อม'}[s]||s;}
 function badgeHTML(s){const m={ok:'b-ok',cal:'b-cal',broken:'b-bad'};return`<span class="badge ${m[s]||'b-ok'}">${statusLabel(s)}</span>`;}
 
 // ==================== DETAIL MODAL ====================
 function openDetail(sn){
-  const eq=allEq.find(e=>e.sn===sn);
-  if(!eq)return;
+  const eq=allEq.find(e=>e.sn===sn);if(!eq)return;
   currentSN=sn;
   document.getElementById('m-icon').textContent=eq.icon||'🔧';
   document.getElementById('m-name').textContent=eq.name;
@@ -744,165 +719,102 @@ function openDetail(sn){
   document.getElementById('m-caldate').textContent=eq.calDate||'—';
   document.getElementById('m-calnext').textContent=eq.calNext||'—';
 
-  const btns=[];
-  if(eq.manual&&eq.manual!=='#') btns.push({href:eq.manual,cls:'teal',icon:'fa-book-open',t:'คู่มือการใช้งาน',d:'User / Service Manual'});
-  else if(eq.manual==='#') btns.push({href:'#',cls:'teal',icon:'fa-book-open',t:'คู่มือการใช้งาน',d:'User / Service Manual'});
-  if(eq.cal&&eq.cal!=='#') btns.push({href:eq.cal,cls:'amber',icon:'fa-certificate',t:'ใบสอบเทียบ',d:'Calibration Certificate'});
-  else if(eq.cal==='#') btns.push({href:'#',cls:'amber',icon:'fa-certificate',t:'ใบสอบเทียบ',d:'Calibration Certificate'});
-  if(eq.checklist&&eq.checklist!=='#') btns.push({href:eq.checklist,cls:'blue',icon:'fa-clipboard-check',t:'ฟอร์มตรวจสอบ',d:'Daily Maintenance Form'});
-  else if(eq.checklist==='#') btns.push({href:'#',cls:'blue',icon:'fa-clipboard-check',t:'ฟอร์มตรวจสอบ',d:'Daily Maintenance Form'});
-  if(eq.repair&&eq.repair!=='#') btns.push({href:eq.repair,cls:'red',icon:'fa-wrench',t:'แจ้งซ่อม',d:'Repair Request Form'});
-  else if(eq.repair==='#') btns.push({href:'#',cls:'red',icon:'fa-wrench',t:'แจ้งซ่อม',d:'Repair Request Form'});
-
+  const defs=[
+    {key:'manual', cls:'teal', icon:'fa-book-open',      t:'คู่มือการใช้งาน',   d:'User / Service Manual'},
+    {key:'cal',    cls:'amber',icon:'fa-certificate',    t:'ใบสอบเทียบ',        d:'Calibration Certificate'},
+    {key:'checklist',cls:'blue',icon:'fa-clipboard-check',t:'ฟอร์มตรวจสอบ',    d:'Daily Maintenance Form'},
+    {key:'repair', cls:'red',  icon:'fa-wrench',         t:'แจ้งซ่อม',          d:'Repair Request Form'},
+  ];
+  const btns=defs.filter(d=>eq[d.key]);
   const grid=document.getElementById('m-act-grid');
-  if(!btns.length){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:1rem;color:var(--text3);font-size:12px">ยังไม่มีลิงก์</div>';}
-  else grid.innerHTML=btns.map(b=>`<a class="acard ${b.cls}" href="${b.href}" target="${b.href==='#'?'_self':'_blank'}"><div class="acard-icon"><i class="fas ${b.icon}"></i></div><div class="acard-title">${b.t}</div><div class="acard-desc">${b.d}</div></a>`).join('');
+  grid.innerHTML=btns.length
+    ? btns.map(b=>`<a class="acard ${b.cls}" href="${esc(eq[b.key])}" target="_blank" rel="noopener"><div class="acard-icon"><i class="fas ${b.icon}"></i></div><div class="acard-title">${b.t}</div><div class="acard-desc">${b.d}</div></a>`).join('')
+    : '<div style="grid-column:1/-1;text-align:center;padding:1rem;color:var(--text3);font-size:12px">ยังไม่มีลิงก์ข้อมูลประกอบ</div>';
 
   const noteEl=document.getElementById('m-note');
-  if(eq.note){noteEl.style.display='block';noteEl.innerHTML=`<i class="fas fa-info-circle" style="color:#5DCAA5;margin-right:5px"></i>${eq.note}`;}
+  if(eq.note){noteEl.style.display='block';noteEl.innerHTML=`<i class="fas fa-info-circle" style="color:#5DCAA5;margin-right:5px"></i>${esc(eq.note)}`;}
   else noteEl.style.display='none';
-
   document.getElementById('modal-detail').classList.add('open');
 }
 
 async function quickStatus(){
-  const eq=allEq.find(e=>e.sn===currentSN);
-  if(!eq)return;
+  const eq=allEq.find(e=>e.sn===currentSN);if(!eq)return;
   const opts=['ok','cal','broken'];
-  const cur=opts.indexOf(eq.status);
-  const next=opts[(cur+1)%3];
+  const next=opts[(opts.indexOf(eq.status)+1)%3];
   if(!confirm(`เปลี่ยนสถานะ "${eq.name}" เป็น "${statusLabel(next)}" ใช่ไหม?`))return;
   eq.status=next;
-  if(GAS_URL){
-    try{await fetch(GAS_URL,{method:'POST',body:JSON.stringify({action:'updateStatus',sn:currentSN,status:next})});}
-    catch(e){toast('อัปเดตสถานะล้มเหลว','fa-triangle-exclamation');}
-  }
+  if(GAS_URL) await postGAS({action:'updateStatus',sn:currentSN,status:next});
   renderAll();
   document.getElementById('m-status').innerHTML=badgeHTML(next);
   toast('อัปเดตสถานะสำเร็จ');
 }
 
-// ==================== QR MODAL ====================
+// ==================== QR ====================
 function openQRModal(sn){
-  const eq=allEq.find(e=>e.sn===sn);
-  if(!eq)return;
+  const eq=allEq.find(e=>e.sn===sn);if(!eq)return;
   currentSN=sn;
-  const baseURL=window.location.origin+window.location.pathname;
-  const qrURL=`${baseURL}?scan=${encodeURIComponent(sn)}`;
-
+  const base=window.location.origin+window.location.pathname;
+  const qrURL=base+'?scan='+encodeURIComponent(sn);
   document.getElementById('qr-title').textContent=eq.name;
   document.getElementById('qr-sn-lbl').textContent='S/N: '+sn;
   document.getElementById('qr-url-display').textContent=qrURL;
-
-  const container=document.getElementById('qr-container');
-  container.innerHTML='';
+  const cont=document.getElementById('qr-container');
+  cont.innerHTML='';
   const canvas=document.createElement('canvas');
-  container.appendChild(canvas);
-
-  QRCode.toCanvas(canvas, qrURL, {
-    width:150, margin:1,
-    color:{dark:'#000000',light:'#ffffff'}
-  }, err=>{ if(err) container.innerHTML='<div style="color:var(--red2);font-size:12px">Error generating QR</div>'; });
-
+  cont.appendChild(canvas);
+  QRCode.toCanvas(canvas,qrURL,{width:148,margin:1,color:{dark:'#000000',light:'#ffffff'}},err=>{
+    if(err) cont.innerHTML='<div style="color:var(--red2);font-size:12px">Error</div>';
+  });
   document.getElementById('modal-detail').classList.remove('open');
   document.getElementById('modal-qr').classList.add('open');
 }
 
 function printQR(){
-  const sn=currentSN;
-  const eq=allEq.find(e=>e.sn===sn);
-  if(!eq)return;
-  const baseURL=window.location.origin+window.location.pathname;
-  const qrURL=`${baseURL}?scan=${encodeURIComponent(sn)}`;
-  const w=window.open('','_blank');
+  const eq=allEq.find(e=>e.sn===currentSN);if(!eq)return;
+  const base=window.location.origin+window.location.pathname;
+  const qrURL=base+'?scan='+encodeURIComponent(currentSN);
   const canvas=document.querySelector('#qr-container canvas');
   const img=canvas?canvas.toDataURL():'';
-  w.document.write(`<!DOCTYPE html><html><head><title>QR Sticker - ${eq.name}</title>
-  <style>body{font-family:sans-serif;display:flex;justify-content:center;padding:20px;background:#fff}
-  .sticker{border:2px solid #333;border-radius:12px;padding:16px;width:200px;text-align:center}
-  img{width:150px;height:150px}.name{font-size:13px;font-weight:700;margin:6px 0 2px}.sn{font-size:10px;font-family:monospace;color:#666}.hosp{font-size:9px;color:#999;margin-top:4px}
-  @media print{body{padding:0}}</style></head>
-  <body><div class="sticker"><img src="${img}"><div class="name">${eq.name}</div><div class="sn">${eq.sn}</div><div class="hosp">ห้องปฏิบัติการ · รพ.เบตง</div></div>
-  <script>window.onload=()=>{window.print();window.close()}<\/script></body></html>`);
+  const w=window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head><title>QR - ${eq.name}</title><style>body{font-family:sans-serif;display:flex;justify-content:center;padding:20px;background:#fff}.s{border:2px solid #222;border-radius:12px;padding:16px;width:200px;text-align:center}img{width:148px;height:148px}.n{font-size:13px;font-weight:700;margin:6px 0 2px}.sn{font-size:10px;font-family:monospace;color:#666}.h{font-size:9px;color:#999;margin-top:4px}@media print{body{padding:0}}</style></head><body><div class="s"><img src="${img}"><div class="n">${eq.name}</div><div class="sn">${eq.sn}</div><div class="h">ห้องปฏิบัติการ · รพ.เบตง</div></div><script>window.onload=()=>{window.print();window.close()}<\/script></body></html>`);
 }
 
 // ==================== SCAN ====================
 function doScan(){
-  const val=document.getElementById('scan-in').value.trim();
-  if(!val)return;
+  const val=document.getElementById('scan-in').value.trim();if(!val)return;
   const eq=allEq.find(e=>e.sn.toLowerCase()===val.toLowerCase()||e.name.toLowerCase().includes(val.toLowerCase()));
   const res=document.getElementById('scan-result');
-
   if(!eq){
-    res.innerHTML=`<div style="background:var(--bg-card);border:1px solid var(--red-g);border-radius:var(--rxl);padding:2rem;text-align:center;color:var(--red2)"><i class="fas fa-circle-exclamation" style="font-size:30px;display:block;margin-bottom:.7rem;opacity:.6"></i><div style="font-size:14px;font-weight:500">ไม่พบข้อมูล</div><div style="font-size:12px;color:var(--text3)">"${val}" ไม่อยู่ในระบบ</div></div>`;
+    res.innerHTML=`<div style="background:var(--bg-card);border:1px solid var(--rbg);border-radius:var(--rxl);padding:2rem;text-align:center;color:var(--red2)"><i class="fas fa-circle-exclamation" style="font-size:30px;display:block;margin-bottom:.7rem;opacity:.6"></i><div style="font-size:14px;font-weight:500">ไม่พบข้อมูล</div><div style="font-size:12px;color:var(--text3)">"${esc(val)}" ไม่อยู่ในระบบ</div></div>`;
     return;
   }
-
-  const btns=[];
-  if(eq.manual) btns.push({href:eq.manual==='#'?'#':eq.manual,cls:'teal',icon:'fa-book-open',t:'คู่มือการใช้งาน',d:'Manual & Reference'});
-  if(eq.cal)    btns.push({href:eq.cal==='#'?'#':eq.cal,cls:'amber',icon:'fa-certificate',t:'ใบสอบเทียบ',d:'Digital Traceability'});
-  if(eq.checklist) btns.push({href:eq.checklist==='#'?'#':eq.checklist,cls:'blue',icon:'fa-clipboard-check',t:'ฟอร์มตรวจสอบ',d:'Daily Checklist'});
-  if(eq.repair) btns.push({href:eq.repair==='#'?'#':eq.repair,cls:'red',icon:'fa-wrench',t:'แจ้งซ่อม',d:'Repair Request'});
-
-  res.innerHTML=`<div class="scan-card">
-    <div class="scan-img-area">${eq.icon||'🔧'}</div>
-    <div class="scan-info">
-      <div class="scan-eq-name">${eq.name}</div>
-      <div class="scan-meta">${eq.model} · ${eq.type||''}</div>
-      <div class="scan-chips">
-        <div class="sch">S/N: <span>${eq.sn}</span></div>
-        <div class="sch">สถานะ: <span>${statusLabel(eq.status)}</span></div>
-        <div class="sch">ห้อง: <span>${eq.location||'—'}</span></div>
-        ${eq.calNext?`<div class="sch">สอบเทียบ: <span>${eq.calNext}</span></div>`:''}
-      </div>
-      <div class="scan-btns">
-        ${btns.length?btns.map(b=>`<a class="sbtn" href="${b.href}" target="${b.href==='#'?'_self':'_blank'}"><div class="sbtn-icon ${b.cls}"><i class="fas ${b.icon}"></i></div><div class="sbtn-txt"><div class="sbtn-t">${b.t}</div><div class="sbtn-d">${b.d}</div></div><i class="fas fa-arrow-up-right-from-square sbtn-arr"></i></a>`).join(''):'<div style="text-align:center;padding:1rem;color:var(--text3);font-size:12px">ยังไม่มีลิงก์ข้อมูลประกอบ</div>'}
-      </div>
-      ${eq.note?`<div style="margin-top:.9rem;padding:9px 13px;background:var(--bg-card2);border-radius:8px;font-size:12px;color:var(--text2);border:1px solid var(--border-s)"><i class="fas fa-info-circle" style="color:#5DCAA5;margin-right:5px"></i>${eq.note}</div>`:''}
-    </div>
-  </div>`;
+  const defs=[{key:'manual',cls:'teal',icon:'fa-book-open',t:'คู่มือการใช้งาน',d:'Manual & Reference'},{key:'cal',cls:'amber',icon:'fa-certificate',t:'ใบสอบเทียบ',d:'Digital Traceability'},{key:'checklist',cls:'blue',icon:'fa-clipboard-check',t:'ฟอร์มตรวจสอบ',d:'Daily Checklist'},{key:'repair',cls:'red',icon:'fa-wrench',t:'แจ้งซ่อม',d:'Repair Request'}];
+  const btns=defs.filter(d=>eq[d.key]);
+  res.innerHTML=`<div class="scan-card"><div class="scan-img-area">${eq.icon||'🔧'}</div><div class="scan-info"><div class="scan-eq-name">${esc(eq.name)}</div><div class="scan-meta">${esc(eq.model)} · ${esc(eq.type||'')}</div><div class="scan-chips"><div class="sch">S/N: <span>${esc(eq.sn)}</span></div><div class="sch">สถานะ: <span>${statusLabel(eq.status)}</span></div><div class="sch">ห้อง: <span>${esc(eq.location||'—')}</span></div>${eq.calNext?`<div class="sch">สอบเทียบ: <span>${eq.calNext}</span></div>`:''}</div><div class="scan-btns">${btns.length?btns.map(b=>`<a class="sbtn" href="${esc(eq[b.key])}" target="_blank" rel="noopener"><div class="sbtn-icon ${b.cls}"><i class="fas ${b.icon}"></i></div><div class="sbtn-txt"><div class="sbtn-t">${b.t}</div><div class="sbtn-d">${b.d}</div></div><i class="fas fa-arrow-up-right-from-square sbtn-arr"></i></a>`).join(''):'<div style="text-align:center;padding:1rem;color:var(--text3);font-size:12px">ยังไม่มีลิงก์ข้อมูลประกอบ</div>'}</div>${eq.note?`<div style="margin-top:.9rem;padding:9px 13px;background:var(--bg-card2);border-radius:8px;font-size:12px;color:var(--text2);border:1px solid var(--border-s)"><i class="fas fa-info-circle" style="color:#5DCAA5;margin-right:5px"></i>${esc(eq.note)}</div>`:''}</div></div>`;
 }
 
 // ==================== FORM ====================
 async function submitForm(){
   const name=document.getElementById('f-name').value.trim();
   const sn=document.getElementById('f-sn').value.trim();
-  if(!name||!sn){toast('กรุณากรอกชื่อเครื่องมือและ Serial Number','fa-triangle-exclamation');return;}
+  if(!name||!sn){toast('กรุณากรอกชื่อเครื่องมือและ Serial Number','fa-triangle-exclamation',true);return;}
 
-  const data={
-    sn,name,
-    model:document.getElementById('f-model').value,
-    type:document.getElementById('f-type').value,
-    status:document.getElementById('f-status').value,
-    location:document.getElementById('f-loc').value,
-    calDate:document.getElementById('f-caldate').value,
-    calNext:document.getElementById('f-calnext').value,
-    note:document.getElementById('f-note').value,
-    icon:'🔧',
-    manual:document.getElementById('f-manual').value,
-    cal:document.getElementById('f-cal').value,
-    checklist:document.getElementById('f-check').value,
-    repair:document.getElementById('f-repair').value,
-  };
+  const data={sn,name,model:document.getElementById('f-model').value,type:document.getElementById('f-type').value,status:document.getElementById('f-status').value,location:document.getElementById('f-loc').value,calDate:document.getElementById('f-caldate').value,calNext:document.getElementById('f-calnext').value,note:document.getElementById('f-note').value,icon:'🔧',manual:document.getElementById('f-manual').value,cal:document.getElementById('f-cal').value,checklist:document.getElementById('f-check').value,repair:document.getElementById('f-repair').value};
 
   if(GAS_URL){
-    try{
-      const r=await fetch(GAS_URL,{method:'POST',body:JSON.stringify({action:'add',data})});
-      const d=await r.json();
-      if(!d.ok)throw new Error(d.msg);
-      allEq.push(data);
-      renderAll();
+    const res=await postGAS({action:'add',data});
+    if(res.ok){
+      allEq.push(data);renderAll();
       toast(`บันทึก "${name}" ลง Google Sheets สำเร็จ!`);
-      clearForm();
-      showSec('dashboard');setActive(document.querySelectorAll('.nav-link')[0]);
-    }catch(e){toast('บันทึกล้มเหลว: '+e.message,'fa-triangle-exclamation');}
-  }else{
-    allEq.push(data);
-    renderAll();
-    toast(`บันทึก "${name}" (Demo Mode)`);
-    clearForm();
-    showSec('dashboard');setActive(document.querySelectorAll('.nav-link')[0]);
+    } else {
+      toast('บันทึกล้มเหลว: '+(res.msg||''),'fa-triangle-exclamation',true);return;
+    }
+  } else {
+    allEq.push(data);renderAll();
+    toast(`บันทึก "${name}" (Demo Mode — ไม่ได้บันทึกจริง)`,'fa-circle-info');
   }
+  clearForm();
+  showSec('dashboard');setActive(document.querySelectorAll('.nav-link')[0]);
 }
 
 function clearForm(){
@@ -912,65 +824,60 @@ function clearForm(){
 
 // ==================== EXPORT ====================
 function exportCSV(){
-  const headers=['sn','name','model','type','status','location','calDate','calNext','note','manual','cal','checklist','repair'];
-  const rows=[headers.join(','),...allEq.map(eq=>headers.map(h=>`"${(eq[h]||'').replace(/"/g,'""')}"`).join(','))];
+  const h=['sn','name','model','type','status','location','calDate','calNext','note','manual','cal','checklist','repair'];
+  const rows=[h.join(','),...allEq.map(eq=>h.map(k=>`"${(eq[k]||'').replace(/"/g,'""')}"`).join(','))];
   const blob=new Blob(['\uFEFF'+rows.join('\n')],{type:'text/csv;charset=utf-8'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download=`LabTrace_Equipment_${new Date().toISOString().slice(0,10)}.csv`;
-  a.click();
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=`LabTrace_${new Date().toISOString().slice(0,10)}.csv`;a.click();
   toast('Export CSV สำเร็จ');
 }
 
 function exportQRSheet(){
+  const base=window.location.origin+window.location.pathname;
   const w=window.open('','_blank');
-  const baseURL=window.location.origin+window.location.pathname;
-  const cards=allEq.map(eq=>`<div class="sc"><div style="font-size:11px;font-weight:700">${eq.name}</div><div style="font-size:9px;font-family:monospace;color:#666">${eq.sn}</div><div style="font-size:8px;color:#999">QR: ?scan=${encodeURIComponent(eq.sn)}</div><div style="font-size:18px;margin:4px 0">⬛</div><div style="font-size:7px;color:#aaa">รพ.เบตง</div></div>`).join('');
-  w.document.write(`<!DOCTYPE html><html><head><title>QR Sheet</title><style>body{font-family:sans-serif;padding:20px}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.sc{border:1px solid #ccc;border-radius:8px;padding:10px;text-align:center}@media print{body{padding:0}}</style></head><body><h3>QR Code Sheet — LabTrace</h3><div class="grid">${cards}</div><script>window.onload=()=>window.print()<\/script></body></html>`);
+  w.document.write(`<!DOCTYPE html><html><head><title>QR Sheet</title><style>body{font-family:sans-serif;padding:20px}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.sc{border:1px solid #ccc;border-radius:8px;padding:10px;text-align:center;font-size:11px}@media print{body{padding:0}}</style></head><body><h3 style="margin-bottom:16px">QR Code Sheet — LabTrace · รพ.เบตง</h3><div class="grid">${allEq.map(eq=>`<div class="sc"><div style="font-weight:700">${eq.name}</div><div style="font-family:monospace;font-size:9px;color:#666">${eq.sn}</div><div style="font-size:20px;margin:6px 0">⬛</div><div style="font-size:8px;color:#aaa">${base}?scan=${encodeURIComponent(eq.sn)}</div></div>`).join('')}</div><script>window.onload=()=>window.print()<\/script></body></html>`);
   toast('เปิดหน้า QR Sheet แล้ว');
 }
 
 // ==================== SETTINGS ====================
 function openSettings(){
   document.getElementById('gas-url-input').value=GAS_URL;
-  const ghPreview=`https://USERNAME.github.io/REPO/?scan=SN`;
-  document.getElementById('gh-url-preview').textContent=ghPreview;
+  document.getElementById('gas-test-result').textContent='';
   document.getElementById('modal-settings').classList.add('open');
 }
 
-function saveGASUrl(){
+async function saveGASUrl(){
   const url=document.getElementById('gas-url-input').value.trim();
-  if(!url){toast('กรุณากรอก URL','fa-triangle-exclamation');return;}
-  GAS_URL=url;
-  localStorage.setItem(CFG_KEY,GAS_URL);
-  document.getElementById('modal-settings').classList.remove('open');
-  updateBanners();
-  loadData();
-  toast('บันทึก GAS URL สำเร็จ! กำลังโหลดข้อมูล...');
+  if(!url){toast('กรุณากรอก URL','fa-triangle-exclamation',true);return;}
+  const testEl=document.getElementById('gas-test-result');
+  testEl.style.color='var(--text3)';testEl.textContent='⏳ กำลังทดสอบการเชื่อมต่อ...';
+  try{
+    const d=await fetchJSONP(url+'?action=getAll',8000);
+    if(Array.isArray(d)||d.ok!==false){
+      GAS_URL=url;localStorage.setItem(CFG_KEY,GAS_URL);
+      testEl.style.color='#5DCAA5';testEl.textContent='✅ เชื่อมต่อสำเร็จ!';
+      setTimeout(()=>{document.getElementById('modal-settings').classList.remove('open');loadData();},1000);
+    } else throw new Error(d.msg||'bad response');
+  } catch(e){
+    testEl.style.color='var(--red2)';testEl.textContent='❌ '+e.message;
+  }
 }
 
 // ==================== NAV ====================
-function showSec(id){
-  document.querySelectorAll('.page-section').forEach(s=>s.classList.remove('active'));
-  document.getElementById('sec-'+id).classList.add('active');
-  window.scrollTo(0,0);
-}
-function setActive(el){
-  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
-  if(el)el.classList.add('active');
-}
+function showSec(id){document.querySelectorAll('.page-section').forEach(s=>s.classList.remove('active'));document.getElementById('sec-'+id).classList.add('active');window.scrollTo(0,0);}
+function setActive(el){document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));if(el)el.classList.add('active');}
 
 // ==================== TOAST ====================
-function toast(msg,icon='fa-check-circle'){
+function toast(msg,icon='fa-check-circle',err=false){
   const t=document.getElementById('toast');
   document.getElementById('toast-msg').textContent=msg;
   document.getElementById('toast-icon').className='fas '+icon;
+  t.className='toast'+(err?' err':'');
   t.classList.add('show');
-  clearTimeout(t._tid);
-  t._tid=setTimeout(()=>t.classList.remove('show'),3500);
+  clearTimeout(t._t);
+  t._t=setTimeout(()=>t.classList.remove('show'),3500);
 }
 
-// ==================== START ====================
 init();
 </script>
 </body>
