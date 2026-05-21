@@ -703,7 +703,7 @@ thead th[data-full] {
   <div class="footer">
     <b>Cumulative Antibiogram Dashboard</b> · โรงพยาบาลเบตง · ตามมาตรฐาน CLSI M39 + M100<br>
     ใช้กฎ First isolate per patient · แสดงเฉพาะผล Susceptible (S) · ระวังการตีความข้อมูลที่มี n &lt; 30<br>
-    <span style="font-size:10px">CLSI M100: สำหรับเชื้อ <i>Staphylococcus</i> spp. ใช้ผล Cefoxitin (FOX) รายงาน Oxacillin (OXA) — เซลล์ที่มีเครื่องหมาย <sup style="font-size:8px;opacity:0.7">ᶠ</sup> คือค่าที่มาจาก FOX surrogate</span>
+    <span style="font-size:10px">CLSI M100: ทุกเชื้อ — ใช้ผล Cefoxitin (FOX) รายงาน Oxacillin (OXA) · เซลล์ที่มีเครื่องหมาย <sup style="font-size:8px;opacity:0.7">ᶠ</sup> คือค่าที่มาจาก FOX surrogate</span>
   </div>
 </div>
 
@@ -881,18 +881,19 @@ function calcAntibiogram(rows) {
     firstMap[key] = row;
   });
 
-  // Step 2: Aggregate per organism, applying CLSI M100 Cefoxitin->Oxacillin surrogate for Staph
+  // Step 2: Aggregate per organism
+  // CLSI M100: ทุกเชื้อ — ถ้ามีผล Cefoxitin (FOX) ให้ใช้รายงานเป็น Oxacillin (OXA)
+  //            ถ้ามีทั้ง FOX และ OXA → ใช้ FOX เท่านั้น (priority สูงกว่า)
   const orgData = {};
   Object.values(firstMap).forEach(row => {
     const org = row.organism || row.Organism || '';
     if (!orgData[org]) orgData[org] = { n: 0, abx: {}, foxSurrogate: false };
     orgData[org].n++;
 
-    const isStaph = /staphylococ/i.test(org);
     // ตรวจว่าแถวนี้มี Cefoxitin ที่ใช้ได้หรือไม่
     const foxRaw = findAbxValue(row, 'Cefoxitin');
     const foxVal = (foxRaw || '').toString().trim().toUpperCase();
-    const hasFox = isStaph && (foxVal === 'S' || foxVal === 'I' || foxVal === 'R');
+    const hasFox = (foxVal === 'S' || foxVal === 'I' || foxVal === 'R');
 
     ABX_COLS.forEach(ab => {
       const raw = findAbxValue(row, ab);
@@ -901,14 +902,14 @@ function calcAntibiogram(rows) {
 
       let sh = SHORT[ab] || ab;
 
-      // CLSI M100 surrogate rules for Staphylococcus:
-      // - ถ้าเป็น Staph + Cefoxitin → รายงานเป็น Oxacillin
-      // - ถ้าเป็น Staph + Oxacillin + มี FOX แล้ว → ข้าม OXA ตัวจริง (FOX มี priority)
-      if (isStaph && sh === 'FOX') {
+      // CLSI M100 surrogate rule (ทุกเชื้อ):
+      // - Cefoxitin → รายงานเป็น Oxacillin
+      // - ถ้ามี FOX แล้ว → ข้าม OXA ตัวจริง
+      if (sh === 'FOX') {
         sh = 'OXA';
         orgData[org].foxSurrogate = true;
-      } else if (isStaph && sh === 'OXA' && hasFox) {
-        return; // ข้าม OXA โดยตรงเพราะใช้ FOX surrogate แทน
+      } else if (sh === 'OXA' && hasFox) {
+        return; // ข้าม OXA ตัวจริง เพราะใช้ FOX surrogate
       }
 
       if (!orgData[org].abx[sh]) orgData[org].abx[sh] = { s: 0, total: 0 };
