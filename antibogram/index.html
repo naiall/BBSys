@@ -415,6 +415,15 @@ tbody tr:last-child td { border-bottom: none; }
 [data-theme="dark"] .sw { background: #EF9F2740; color: #FAC775; }
 .na { color: var(--text-3); font-size: 11px; opacity: 0.4; }
 
+/* FOX surrogate marker */
+.fox-mark {
+  font-size: 8px;
+  margin-left: 2px;
+  opacity: 0.7;
+  cursor: help;
+  vertical-align: super;
+}
+
 /* ========== ORGANISM ========== */
 .org-name { display: flex; align-items: center; gap: 9px; }
 .org-dot {
@@ -692,8 +701,9 @@ thead th[data-full] {
   </div>
 
   <div class="footer">
-    <b>Cumulative Antibiogram Dashboard</b> · โรงพยาบาลเบตง · ตามมาตรฐาน CLSI M39<br>
-    ใช้กฎ First isolate per patient · แสดงเฉพาะผล Susceptible (S) · ระวังการตีความข้อมูลที่มี n &lt; 30
+    <b>Cumulative Antibiogram Dashboard</b> · โรงพยาบาลเบตง · ตามมาตรฐาน CLSI M39 + M100<br>
+    ใช้กฎ First isolate per patient · แสดงเฉพาะผล Susceptible (S) · ระวังการตีความข้อมูลที่มี n &lt; 30<br>
+    <span style="font-size:10px">CLSI M100: สำหรับเชื้อ <i>Staphylococcus</i> spp. ใช้ผล Cefoxitin (FOX) รายงาน Oxacillin (OXA) — เซลล์ที่มีเครื่องหมาย <sup style="font-size:8px;opacity:0.7">ᶠ</sup> คือค่าที่มาจาก FOX surrogate</span>
   </div>
 </div>
 
@@ -860,6 +870,7 @@ function findAbxValue(row, abxName) {
 }
 
 function calcAntibiogram(rows) {
+  // Step 1: First isolate per patient (CLSI M39)
   const firstMap = {};
   rows.forEach(row => {
     const hn = row.HN || row.hn || '';
@@ -870,16 +881,36 @@ function calcAntibiogram(rows) {
     firstMap[key] = row;
   });
 
+  // Step 2: Aggregate per organism, applying CLSI M100 Cefoxitin->Oxacillin surrogate for Staph
   const orgData = {};
   Object.values(firstMap).forEach(row => {
     const org = row.organism || row.Organism || '';
-    if (!orgData[org]) orgData[org] = { n: 0, abx: {} };
+    if (!orgData[org]) orgData[org] = { n: 0, abx: {}, foxSurrogate: false };
     orgData[org].n++;
+
+    const isStaph = /staphylococ/i.test(org);
+    // ตรวจว่าแถวนี้มี Cefoxitin ที่ใช้ได้หรือไม่
+    const foxRaw = findAbxValue(row, 'Cefoxitin');
+    const foxVal = (foxRaw || '').toString().trim().toUpperCase();
+    const hasFox = isStaph && (foxVal === 'S' || foxVal === 'I' || foxVal === 'R');
+
     ABX_COLS.forEach(ab => {
       const raw = findAbxValue(row, ab);
       const val = (raw || '').toString().trim().toUpperCase();
       if (val !== 'S' && val !== 'I' && val !== 'R') return;
-      const sh = SHORT[ab] || ab;
+
+      let sh = SHORT[ab] || ab;
+
+      // CLSI M100 surrogate rules for Staphylococcus:
+      // - ถ้าเป็น Staph + Cefoxitin → รายงานเป็น Oxacillin
+      // - ถ้าเป็น Staph + Oxacillin + มี FOX แล้ว → ข้าม OXA ตัวจริง (FOX มี priority)
+      if (isStaph && sh === 'FOX') {
+        sh = 'OXA';
+        orgData[org].foxSurrogate = true;
+      } else if (isStaph && sh === 'OXA' && hasFox) {
+        return; // ข้าม OXA โดยตรงเพราะใช้ FOX surrogate แทน
+      }
+
       if (!orgData[org].abx[sh]) orgData[org].abx[sh] = { s: 0, total: 0 };
       orgData[org].abx[sh].total++;
       if (val === 'S') orgData[org].abx[sh].s++;
@@ -888,6 +919,7 @@ function calcAntibiogram(rows) {
 
   return Object.entries(orgData).map(([org, d]) => ({
     organism: org, n: d.n,
+    foxSurrogate: d.foxSurrogate,
     abx: Object.fromEntries(Object.entries(d.abx).map(([ab, c]) => [ab, { pct: (c.s/c.total)*100, tested: c.total, s: c.s }]))
   }));
 }
@@ -1008,9 +1040,14 @@ function renderTable() {
       const val = row.abx[sh];
       if (!val) { html += `<td><span class="na">—</span></td>`; return; }
       const p = Math.round(val.pct);
-      // ใช้สีตามค่า % จริง แม้ n<30 (badge n<30 แสดงที่ชื่อเชื้อแล้ว)
       const cls = p >= 90 ? 'sg' : p >= 70 ? 'sy' : 'sr';
-      html += `<td><span class="sh ${cls}" title="${val.s}/${val.tested} S">${p}%</span></td>`;
+      // CLSI M100: ถ้าเป็น OXA ที่มาจาก FOX surrogate ของ Staph แสดง indicator
+      const isFoxSur = sh === 'OXA' && row.foxSurrogate;
+      const tip = isFoxSur 
+        ? `${val.s}/${val.tested} S · รายงาน Oxacillin จาก Cefoxitin (CLSI M100)`
+        : `${val.s}/${val.tested} S`;
+      const marker = isFoxSur ? '<sup class="fox-mark" title="FOX surrogate">ᶠ</sup>' : '';
+      html += `<td><span class="sh ${cls}" title="${tip}">${p}%${marker}</span></td>`;
     });
     html += '</tr>';
   });
