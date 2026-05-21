@@ -129,7 +129,7 @@ nav{position:fixed;top:0;left:0;right:0;height:60px;background:rgba(10,22,40,.92
 .acard{background:var(--bg-card2);border:1px solid var(--border-s);border-radius:var(--rl);padding:1rem 1.15rem;cursor:pointer;transition:all .2s;text-decoration:none;display:block}
 .acard:hover{border-color:var(--border);background:var(--bg-card3);transform:translateY(-2px)}
 .acard-icon{font-size:20px;margin-bottom:7px}
-.acard.teal .acard-icon{color:#5DCAA5}.acard.amber .acard-icon{color:var(--amber2)}.acard.blue .acard-icon{color:var(--blue2)}.acard.red .acard-icon{color:var(--red2)}
+.acard.teal .acard-icon{color:#5DCAA5}.acard.amber .acard-icon{color:var(--amber2)}.acard.blue .acard-icon{color:var(--blue2)}.acard.red .acard-icon{color:var(--red2)}.acard.purple .acard-icon{color:#C084FC}
 .acard-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:1px}
 .acard-desc{font-size:11px;color:var(--text3)}
 
@@ -167,7 +167,7 @@ textarea{resize:vertical;min-height:75px}
 .sbtn{display:flex;align-items:center;gap:11px;padding:12px 14px;background:var(--bg-card2);border:1px solid var(--border-s);border-radius:var(--r);cursor:pointer;text-decoration:none;transition:all .2s;color:inherit}
 .sbtn:hover{border-color:var(--border);background:var(--bg-card3)}
 .sbtn-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
-.sbtn-icon.teal{background:var(--ag);color:#5DCAA5}.sbtn-icon.amber{background:var(--ambg);color:var(--amber2)}.sbtn-icon.blue{background:var(--bbg);color:var(--blue2)}.sbtn-icon.red{background:var(--rbg);color:var(--red2)}
+.sbtn-icon.teal{background:var(--ag);color:#5DCAA5}.sbtn-icon.amber{background:var(--ambg);color:var(--amber2)}.sbtn-icon.blue{background:var(--bbg);color:var(--blue2)}.sbtn-icon.red{background:var(--rbg);color:var(--red2)}.sbtn-icon.purple{background:rgba(192,132,252,.1);color:#C084FC}
 .sbtn-txt{flex:1}.sbtn-t{font-size:13px;font-weight:500;color:var(--text);margin-bottom:1px}.sbtn-d{font-size:11px;color:var(--text3)}
 .sbtn-arr{color:var(--text3);font-size:11px}
 
@@ -358,6 +358,7 @@ textarea{resize:vertical;min-height:75px}
       <div class="fg"><label><i class="fas fa-certificate" style="color:var(--amber2);margin-right:4px"></i>ใบสอบเทียบ / Calibration</label><div class="uiw"><i class="fas fa-link"></i><input type="url" id="f-cal" placeholder="https://drive.google.com/..."></div></div>
       <div class="fg"><label><i class="fas fa-clipboard-check" style="color:var(--blue2);margin-right:4px"></i>ฟอร์มตรวจสอบประจำวัน</label><div class="uiw"><i class="fas fa-link"></i><input type="url" id="f-check" placeholder="https://forms.google.com/..."></div></div>
       <div class="fg"><label><i class="fas fa-wrench" style="color:var(--red2);margin-right:4px"></i>ฟอร์มแจ้งซ่อม</label><div class="uiw"><i class="fas fa-link"></i><input type="url" id="f-repair" placeholder="https://forms.google.com/..."></div></div>
+      <div class="fg"><label><i class="fas fa-flask" style="color:#C084FC;margin-right:4px"></i>ฟอร์ม QC / คุณภาพ</label><div class="uiw"><i class="fas fa-link"></i><input type="url" id="f-qc" placeholder="https://forms.google.com/..."></div></div>
     </div>
   </div>
   <div class="ffooter">
@@ -407,6 +408,8 @@ textarea{resize:vertical;min-height:75px}
     <div style="margin-top:1rem;display:flex;gap:8px;flex-wrap:wrap">
       <button class="btn btn-ghost btn-sm" onclick="openQRModal(currentSN)"><i class="fas fa-qrcode"></i>ดู QR Code</button>
       <button class="btn btn-ghost btn-sm" onclick="quickStatus()"><i class="fas fa-sync-alt"></i>เปลี่ยนสถานะ</button>
+      <button class="btn btn-ghost btn-sm" onclick="openEditModal(currentSN)" style="color:#5DCAA5;border-color:rgba(29,158,117,.3)"><i class="fas fa-pen"></i>แก้ไข</button>
+      <button class="btn btn-ghost btn-sm" onclick="deleteEq(currentSN)" style="color:var(--red2);border-color:rgba(226,75,74,.3)"><i class="fas fa-trash"></i>ลบ</button>
     </div>
   </div>
 </div>
@@ -489,10 +492,8 @@ textarea{resize:vertical;min-height:75px}
 
 <script>
 // ==================== CONFIG ====================
-// แก้เป็น — ใส่ URL ตายตัว
 const CFG_KEY = 'labtrace_gas_url_v2';
-let GAS_URL   = localStorage.getItem(CFG_KEY) 
-             || 'https://script.google.com/macros/s/AKfycbx-O7wquRo5d9ogdzKUDgAXbh3xlWXvT0EcVFCXhRv7A67BfMK13vhSCRVB5AitomJY/exec';
+let GAS_URL   = localStorage.getItem(CFG_KEY) || '';
 let allEq     = [];
 let curFilter = 'all';
 let searchQ   = '';
@@ -657,7 +658,7 @@ function renderTable() {
   empty.style.display='none'; table.style.display='table';
 
   tbody.innerHTML = data.map(eq => {
-    const links = [eq.manual?'📖':'', eq.cal?'📋':'', eq.checklist?'✅':'', eq.repair?'🔧':''].filter(Boolean).join(' ');
+    const links = [eq.manual?'📖':'', eq.cal?'📋':'', eq.checklist?'✅':'', eq.repair?'🔧':'', eq.qc?'🔬':''].filter(Boolean).join(' ');
     return `<tr onclick="openDetail('${esc(eq.sn)}')">
       <td><div style="display:flex;align-items:center;gap:9px"><span style="font-size:20px">${eq.icon||'🔧'}</span><div><div class="eq-name">${esc(eq.name)}</div><div class="eq-model">${esc(eq.type||'')}</div></div></div></td>
       <td><span style="font-family:var(--mono);font-size:11px;color:#5DCAA5">${esc(eq.sn)}</span></td>
@@ -727,10 +728,11 @@ function openDetail(sn){
   document.getElementById('m-calnext').textContent=fmtDate(eq.calNext);
 
   const defs=[
-    {key:'manual', cls:'teal', icon:'fa-book-open',      t:'คู่มือการใช้งาน',   d:'User / Service Manual'},
-    {key:'cal',    cls:'amber',icon:'fa-certificate',    t:'ใบสอบเทียบ',        d:'Calibration Certificate'},
-    {key:'checklist',cls:'blue',icon:'fa-clipboard-check',t:'ฟอร์มตรวจสอบ',    d:'Daily Maintenance Form'},
-    {key:'repair', cls:'red',  icon:'fa-wrench',         t:'แจ้งซ่อม',          d:'Repair Request Form'},
+    {key:'manual',    cls:'teal',   icon:'fa-book-open',       t:'คู่มือการใช้งาน', d:'User / Service Manual'},
+    {key:'cal',       cls:'amber',  icon:'fa-certificate',     t:'ใบสอบเทียบ',      d:'Calibration Certificate'},
+    {key:'checklist', cls:'blue',   icon:'fa-clipboard-check', t:'ฟอร์มตรวจสอบ',   d:'Daily Maintenance Form'},
+    {key:'repair',    cls:'red',    icon:'fa-wrench',          t:'แจ้งซ่อม',        d:'Repair Request Form'},
+    {key:'qc',        cls:'purple', icon:'fa-flask',           t:'QC / คุณภาพ',     d:'Quality Control Form'},
   ];
   const btns=defs.filter(d=>eq[d.key]);
   const grid=document.getElementById('m-act-grid');
@@ -766,12 +768,15 @@ function openQRModal(sn){
   document.getElementById('qr-sn-lbl').textContent='S/N: '+sn;
   document.getElementById('qr-url-display').textContent=qrURL;
   const cont=document.getElementById('qr-container');
-  cont.innerHTML='';
-  const canvas=document.createElement('canvas');
-  cont.appendChild(canvas);
-  QRCode.toCanvas(canvas,qrURL,{width:148,margin:1,color:{dark:'#000000',light:'#ffffff'}},err=>{
-    if(err) cont.innerHTML='<div style="color:var(--red2);font-size:12px">Error</div>';
-  });
+  cont.innerHTML='<div class="spin" style="margin:auto"></div>';
+  try {
+    QRCode.toDataURL(qrURL,{width:160,margin:2,color:{dark:'#000000',light:'#ffffff'}},function(err,url){
+      if(err){ cont.innerHTML='<div style="color:var(--red2);font-size:11px;text-align:center">QR Error:<br>'+err.message+'</div>'; return; }
+      cont.innerHTML='<img src="'+url+'" style="width:150px;height:150px;border-radius:4px">';
+    });
+  } catch(e) {
+    cont.innerHTML='<div style="color:var(--red2);font-size:11px">'+e.message+'</div>';
+  }
   document.getElementById('modal-detail').classList.remove('open');
   document.getElementById('modal-qr').classList.add('open');
 }
@@ -780,8 +785,8 @@ function printQR(){
   const eq=allEq.find(e=>e.sn===currentSN);if(!eq)return;
   const base=window.location.origin+window.location.pathname;
   const qrURL=base+'?scan='+encodeURIComponent(currentSN);
-  const canvas=document.querySelector('#qr-container canvas');
-  const img=canvas?canvas.toDataURL():'';
+  const qrImg=document.querySelector('#qr-container img');
+  const img=qrImg?qrImg.src:'';
   const w=window.open('','_blank');
   w.document.write(`<!DOCTYPE html><html><head><title>QR - ${eq.name}</title><style>body{font-family:sans-serif;display:flex;justify-content:center;padding:20px;background:#fff}.s{border:2px solid #222;border-radius:12px;padding:16px;width:200px;text-align:center}img{width:148px;height:148px}.n{font-size:13px;font-weight:700;margin:6px 0 2px}.sn{font-size:10px;font-family:monospace;color:#666}.h{font-size:9px;color:#999;margin-top:4px}@media print{body{padding:0}}</style></head><body><div class="s"><img src="${img}"><div class="n">${eq.name}</div><div class="sn">${eq.sn}</div><div class="h">ห้องปฏิบัติการ · รพ.เบตง</div></div><script>window.onload=()=>{window.print();window.close()}<\/script></body></html>`);
 }
@@ -795,7 +800,7 @@ function doScan(){
     res.innerHTML=`<div style="background:var(--bg-card);border:1px solid var(--rbg);border-radius:var(--rxl);padding:2rem;text-align:center;color:var(--red2)"><i class="fas fa-circle-exclamation" style="font-size:30px;display:block;margin-bottom:.7rem;opacity:.6"></i><div style="font-size:14px;font-weight:500">ไม่พบข้อมูล</div><div style="font-size:12px;color:var(--text3)">"${esc(val)}" ไม่อยู่ในระบบ</div></div>`;
     return;
   }
-  const defs=[{key:'manual',cls:'teal',icon:'fa-book-open',t:'คู่มือการใช้งาน',d:'Manual & Reference'},{key:'cal',cls:'amber',icon:'fa-certificate',t:'ใบสอบเทียบ',d:'Digital Traceability'},{key:'checklist',cls:'blue',icon:'fa-clipboard-check',t:'ฟอร์มตรวจสอบ',d:'Daily Checklist'},{key:'repair',cls:'red',icon:'fa-wrench',t:'แจ้งซ่อม',d:'Repair Request'}];
+  const defs=[{key:'manual',cls:'teal',icon:'fa-book-open',t:'คู่มือการใช้งาน',d:'Manual & Reference'},{key:'cal',cls:'amber',icon:'fa-certificate',t:'ใบสอบเทียบ',d:'Digital Traceability'},{key:'checklist',cls:'blue',icon:'fa-clipboard-check',t:'ฟอร์มตรวจสอบ',d:'Daily Checklist'},{key:'repair',cls:'red',icon:'fa-wrench',t:'แจ้งซ่อม',d:'Repair Request'},{key:'qc',cls:'purple',icon:'fa-flask',t:'QC / คุณภาพ',d:'Quality Control Form'}];
   const btns=defs.filter(d=>eq[d.key]);
   res.innerHTML=`<div class="scan-card"><div class="scan-img-area">${eq.icon||'🔧'}</div><div class="scan-info"><div class="scan-eq-name">${esc(eq.name)}</div><div class="scan-meta">${esc(eq.model)} · ${esc(eq.type||'')}</div><div class="scan-chips"><div class="sch">S/N: <span>${esc(eq.sn)}</span></div><div class="sch">สถานะ: <span>${statusLabel(eq.status)}</span></div><div class="sch">ห้อง: <span>${esc(eq.location||'—')}</span></div>${eq.calNext?`<div class="sch">สอบเทียบ: <span>${fmtDate(eq.calNext)}</span></div>`:''}</div><div class="scan-btns">${btns.length?btns.map(b=>`<a class="sbtn" href="${esc(eq[b.key])}" target="_blank" rel="noopener"><div class="sbtn-icon ${b.cls}"><i class="fas ${b.icon}"></i></div><div class="sbtn-txt"><div class="sbtn-t">${b.t}</div><div class="sbtn-d">${b.d}</div></div><i class="fas fa-arrow-up-right-from-square sbtn-arr"></i></a>`).join(''):'<div style="text-align:center;padding:1rem;color:var(--text3);font-size:12px">ยังไม่มีลิงก์ข้อมูลประกอบ</div>'}</div>${eq.note?`<div style="margin-top:.9rem;padding:9px 13px;background:var(--bg-card2);border-radius:8px;font-size:12px;color:var(--text2);border:1px solid var(--border-s)"><i class="fas fa-info-circle" style="color:#5DCAA5;margin-right:5px"></i>${esc(eq.note)}</div>`:''}</div></div>`;
 }
@@ -805,8 +810,22 @@ async function submitForm(){
   const name=document.getElementById('f-name').value.trim();
   const sn=document.getElementById('f-sn').value.trim();
   if(!name||!sn){toast('กรุณากรอกชื่อเครื่องมือและ Serial Number','fa-triangle-exclamation',true);return;}
+  // ถ้าเป็น edit mode
+  if (editMode) {
+    const data={sn,name,model:document.getElementById('f-model').value,type:document.getElementById('f-type').value,status:document.getElementById('f-status').value,location:document.getElementById('f-loc').value,calDate:document.getElementById('f-caldate').value,calNext:document.getElementById('f-calnext').value,note:document.getElementById('f-note').value,icon:allEq.find(e=>e.sn===editMode)?.icon||'🔧',manual:document.getElementById('f-manual').value,cal:document.getElementById('f-cal').value,checklist:document.getElementById('f-check').value,repair:document.getElementById('f-repair').value,qc:document.getElementById('f-qc')?document.getElementById('f-qc').value:''};
+    if (GAS_URL) await postGAS({action:'update', data});
+    const idx = allEq.findIndex(e => e.sn === editMode);
+    if (idx !== -1) allEq[idx] = data;
+    editMode = '';
+    const saveBtn = document.querySelector('[onclick="submitForm()"]');
+    if (saveBtn) { saveBtn.innerHTML = '<i class="fas fa-save"></i>บันทึกและสร้าง QR'; saveBtn.style.background=''; }
+    renderAll(); clearForm();
+    toast('อัปเดต "'+name+'" สำเร็จ');
+    showSec('dashboard'); setActive(document.querySelectorAll('.nav-link')[0]);
+    return;
+  }
 
-  const data={sn,name,model:document.getElementById('f-model').value,type:document.getElementById('f-type').value,status:document.getElementById('f-status').value,location:document.getElementById('f-loc').value,calDate:document.getElementById('f-caldate').value,calNext:document.getElementById('f-calnext').value,note:document.getElementById('f-note').value,icon:'🔧',manual:document.getElementById('f-manual').value,cal:document.getElementById('f-cal').value,checklist:document.getElementById('f-check').value,repair:document.getElementById('f-repair').value};
+  const data={sn,name,model:document.getElementById('f-model').value,type:document.getElementById('f-type').value,status:document.getElementById('f-status').value,location:document.getElementById('f-loc').value,calDate:document.getElementById('f-caldate').value,calNext:document.getElementById('f-calnext').value,note:document.getElementById('f-note').value,icon:'🔧',manual:document.getElementById('f-manual').value,cal:document.getElementById('f-cal').value,checklist:document.getElementById('f-check').value,repair:document.getElementById('f-repair').value,qc:document.getElementById('f-qc')?document.getElementById('f-qc').value:''};
 
   if(GAS_URL){
     const res=await postGAS({action:'add',data});
@@ -825,13 +844,13 @@ async function submitForm(){
 }
 
 function clearForm(){
-  ['f-name','f-model','f-sn','f-type','f-status','f-loc','f-caldate','f-calnext','f-note','f-manual','f-cal','f-check','f-repair']
+  ['f-name','f-model','f-sn','f-type','f-status','f-loc','f-caldate','f-calnext','f-note','f-manual','f-cal','f-check','f-repair','f-qc']
     .forEach(id=>{const el=document.getElementById(id);if(el)el.value=el.tagName==='SELECT'?el.options[0].value:'';});
 }
 
 // ==================== EXPORT ====================
 function exportCSV(){
-  const h=['sn','name','model','type','status','location','calDate','calNext','note','manual','cal','checklist','repair'];
+  const h=['sn','name','model','type','status','location','calDate','calNext','note','manual','cal','checklist','repair','qc'];
   const rows=[h.join(','),...allEq.map(eq=>h.map(k=>`"${(eq[k]||'').replace(/"/g,'""')}"`).join(','))];
   const blob=new Blob(['\uFEFF'+rows.join('\n')],{type:'text/csv;charset=utf-8'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
@@ -897,6 +916,52 @@ function toast(msg,icon='fa-check-circle',err=false){
   clearTimeout(t._t);
   t._t=setTimeout(()=>t.classList.remove('show'),3500);
 }
+
+// ==================== EDIT MODAL ====================
+function openEditModal(sn) {
+  const eq = allEq.find(e => e.sn === sn);
+  if (!eq) return;
+  document.getElementById('modal-detail').classList.remove('open');
+  // กรอกข้อมูลเดิมลงในฟอร์ม
+  document.getElementById('f-name').value    = eq.name || '';
+  document.getElementById('f-model').value   = eq.model || '';
+  document.getElementById('f-sn').value      = eq.sn || '';
+  document.getElementById('f-type').value    = eq.type || '';
+  document.getElementById('f-status').value  = eq.status || 'ok';
+  document.getElementById('f-loc').value     = eq.location || '';
+  document.getElementById('f-caldate').value = eq.calDate || '';
+  document.getElementById('f-calnext').value = eq.calNext || '';
+  document.getElementById('f-note').value    = eq.note || '';
+  document.getElementById('f-manual').value  = eq.manual || '';
+  document.getElementById('f-cal').value     = eq.cal || '';
+  document.getElementById('f-check').value   = eq.checklist || '';
+  document.getElementById('f-repair').value  = eq.repair || '';
+  const qcEl = document.getElementById('f-qc');
+  if (qcEl) qcEl.value = eq.qc || '';
+  // เปลี่ยนปุ่ม submit เป็น update
+  editMode = sn;
+  const saveBtn = document.querySelector('[onclick="submitForm()"]');
+  if (saveBtn) { saveBtn.innerHTML = '<i class="fas fa-save"></i>บันทึกการแก้ไข'; saveBtn.style.background='#185FA5'; }
+  showSec('add');
+  setActive(document.querySelectorAll('.nav-link')[2]);
+  window.scrollTo(0, 0);
+  toast('โหลดข้อมูลแล้ว — แก้ไขและกดบันทึก');
+}
+
+async function deleteEq(sn) {
+  const eq = allEq.find(e => e.sn === sn);
+  if (!eq) return;
+  if (!confirm('ลบ "' + eq.name + '" ('+sn+') ออกจากระบบ?\nการกระทำนี้ไม่สามารถย้อนกลับได้')) return;
+  document.getElementById('modal-detail').classList.remove('open');
+  if (GAS_URL) {
+    await postGAS({ action: 'delete', sn });
+  }
+  allEq = allEq.filter(e => e.sn !== sn);
+  renderAll();
+  toast('ลบ "' + eq.name + '" เรียบร้อยแล้ว', 'fa-trash');
+}
+
+let editMode = '';
 
 function fmtDate(d) {
   if (!d) return '—';
