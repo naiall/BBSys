@@ -489,17 +489,12 @@ tbody tr:last-child td { border-bottom: none; }
 /* ========== ABX TOOLTIP ========== */
 thead th[data-full] {
   cursor: help;
-  position: relative;
 }
-thead th[data-full]::after {
-  content: attr(data-full);
-  position: absolute;
-  bottom: calc(100% + 6px);
-  left: 50%;
-  transform: translateX(-50%) translateY(4px);
+#abxTooltip {
+  position: fixed;
   background: #1a1a1a;
   color: #f0efea;
-  padding: 6px 10px;
+  padding: 7px 11px;
   border-radius: 6px;
   font-size: 11px;
   font-weight: 500;
@@ -508,36 +503,31 @@ thead th[data-full]::after {
   text-transform: none;
   pointer-events: none;
   opacity: 0;
+  transform: translateY(4px);
   transition: opacity 0.15s, transform 0.15s;
-  z-index: 100;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  z-index: 9999;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+  font-family: var(--font-sans);
 }
-thead th[data-full]::before {
+#abxTooltip.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+#abxTooltip::after {
   content: '';
   position: absolute;
-  bottom: 100%;
+  top: 100%;
   left: 50%;
   transform: translateX(-50%);
-  border: 4px solid transparent;
+  border: 5px solid transparent;
   border-top-color: #1a1a1a;
-  opacity: 0;
-  transition: opacity 0.15s;
-  pointer-events: none;
-  z-index: 100;
 }
-thead th[data-full]:hover::after {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
-thead th[data-full]:hover::before {
-  opacity: 1;
-}
-[data-theme="dark"] thead th[data-full]::after {
+[data-theme="dark"] #abxTooltip {
   background: #f0efea;
   color: #1a1a1a;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.5);
 }
-[data-theme="dark"] thead th[data-full]::before {
+[data-theme="dark"] #abxTooltip::after {
   border-top-color: #f0efea;
 }
 
@@ -707,9 +697,11 @@ thead th[data-full]:hover::before {
   </div>
 </div>
 
+<div id="abxTooltip"></div>
+
 <script>
 // ============ CONFIG ============
-const SHEET_ID = '1XbcDgw-jdFTn0q01GEyPKomqke62NI87VyjYXQpJmAY';
+const SHEET_ID = '1HxsZEZlmNushP_4c6KYsP6RNKBza6GEc5AGOBIdIRls';
 const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
 
 const ABX_COLS = ['Amikacin','Amoxicillin/Clavulanate','Ampicillin','Ampicillin/Sulbactam',
@@ -1032,6 +1024,31 @@ function renderTable() {
   document.getElementById('tableArea').innerHTML = html;
 
   document.getElementById('tableInfo').textContent = `แสดง ${shown.length} เชื้อ · ${usedSh.length} ยา · เรียงตามจำนวน isolates`;
+  
+  attachTooltips();
+}
+
+// ============ TOOLTIP ============
+function attachTooltips() {
+  const tip = document.getElementById('abxTooltip');
+  document.querySelectorAll('thead th[data-full]').forEach(th => {
+    th.addEventListener('mouseenter', e => {
+      tip.textContent = th.getAttribute('data-full');
+      const rect = th.getBoundingClientRect();
+      tip.classList.add('show');
+      // วัดความกว้างหลัง show เพราะต้องมี content
+      const tw = tip.offsetWidth;
+      let left = rect.left + rect.width/2 - tw/2;
+      // กันไม่ให้ล้นขอบจอ
+      if (left < 8) left = 8;
+      if (left + tw > window.innerWidth - 8) left = window.innerWidth - tw - 8;
+      tip.style.left = left + 'px';
+      tip.style.top = (rect.top - tip.offsetHeight - 8) + 'px';
+    });
+    th.addEventListener('mouseleave', () => {
+      tip.classList.remove('show');
+    });
+  });
 }
 
 // ============ EXPORT ============
