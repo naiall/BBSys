@@ -95,7 +95,7 @@
 
     <div class="header">
         <h1>MEDLAB SMART SCANNER</h1>
-        <p>Betong Hospital • Pathology Dept</p>
+        <p id="userLabel">Betong Hospital • กำลังโหลด...</p>
     </div>
 
     <div class="scanner-wrap" id="scanner-container">
@@ -127,14 +127,14 @@
         </div>
 
         <div class="g2 fld">
-            <div class="qbox">
-                <label style="color:var(--green)">รับเข้า (+)</label>
-                <input type="number" id="res-rcv" class="inp" value="0" inputmode="numeric">
-            </div>
-            <div class="qbox">
-                <label style="color:var(--red)">จ่ายออก (-)</label>
-                <input type="number" id="res-iss" class="inp" value="0" inputmode="numeric">
-            </div>
+          <div class="qbox">
+            <label style="color:var(--red)">จ่ายออก (−)</label>
+            <input type="number" id="res-iss" class="inp" value="0" inputmode="numeric">
+          </div>
+          <div class="qbox">
+            <label style="color:var(--green)">รับเข้า (+)</label>
+            <input type="number" id="res-rcv" class="inp" value="0" inputmode="numeric">
+          </div>
         </div>
 
         <div class="fld">
@@ -153,13 +153,23 @@
 
     <script>
         // ระบุ API URL ของคุณที่นี่
+       // const GAS_API = "https://script.google.com/macros/s/AKfycbwDrjAoH6zKUfIZzUeesliyUgeYwvprP_sUFYCU0SjKKomXlxqRF1FJcv3oUhHgl1zmag/exec";
         const GAS_API = "https://script.google.com/macros/s/AKfycbwDrjAoH6zKUfIZzUeesliyUgeYwvprP_sUFYCU0SjKKomXlxqRF1FJcv3oUhHgl1zmag/exec";
         let html5QrCode;
+        
+        // ── ดึง user context จาก URL params ──
+        const urlParams = new URLSearchParams(window.location.search);
+        const scanUser = urlParams.get('user') || 'Scanner-Mobile';
+        const scanDept = urlParams.get('dept') || 'LAB';
+        const scanRole = urlParams.get('role') || 'user';
 
         // เริ่มต้นกล้องอัตโนมัติ
-        window.onload = () => {
-            startCamera();
-        };
+            window.onload = () => {
+              // แสดง user ที่ login
+              document.getElementById('userLabel').textContent =
+                'Betong Hospital • ' + scanDept + ' | ' + scanUser;
+              startCamera();
+            };
 
         function startCamera() {
             html5QrCode = new Html5Qrcode("reader");
@@ -217,8 +227,8 @@
                 receive: parseFloat(document.getElementById('res-rcv').value) || 0,
                 issue: parseFloat(document.getElementById('res-iss').value) || 0,
                 note: document.getElementById('res-note').value.trim(),
-                userName: "Scanner-Mobile",
-                dept: "LAB" // แก้ไขตามแผนกจริง
+                userName: scanUser,
+                dept: scanDept
             };
 
             if(payload.receive === 0 && payload.issue === 0) {
