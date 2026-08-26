@@ -55,6 +55,8 @@ Dorner_information hematocrit String(10)
 Dorner_information copper_sulfate String(10)
 Dorner_information pulse String(10)
 Dorner_information lungs String(10)
+Dorner_information sync Integer
+Dorner_information donor_replace String(100)
 Bag_data CodeName Integer
 Bag_data Sname String(40)
 BloodImport Hos_Code String(6)
@@ -146,6 +148,7 @@ input_pt_crossmach Status Integer
 input_pt_crossmach Cancel_order String(2)
 input_pt_crossmach lab_order_number String(100)
 input_pt_crossmach HCT String(5)
+input_pt_crossmach unit_request Integer
 main_ini DescPath String(100)
 main_ini IniFileName String(100)
 main_ini bag_infor Integer
