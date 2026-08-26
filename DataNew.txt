@@ -226,6 +226,10 @@ bloodmaster Unitml String(10)
 bloodmaster price Integer
 bloodmaster note_ String(250)
 bloodmaster note_code String(250)
+bloodmaster note_date date
+bloodmaster note_time time
+bloodmaster note String(100)
+bloodmaster note_user String(50)
 bloodwb xp4_bag_id Integer
 bloodwb EXP_time date
 bloodwb note_date date
