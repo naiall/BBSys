@@ -86,6 +86,11 @@ Xmatchitem CancelUse Integer
 Xmatchitem CancelName String(100)
 Xmatchitem CancelNote String(200)
 Xmatchitem Canceltime date
+Xmatchitem lab_order_number String(100)
+Xmatchitem xp4_bag_id Integer
+Xmatchitem EXP_time time
+Xmatchitem ep2gg Integer
+Xmatchitem sync Integer
 input_pt_crossmach PtAlert Integer
 BloodCompoNiun HosXp_Sub_group_list Integer
 BloodCompoNiun Order_show Integer
