@@ -42,7 +42,6 @@ Bag_data date_age Integer
 MainDorner S Integer
 MainDorner P Integer
 MainDorner C Integer
-MainDorner thophy String(5)
 MainDorner Dor_comeback String(5)
 MainDorner bloodcomp String(100)
 Dorner_information S Integer
@@ -81,9 +80,6 @@ Xmatchitem date_use date
 Xmatchitem BOAxCC String(3)
 Xmatchitem BOGEL String(3)
 Xmatchitem Valume String(50)
-Xmatchitem lab_order_number String(100)
-Xmatchitem xp4_bag_id Integer
-Xmatchitem EXP_time date
 Xmatchitem CancelUse Integer
 Xmatchitem CancelName String(100)
 Xmatchitem CancelNote String(200)
@@ -126,8 +122,7 @@ Xmatchmaster lab_order_number String(50)
 Xmatchmaster Cancel_order String(2)
 Xmatchmaster ConfirmHIS String(5)
 Xmatchmaster AN String(100)
-Xmatchmaster Cancel_order   String(2)
-Xmatchmaster lab_order_number String(100)
+Xmatchmaster Cancel_order String(2)
 Xmatchmaster newbbpt String(50)
 Xmatchmaster bgconfirm String(10)
 Xmatchmaster sync Integer
@@ -147,7 +142,6 @@ input_pt_crossmach age Integer
 input_pt_crossmach Status Integer
 input_pt_crossmach Cancel_order String(2)
 input_pt_crossmach lab_order_number String(100)
-input_pt_crossmach HCT String(5)
 input_pt_crossmach unit_request Integer
 main_ini DescPath String(100)
 main_ini IniFileName String(100)
