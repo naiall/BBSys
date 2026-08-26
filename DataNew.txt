@@ -119,6 +119,11 @@ Xmatchmaster lab_order_number String(50)
 Xmatchmaster Cancel_order String(2)
 Xmatchmaster ConfirmHIS String(5)
 Xmatchmaster AN String(100)
+Xmatchmaster Cancel_order   String(2)
+Xmatchmaster lab_order_number String(100)
+Xmatchmaster newbbpt String(50)
+Xmatchmaster bgconfirm String(10)
+Xmatchmaster sync Integer
 input_pt_crossmach T1 Integer
 input_pt_crossmach T2 Integer
 input_pt_crossmach T3 Integer
