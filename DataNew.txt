@@ -220,6 +220,7 @@ bloodplt note_date date
 bloodplt note_time time
 bloodplt note String(100)
 bloodplt note_user String(50)
+bloodplt note String(100)
 bloodmaster xp4_bag_id Integer
 bloodmaster EXP_time date
 bloodmaster Unitml String(10)
@@ -230,12 +231,14 @@ bloodmaster note_date date
 bloodmaster note_time time
 bloodmaster note String(100)
 bloodmaster note_user String(50)
+bloodmaster note String(100)
 bloodwb xp4_bag_id Integer
 bloodwb EXP_time date
 bloodwb note_date date
 bloodwb note_time time
 bloodwb note String(100)
 bloodwb note_user String(50)
+bloodwb note String(100)
 doctor Active Integer
 logtech xp_id String(30)
 Xmatchitem_Shre BOCode2 Integer
