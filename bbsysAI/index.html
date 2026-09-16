@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบย้ายข้อมูลไป Firebase</title>
+  <!-- ใช้ Tailwind CSS เพื่อความสวยงาม -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+
+  <div class="bg-white p-8 rounded-xl shadow-lg max-w-md w-full text-center">
+    <h1 class="text-2xl font-bold text-gray-800 mb-2">🚀 ย้ายข้อมูลไป Firebase</h1>
+    <p class="text-gray-500 mb-6">ระบบจะทำการอ่านข้อมูลจาก Google Sheets และบันทึกลง Firestore</p>
+
+    <div id="statusBox" class="hidden mb-4 p-4 rounded-lg text-sm font-medium"></div>
+
+    <button id="migrateBtn" onclick="startMigration()" 
+      class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-200 flex items-center justify-center gap-2">
+      <span>เริ่มย้ายข้อมูลทั้งหมด</span>
+    </button>
+    
+    <p class="text-xs text-gray-400 mt-6">กระบวนการอาจใช้เวลาหลายนาที กรุณาอย่าปิดหน้าต่างนี้</p>
+  </div>
+
+  <script>
+    // ⚠️ เปลี่ยน 2 ค่านี้ให้เป็นของคุณ
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx/exec';
+    const SECRET_PASSWORD = 'MY_SUPER_SECRET_PASSWORD_123'; // ต้องตรงกับใน Apps Script
+
+    async function startMigration() {
+      const btn = document.getElementById('migrateBtn');
+      const statusBox = document.getElementById('statusBox');
+      
+      // ปิดปุ่มและแสดงสถานะกำลังทำงาน
+      btn.disabled = true;
+      btn.innerHTML = '<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> กำลังดำเนินการ...';
+      
+      statusBox.className = 'mb-4 p-4 rounded-lg text-sm font-medium bg-blue-100 text-blue-800 block';
+      statusBox.innerText = '🔄 กำลังเชื่อมต่อกับเซิร์ฟเวอร์และเริ่มย้ายข้อมูล...';
+
+      try {
+        // เรียก Google Apps Script ผ่าน URL
+        const response = await fetch(`${APPS_SCRIPT_URL}?action=migrateAll&secret=${SECRET_PASSWORD}`);
+        const result = await response.json();
+
+        if (result.status === 'success') {
+          statusBox.className = 'mb-4 p-4 rounded-lg text-sm font-medium bg-green-100 text-green-800 block';
+          statusBox.innerText = '✅ ' + result.message;
+        } else {
+          throw new Error(result.message);
+        }
+      } catch (error) {
+        statusBox.className = 'mb-4 p-4 rounded-lg text-sm font-medium bg-red-100 text-red-800 block';
+        statusBox.innerText = '❌ เกิดข้อผิดพลาด: ' + error.message;
+      } finally {
+        // คืนค่าปุ่ม
+        btn.disabled = false;
+        btn.innerHTML = '<span>เริ่มย้ายข้อมูลทั้งหมด</span>';
+      }
+    }
+  </script>
+</body>
+</html>
