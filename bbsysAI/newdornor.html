@@ -124,9 +124,20 @@
         </div>
       </div>
 
+      <!-- ข้อตกลงความยินยอมตามมาตรฐาน PDPA -->
+      <div class="bg-slate-50 border border-slate-200 p-3 rounded-xl text-xs space-y-1.5 mt-2">
+        <label class="flex items-start gap-2 cursor-pointer select-none">
+          <input type="checkbox" id="regPdpaConsent" class="mt-0.5 rounded text-red-600 focus:ring-red-500 w-4 h-4">
+          <span class="text-slate-700 leading-relaxed">
+            ข้าพเจ้ายินยอมให้โรงพยาบาลสิชลจัดเก็บ ใช้ และประมวลผลข้อมูลส่วนบุคคล เพื่อการลงทะเบียนและบริหารจัดการคิวบริจาคโลหิต ตาม 
+            <button type="button" onclick="openPdpaModal()" class="text-red-600 underline font-bold inline">นโยบายคุ้มครองข้อมูลส่วนบุคคล (PDPA)</button> *
+          </span>
+        </label>
+      </div>
+
       <div class="pt-2 flex gap-2">
-        <button onclick="submitRegister()" class="flex-1 bg-red-600 text-white font-bold py-3 rounded-xl transition shadow-md active:scale-95">✅ บันทึกการลงทะเบียน</button>
-        <button onclick="switchTab('home')" class="bg-slate-100 text-slate-600 font-semibold px-4 py-3 rounded-xl">ยกเลิก</button>
+        <button onclick="submitRegister()" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl transition shadow-md active:scale-95">✅ บันทึกการลงทะเบียน</button>
+        <button onclick="switchTab('home')" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold px-4 py-3 rounded-xl transition">ยกเลิก</button>
       </div>
     </section>
 
@@ -306,6 +317,17 @@
         <span id="screen-progress" class="text-xs bg-red-100 text-red-700 font-bold px-2.5 py-1 rounded-full">0/37</span>
       </div>
       <div id="questions-list" class="space-y-4 max-h-[60vh] overflow-y-auto pr-1"></div>
+      
+      <!-- ยินยอมการประมวลผลข้อมูลสุขภาพความอ่อนไหวสูง (PDPA ม.26) -->
+      <div class="bg-red-50/70 border border-red-200 p-3 rounded-xl text-xs space-y-1.5">
+        <label class="flex items-start gap-2 cursor-pointer select-none">
+          <input type="checkbox" id="screeningPdpaConsent" class="mt-0.5 rounded text-red-600 focus:ring-red-500 w-4 h-4">
+          <span class="text-slate-700 leading-relaxed">
+            ข้าพเจ้าขอยืนยันว่าข้อมูลสุขภาพข้างต้นเป็นความจริง และยินยอมให้โรงพยาบาลสิชลประมวลผลข้อมูลสุขภาพ (ข้อมูลอ่อนไหวตามมาตรา 26 พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล) เพื่อประโยชน์ในการวินิจฉัยและคัดกรองความปลอดภัยในการบริจาคโลหิต *
+          </span>
+        </label>
+      </div>
+
       <button onclick="submitScreeningForm()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl transition shadow-md active:scale-95">ส่งแบบประเมินและไปหน้าจองคิว ›</button>
     </section>
 
@@ -341,7 +363,124 @@
       </div>
     </section>
 
+    <!-- PDPA PRIVACY & SECURITY FOOTER NOTICE -->
+    <div class="text-center pt-2 pb-4 space-y-1">
+      <button onclick="openPdpaModal()" class="text-[11px] text-slate-400 hover:text-red-600 inline-flex items-center gap-1 transition">
+        <span>🔒</span> ข้อมูลได้รับการคุ้มครองความปลอดภัยตาม พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล (PDPA)
+      </button>
+      <p class="text-[10px] text-slate-300">โรงพยาบาลสิชล จังหวัดนครศรีธรรมราช</p>
+    </div>
+
   </main>
+
+  <!-- PDPA PRIVACY POLICY MODAL -->
+  <div id="pdpaModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white max-w-md w-full rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
+      <div class="bg-gradient-to-r from-red-800 to-red-600 text-white p-4 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">🔒</span>
+          <h3 class="font-bold text-base">นโยบายคุ้มครองข้อมูลส่วนบุคคล (PDPA)</h3>
+        </div>
+        <button onclick="closePdpaModal()" class="text-white hover:text-red-200 text-2xl font-bold leading-none">&times;</button>
+      </div>
+      
+      <div class="p-4 overflow-y-auto text-xs text-slate-600 space-y-3 leading-relaxed">
+        <p class="font-bold text-slate-800 text-sm">ประกาศความเป็นส่วนตัว (Privacy Notice) สำหรับบริการผู้บริจาคโลหิต</p>
+        <p>โรงพยาบาลสิชล ให้ความสำคัญสูงสุดต่อการรักษาความมั่นคงปลอดภัยและความลับของข้อมูลส่วนบุคคลและข้อมูลสุขภาพของท่าน ตามพระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 (PDPA)</p>
+        
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1.5">
+          <b class="text-slate-800 flex items-center gap-1">📌 1. วัตถุประสงค์ในการเก็บรวบรวมและประมวลผล</b>
+          <p>• เพื่อการลงทะเบียน ยืนยันตัวตน และบริหารจัดการคิวนัดหมายบริจาคโลหิต</p>
+          <p>• เพื่อประเมินคัดกรองความปลอดภัยต่อสุขภาพของผู้บริจาคและผู้ป่วยที่รับโลหิต</p>
+          <p>• เพื่อการติดต่อประสานงาน แจ้งเตือนรอบบริจาค และติดตามผลทางเวชกรรม</p>
+        </div>
+
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1.5">
+          <b class="text-slate-800 flex items-center gap-1">📋 2. ข้อมูลส่วนบุคคลที่จัดเก็บ</b>
+          <p>• <b>ข้อมูลทั่วไป:</b> ชื่อ-นามสกุล, เลขบัตรประชาชน 13 หลัก, เพศ, วันเกิด, เบอร์โทร, อีเมล, ที่อยู่, อาชีพ</p>
+          <p>• <b>ข้อมูลอ่อนไหว (Sensitive Data ม.26):</b> หมู่โลหิต, น้ำหนักตัว, ประวัติการเจ็บป่วย โรคประจำตัว การใช้ยา และข้อมูลความเสี่ยงจากแบบคัดกรอง 37 ข้อ</p>
+        </div>
+
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1.5">
+          <b class="text-slate-800 flex items-center gap-1">🛡️ 3. มาตรการรักษาความปลอดภัยของข้อมูล</b>
+          <p>• มีการเข้ารหัสการส่งข้อมูลด้วยโปรโตคอล TLS/HTTPS มาตรฐานสากล</p>
+          <p>• ข้อมูลถูกจัดเก็บอย่างปลอดภัยบนระบบ Google Firebase Cloud ที่ได้มาตรฐาน ISO/IEC 27001 และ SOC 2</p>
+          <p>• ระบบจำกัดสิทธิ์การเข้าถึง (Access Control Rules) และมีการปิดบังข้อมูลส่วนบุคคล (Data Masking) บนหน้าจอ</p>
+        </div>
+
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1.5">
+          <b class="text-slate-800 flex items-center gap-1">⚖️ 4. สิทธิของเจ้าของข้อมูลส่วนบุคคล</b>
+          <p>ท่านมีสิทธิในการขอเข้าถึง, ขอรับสำเนา, ขอแก้ไขข้อมูลให้ถูกต้องเป็นปัจจุบัน, ขอระงับการประมวลผล หรือเพิกถอนความยินยอมได้ตลอดเวลา โดยติดต่อผ่านเจ้าหน้าที่คุ้มครองข้อมูล</p>
+        </div>
+
+        <div class="text-[11px] text-slate-500 pt-2 border-t border-slate-200">
+          <b class="text-slate-700">ช่องทางติดต่อเจ้าหน้าที่คุ้มครองข้อมูลส่วนบุคคล (DPO):</b><br>
+          กลุ่มงานเทคโนโลยีสารสนเทศและเวชสารสนเทศ โรงพยาบาลสิชล<br>
+          โทรศัพท์: 075-491040 ต่อธนาคารเลือด | อีเมล: dpo@sichonhospital.com
+        </div>
+      </div>
+
+      <div class="p-3 bg-slate-50 border-t border-slate-200 flex justify-end">
+        <button onclick="closePdpaModal()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2 rounded-xl text-xs transition active:scale-95 shadow">
+          รับทราบและปิดหน้านี้
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIME SLOT SELECTION MODAL (15-MIN INTERVALS) -->
+  <div id="timeSlotModal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 hidden backdrop-blur-xs">
+    <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-in fade-in zoom-in duration-200">
+      <div class="bg-gradient-to-r from-red-600 to-rose-700 text-white p-4 flex justify-between items-center shadow">
+        <div>
+          <h3 class="font-bold text-base flex items-center gap-1.5">
+            <span>⏰</span> เลือกรอบเวลาบริจาคโลหิต
+          </h3>
+          <p id="modalDateSubtitle" class="text-xs text-red-100 mt-0.5 font-medium"></p>
+        </div>
+        <button onclick="closeTimeSlotModal()" class="text-white/80 hover:text-white text-2xl font-bold leading-none">&times;</button>
+      </div>
+
+      <div class="p-3 bg-amber-50 border-b border-amber-200 text-amber-800 text-[11px] flex items-start gap-2">
+        <span class="text-base leading-none">⏱️</span>
+        <div>
+          <b class="font-bold">กติกากำหนดเวลานัดหมาย:</b> กำหนดรอบเวลาห่างกันท่านละ <b>15 นาที</b> (08:30 - 15:30 น. *พักเที่ยง 12:00 - 13:00 น.) จำกัดรอบละ 1 ท่าน เพื่อลดความแออัดและให้บริการได้อย่างรวดเร็ว
+        </div>
+      </div>
+
+      <div class="p-4 overflow-y-auto flex-1 space-y-3">
+        <div class="flex items-center justify-between text-xs text-slate-500 pb-1 border-b border-slate-100">
+          <span>กรุณาแตะเลือกรอบเวลาที่สะดวก:</span>
+          <div class="flex items-center gap-3 text-[11px]">
+            <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span> ว่าง</span>
+            <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-slate-300 inline-block"></span> เต็ม</span>
+          </div>
+        </div>
+
+        <!-- Grid of slots -->
+        <div id="timeSlotsGrid" class="grid grid-cols-3 gap-2 pt-1">
+          <!-- Dynamically populated -->
+        </div>
+
+        <div id="selectedSlotInfo" class="hidden bg-red-50 border border-red-200 p-3 rounded-xl text-xs space-y-1">
+          <p class="text-slate-600">รอบเวลาที่คุณเลือก:</p>
+          <p class="text-base font-extrabold text-red-700 flex items-center gap-1.5">
+            <span>🎯</span> <span id="selectedSlotText"></span>
+          </p>
+          <p class="text-[11px] text-slate-500">* กรุณาเดินทางมาถึงก่อนเวลานัดหมายอย่างน้อย 10 นาที</p>
+        </div>
+      </div>
+
+      <div class="p-3 bg-slate-50 border-t border-slate-200 flex gap-2">
+        <button type="button" onclick="closeTimeSlotModal()" class="w-1/3 bg-white border border-slate-300 text-slate-700 font-bold py-2.5 rounded-xl text-xs hover:bg-slate-100 transition">
+          ยกเลิก
+        </button>
+        <button type="button" id="btnConfirmSlotBooking" onclick="confirmSlotBooking()" disabled class="w-2/3 bg-slate-300 text-slate-500 font-bold py-2.5 rounded-xl text-xs transition shadow cursor-not-allowed">
+          โปรดเลือกรอบเวลาก่อน
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- BOTTOM NAVIGATION BAR -->
   <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 flex justify-around p-2 z-40 max-w-md mx-auto shadow-lg">
@@ -583,6 +722,12 @@
       const phone = document.getElementById('regPhone').value.trim();
       const blood = document.getElementById('regBloodType').value;
       const title = document.getElementById('regTitle').value;
+      const pdpaConsent = document.getElementById('regPdpaConsent')?.checked;
+
+      if (!pdpaConsent) {
+        alert('กรุณาอ่านและทำเครื่องหมายยินยอมตามนโยบายคุ้มครองข้อมูลส่วนบุคคล (PDPA) ก่อนดำเนินการลงทะเบียน');
+        return;
+      }
 
       if (!fname || !lname || !/^\d{13}$/.test(idCard) || !phone) {
         alert('กรุณากรอกข้อมูลให้ครบถ้วน และเลขบัตรประชาชนต้องเป็นตัวเลข 13 หลัก');
@@ -611,11 +756,13 @@
           phone: phone,
           blood_type: blood,
           total_donations: 0,
+          pdpa_consent: true,
+          pdpa_consent_at: serverTimestamp(),
           created_at: serverTimestamp()
         });
 
         alert('ลงทะเบียนสำเร็จ!');
-        currentDonor = { id: docRef.id, title, first_name: fname, last_name: lname, id_card: idCard, blood_type: blood, phone: phone, total_donations: 0 };
+        currentDonor = { id: docRef.id, title, first_name: fname, last_name: lname, id_card: idCard, blood_type: blood, phone: phone, total_donations: 0, pdpa_consent: true };
         document.getElementById('registerSection').classList.add('hidden');
         renderDonorProfile(currentDonor);
         loadDonorDashboardAndHistory(currentDonor.id_card);
@@ -653,7 +800,7 @@
       document.getElementById('dashboardSection').classList.remove('hidden');
 
       document.getElementById('donorFullName').innerText = `${donor.title || ''}${donor.first_name} ${donor.last_name}`;
-      document.getElementById('donorIdCardText').innerText = `ID Card: ${donor.id_card}`;
+      updateIdCardDisplay();
       document.getElementById('donorBloodBadge').innerText = donor.blood_type || '-';
       document.getElementById('donorTotalCount').innerText = donor.total_donations || 0;
 
@@ -672,6 +819,36 @@
         height: 140
       });
     }
+
+    function maskIdCard(id) {
+      if (!id || id.length !== 13) return id || '-';
+      return `${id.substring(0, 1)}-${id.substring(1, 5)}-XXXXX-${id.substring(11)}`;
+    }
+
+    let isIdMasked = true;
+    window.toggleIdMask = function() {
+      isIdMasked = !isIdMasked;
+      updateIdCardDisplay();
+    };
+
+    function updateIdCardDisplay() {
+      const idTextEl = document.getElementById('donorIdCardText');
+      if (!idTextEl || !currentDonor) return;
+      const id = currentDonor.id_card || '';
+      if (isIdMasked && id.length === 13) {
+        idTextEl.innerHTML = `ID Card: <span class="font-mono">${maskIdCard(id)}</span> <button onclick="toggleIdMask()" class="ml-1.5 text-xs opacity-75 hover:opacity-100 transition inline" title="กดเพื่อดูเลขบัตรเต็ม">👁️</button>`;
+      } else {
+        idTextEl.innerHTML = `ID Card: <span class="font-mono">${id}</span> <button onclick="toggleIdMask()" class="ml-1.5 text-xs opacity-75 hover:opacity-100 transition inline" title="กดเพื่อซ่อนเลขบัตร">🙈</button>`;
+      }
+    }
+
+    window.openPdpaModal = function() {
+      document.getElementById('pdpaModal')?.classList.remove('hidden');
+    };
+
+    window.closePdpaModal = function() {
+      document.getElementById('pdpaModal')?.classList.add('hidden');
+    };
 
     window.startScreening = async function() {
       if (!currentDonor) {
@@ -726,9 +903,9 @@
       });
 
       if (value === 'yes') {
-        btn.className = 'btn-ans bg-red-600 text-white border-2 border-red-700 px-4 py-2 rounded-xl flex-1 font-extrabold text-sm transition-all duration-200 shadow-md scale-105 opacity-100';
-      } else {
         btn.className = 'btn-ans bg-emerald-600 text-white border-2 border-emerald-700 px-4 py-2 rounded-xl flex-1 font-extrabold text-sm transition-all duration-200 shadow-md scale-105 opacity-100';
+      } else {
+        btn.className = 'btn-ans bg-red-600 text-white border-2 border-red-700 px-4 py-2 rounded-xl flex-1 font-extrabold text-sm transition-all duration-200 shadow-md scale-105 opacity-100';
       }
 
       const count = Object.keys(screeningAnswers).length;
@@ -736,6 +913,12 @@
     };
 
     window.submitScreeningForm = async function() {
+      const pdpaConsent = document.getElementById('screeningPdpaConsent')?.checked;
+      if (!pdpaConsent) {
+        alert('กรุณาทำเครื่องหมายยินยอมให้ประมวลผลข้อมูลสุขภาพ (Sensitive Personal Data) ตามมาตรฐาน PDPA');
+        return;
+      }
+
       const count = Object.keys(screeningAnswers).length;
       if (count < 37) {
         alert(`กรุณาตอบแบบคัดกรองให้ครบทั้ง 37 ข้อ (ตอบแล้ว ${count}/37)`);
@@ -746,6 +929,8 @@
         await addDoc(collection(db, "screenings"), {
           donor_id: currentDonor.id_card,
           answers: screeningAnswers,
+          pdpa_consent: true,
+          pdpa_consent_at: serverTimestamp(),
           created_at: serverTimestamp()
         });
 
@@ -873,14 +1058,14 @@
                   <p class="text-emerald-100">
                     📅 วันที่นัด: <b class="text-white text-sm">${displayDate}</b>
                   </p>
-                  <p class="text-emerald-100">
-                    ⏰ เวลา: <b class="text-white">${s.start_time || activeAppt.start_time || '08:30'} - ${s.end_time || activeAppt.end_time || '15:00'} น.</b>
+                  <p class="text-emerald-100 flex items-center gap-1.5 flex-wrap">
+                    ⏰ เวลานัดหมายของคุณ: <b class="text-yellow-300 font-extrabold text-sm bg-black/20 px-2 py-0.5 rounded-md inline-block">${activeAppt.appointment_slot || (activeAppt.appointment_time ? activeAppt.appointment_time + ' น.' : `${s.start_time || activeAppt.start_time || '08:30'} - ${s.end_time || activeAppt.end_time || '15:30'} น.`)}</b>
                   </p>
                   <p class="text-emerald-100">
                     🩸 หมู่โลหิตที่รับ: <b>${s.blood_types_needed || 'ทุกหมู่'}</b>
                   </p>
                   <p class="pt-1.5 border-t border-white/20 text-emerald-200">
-                    👤 ผู้จอง: <b>${currentDonor.title || ''}${currentDonor.first_name} ${currentDonor.last_name}</b> (เลขบัตร: ${currentDonor.id_card})
+                    👤 ผู้จอง: <b>${currentDonor.title || ''}${currentDonor.first_name} ${currentDonor.last_name}</b> (เลขบัตร: <span class="font-mono">${maskIdCard(currentDonor.id_card)}</span>)
                   </p>
                 </div>
 
@@ -957,7 +1142,7 @@
               <span>ℹ️</span> เปิดรับจองคิวล่วงหน้า 5 วันทำการ
             </p>
             <p class="text-blue-700 leading-relaxed">
-              ให้บริการทุก<b>วันจันทร์ - วันศุกร์</b> (08:30 - 15:00 น.)<br>
+              ให้บริการทุก<b>วันจันทร์ - วันศุกร์</b> (08:30 - 15:30 น. *พักเที่ยง 12:00 - 13:00 น. | รอบละ 15 นาที)<br>
               <span class="text-red-600 font-semibold">* ปิดให้บริการในวันเสาร์-อาทิตย์ และวันหยุดนักขัตฤกษ์/วันหยุดราชการ</span>
             </p>
           </div>
@@ -969,7 +1154,7 @@
 
           const location = (existing && existing.location) ? existing.location : 'อาคารธนาคารเลือด รพ.สิชล';
           const startTime = (existing && existing.start_time) ? existing.start_time : '08:30';
-          const endTime = (existing && existing.end_time) ? existing.end_time : '15:00';
+          const endTime = (existing && existing.end_time) ? existing.end_time : '15:30';
           const bloodTypes = (existing && existing.blood_types_needed) ? existing.blood_types_needed : 'ทุกหมู่';
 
           const isBookedThis = activeAppt && (activeAppt.schedule_id === schedId || activeAppt.schedule_id === (existing && existing.id) || activeAppt.schedule_date === day.dateStr);
@@ -991,9 +1176,9 @@
             }
           } else {
             buttonHtml = `
-              <button onclick="bookQueue('${schedId}', '${day.dateStr}', '${startTime}', '${endTime}', '${location}', '${bloodTypes}')" 
-                class="w-full mt-2 bg-red-600 hover:bg-red-700 text-white font-semibold text-xs py-2.5 rounded-lg transition active:scale-95 shadow">
-                📝 ยืนยันจองคิวบริจาค
+              <button onclick="openTimeSlotModal('${schedId}', '${day.dateStr}', '${startTime}', '${endTime}', '${location}', '${bloodTypes}')" 
+                class="w-full mt-2 bg-red-600 hover:bg-red-700 text-white font-bold text-xs py-2.5 rounded-lg transition active:scale-95 shadow flex items-center justify-center gap-1.5">
+                <span>📝</span> ยืนยันจองคิวบริจาค (เลือกรอบเวลา)
               </button>
             `;
           }
@@ -1008,7 +1193,7 @@
               </div>
               <div class="text-xs text-slate-600 space-y-1">
                 <p>📅 วันที่: <b class="text-slate-800 text-sm">${day.thaiDisplay}</b></p>
-                <p>⏰ เวลา: <b>${startTime} - ${endTime} น.</b></p>
+                <p>⏰ เวลา: <b>${startTime} - ${endTime} น.</b> <span class="text-[11px] text-red-600 font-medium">(*พัก 12:00-13:00 น. | รอบละ 15 นาที)</span></p>
                 <p>🩸 รับหมู่โลหิต: <b>${bloodTypes}</b></p>
               </div>
               ${buttonHtml}
@@ -1042,7 +1227,48 @@
       }
     };
 
-    window.bookQueue = async function(scheduleId, scheduleDate, startTime, endTime, location, bloodTypes) {
+    let pendingBooking = null;
+
+    function generateTimeSlots(startTimeStr = "08:30", endTimeStr = "15:30", intervalMin = 15) {
+      const [startH, startM] = startTimeStr.split(':').map(Number);
+      const [endH, endM] = endTimeStr.split(':').map(Number);
+      
+      let currentMinutes = startH * 60 + startM;
+      const endMinutes = endH * 60 + endM;
+      
+      const slots = [];
+      while (currentMinutes <= endMinutes) {
+        // เวลา 12:00 - 13:00 น. เป็นเวลาพักรับประทานอาหารกลางวัน (ไม่รับนัด)
+        const isLunchBreak = (currentMinutes >= 12 * 60 && currentMinutes < 13 * 60);
+
+        const h = Math.floor(currentMinutes / 60);
+        const m = currentMinutes % 60;
+        const timeStr = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+        
+        const nextMinutes = currentMinutes + intervalMin;
+        const nextH = Math.floor(nextMinutes / 60);
+        const nextM = nextMinutes % 60;
+        const nextTimeStr = `${String(nextH).padStart(2, '0')}:${String(nextM).padStart(2, '0')}`;
+        
+        slots.push({
+          time: timeStr,
+          label: `${timeStr} น.`,
+          slotRange: `${timeStr} - ${nextTimeStr} น.`,
+          isBreak: isLunchBreak,
+          period: currentMinutes < 12 * 60 ? 'morning' : (isLunchBreak ? 'break' : 'afternoon')
+        });
+        
+        currentMinutes += intervalMin;
+      }
+      return slots;
+    }
+
+    window.closeTimeSlotModal = function() {
+      document.getElementById('timeSlotModal')?.classList.add('hidden');
+      pendingBooking = null;
+    };
+
+    window.openTimeSlotModal = async function(scheduleId, scheduleDate, startTime, endTime, location, bloodTypes) {
       if (!currentDonor) {
         alert('กรุณาเข้าสู่ระบบด้วยเลขบัตรประชาชนก่อนทำการจองคิว');
         switchTab('home');
@@ -1056,10 +1282,174 @@
           where("status", "==", "confirmed")
         );
         const apptSnap = await getDocs(qAppt);
-
         if (!apptSnap.empty) {
-          alert('⚠️ คุณได้ทำการจองคิวไว้แล้ว ไม่สามารถจองซ้ำได้');
-          switchTab('home');
+          alert('⚠️ คุณมีรายการจองคิวบริจาคโลหิตที่รอดำเนินการอยู่แล้ว (จองได้ครั้งละ 1 คิว)');
+          return;
+        }
+
+        const effectiveStart = startTime || "08:30";
+        const effectiveEnd = endTime || "15:30";
+        const effectiveLoc = location || "อาคารธนาคารเลือด รพ.สิชล";
+
+        pendingBooking = {
+          scheduleId,
+          scheduleDate,
+          startTime: effectiveStart,
+          endTime: effectiveEnd,
+          location: effectiveLoc,
+          bloodTypes: bloodTypes || "ทุกหมู่",
+          selectedSlot: null
+        };
+
+        const modalEl = document.getElementById('timeSlotModal');
+        const gridEl = document.getElementById('timeSlotsGrid');
+        const subTitleEl = document.getElementById('modalDateSubtitle');
+        const selectedInfoEl = document.getElementById('selectedSlotInfo');
+        const confirmBtn = document.getElementById('btnConfirmSlotBooking');
+
+        subTitleEl.innerText = `📅 ${formatThaiDateDisplay(scheduleDate)} | 📍 ${effectiveLoc}`;
+        selectedInfoEl.classList.add('hidden');
+        confirmBtn.disabled = true;
+        confirmBtn.className = "w-2/3 bg-slate-300 text-slate-500 font-bold py-2.5 rounded-xl text-xs transition shadow cursor-not-allowed";
+        confirmBtn.innerHTML = "โปรดเลือกรอบเวลาก่อน";
+
+        gridEl.innerHTML = `
+          <div class="col-span-3 text-center py-6 text-slate-500 text-xs flex flex-col items-center gap-2">
+            <span class="inline-block animate-spin text-xl">⏳</span>
+            <span>กำลังตรวจสอบรอบเวลาว่างในระบบ...</span>
+          </div>
+        `;
+        modalEl.classList.remove('hidden');
+
+        // ดึงรายการนัดหมายที่มีการยืนยันแล้วในวันนี้ เพื่อดูว่ารอบเวลาใดถูกจองไปแล้วบ้าง (บังคับห่างกัน 15 นาที 1 คน/รอบ)
+        const qDateAppts = query(
+          collection(db, "appointments"),
+          where("schedule_date", "==", scheduleDate),
+          where("status", "==", "confirmed")
+        );
+        const snapDate = await getDocs(qDateAppts);
+        const bookedTimes = new Set();
+        snapDate.forEach(docSnap => {
+          const d = docSnap.data();
+          if (d.appointment_time) {
+            bookedTimes.add(d.appointment_time);
+          }
+        });
+
+        const slots = generateTimeSlots(effectiveStart, effectiveEnd, 15);
+        const morningSlots = slots.filter(s => s.period === 'morning');
+        const afternoonSlots = slots.filter(s => s.period === 'afternoon');
+
+        function renderSlotButton(slot) {
+          const isBooked = bookedTimes.has(slot.time);
+          if (isBooked) {
+            return `
+              <div class="p-2 rounded-xl border border-slate-200 bg-slate-100 text-slate-400 text-xs flex flex-col items-center justify-center opacity-60 cursor-not-allowed select-none">
+                <span class="font-bold line-through text-slate-400">${slot.time} น.</span>
+                <span class="text-[10px] text-red-500 font-semibold mt-0.5">🚫 เต็มแล้ว</span>
+              </div>
+            `;
+          } else {
+            return `
+              <button type="button" onclick="selectTimeSlot('${slot.time}', '${slot.slotRange}', this)" 
+                class="slot-btn p-2 rounded-xl border border-emerald-300 bg-white hover:bg-emerald-50 text-emerald-800 text-xs flex flex-col items-center justify-center transition-all duration-150 active:scale-95 shadow-sm">
+                <span class="font-extrabold text-sm text-slate-800">${slot.time} น.</span>
+                <span class="text-[10px] text-emerald-600 font-bold mt-0.5">🟢 ว่าง</span>
+              </button>
+            `;
+          }
+        }
+
+        let slotsHtml = `
+          <div class="col-span-3 pt-1 pb-0.5">
+            <span class="text-xs font-bold text-slate-700 flex items-center gap-1.5 bg-slate-100 px-2.5 py-1 rounded-lg">
+              <span>🌅</span> รอบเช้า (08:30 - 12:00 น.)
+            </span>
+          </div>
+        `;
+        morningSlots.forEach(s => {
+          slotsHtml += renderSlotButton(s);
+        });
+
+        slotsHtml += `
+          <div class="col-span-3 my-1.5 bg-amber-50 border border-amber-200 text-amber-900 px-3 py-2.5 rounded-xl flex items-center justify-center gap-2 text-xs font-bold shadow-xs">
+            <span class="text-base">☕</span>
+            <span>12:00 - 13:00 น. เวลาพักเที่ยง (ไม่เปิดรับนัด)</span>
+          </div>
+          <div class="col-span-3 pt-1 pb-0.5">
+            <span class="text-xs font-bold text-slate-700 flex items-center gap-1.5 bg-slate-100 px-2.5 py-1 rounded-lg">
+              <span>🌇</span> รอบบ่าย (13:00 - 15:30 น.)
+            </span>
+          </div>
+        `;
+        afternoonSlots.forEach(s => {
+          slotsHtml += renderSlotButton(s);
+        });
+
+        gridEl.innerHTML = slotsHtml;
+      } catch (error) {
+        alert("เกิดข้อผิดพลาดในการโหลดรอบเวลา: " + error.message);
+        closeTimeSlotModal();
+      }
+    };
+
+    window.selectTimeSlot = function(time, slotRange, btn) {
+      if (!pendingBooking) return;
+      pendingBooking.selectedSlot = { time, slotRange };
+
+      document.querySelectorAll('.slot-btn').forEach(b => {
+        b.className = 'slot-btn p-2 rounded-xl border border-emerald-300 bg-white hover:bg-emerald-50 text-emerald-800 text-xs flex flex-col items-center justify-center transition-all duration-150 active:scale-95 shadow-sm';
+      });
+
+      btn.className = 'slot-btn p-2 rounded-xl border-2 border-red-600 bg-red-600 text-white text-xs flex flex-col items-center justify-center transition-all duration-150 shadow-md scale-105 ring-2 ring-red-300';
+      const timeSpan = btn.querySelector('span:first-child');
+      if (timeSpan) timeSpan.className = 'font-extrabold text-sm text-white';
+      const statusSpan = btn.querySelector('span:last-child');
+      if (statusSpan) statusSpan.className = 'text-[10px] text-red-100 font-bold mt-0.5';
+
+      const selectedInfoEl = document.getElementById('selectedSlotInfo');
+      const selectedSlotText = document.getElementById('selectedSlotText');
+      selectedSlotText.innerText = `${time} น. (${slotRange})`;
+      selectedInfoEl.classList.remove('hidden');
+
+      const confirmBtn = document.getElementById('btnConfirmSlotBooking');
+      confirmBtn.disabled = false;
+      confirmBtn.className = 'w-2/3 bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-xl text-xs transition active:scale-95 shadow-md flex items-center justify-center gap-1';
+      confirmBtn.innerHTML = `ยืนยันรอบเวลา <b>${time} น.</b> ➔`;
+    };
+
+    window.confirmSlotBooking = async function() {
+      if (!pendingBooking || !pendingBooking.selectedSlot || !currentDonor) {
+        alert('กรุณาเลือกรอบเวลาที่สะดวกก่อนทำการยืนยัน');
+        return;
+      }
+
+      const { scheduleId, scheduleDate, startTime, endTime, location, bloodTypes, selectedSlot } = pendingBooking;
+      
+      // ตรวจสอบว่าไม่ใช่เวลาพัก 12:00 - 13:00 น.
+      const [h, m] = selectedSlot.time.split(':').map(Number);
+      const slotMin = h * 60 + m;
+      if (slotMin >= 720 && slotMin < 780) {
+        alert('ช่วงเวลา 12:00 - 13:00 น. เป็นเวลาพักเที่ยง ไม่เปิดรับนัด กรุณาเลือกรอบเวลาอื่น');
+        return;
+      }
+
+      const confirmBtn = document.getElementById('btnConfirmSlotBooking');
+      confirmBtn.disabled = true;
+      confirmBtn.innerText = 'กำลังบันทึกการจอง...';
+
+      try {
+        // Concurrency Protection: ตรวจสอบอีกครั้งว่ารอบเวลานี้ยังไม่ถูกผู้อื่นจองตัดหน้า
+        const checkSlotQ = query(
+          collection(db, "appointments"),
+          where("schedule_date", "==", scheduleDate),
+          where("appointment_time", "==", selectedSlot.time),
+          where("status", "==", "confirmed")
+        );
+        const checkSlotSnap = await getDocs(checkSlotQ);
+        if (!checkSlotSnap.empty) {
+          alert(`ขออภัย รอบเวลา ${selectedSlot.time} น. เพิ่งมีผู้จองไปเมื่อสักครู่ กรุณาเลือกรอบเวลาอื่นที่ยังว่าง`);
+          await openTimeSlotModal(scheduleId, scheduleDate, startTime, endTime, location, bloodTypes);
           return;
         }
 
@@ -1070,7 +1460,7 @@
           await setDoc(schedDocRef, {
             schedule_date: scheduleDate,
             start_time: startTime || "08:30",
-            end_time: endTime || "15:00",
+            end_time: endTime || "15:30",
             location: location || "อาคารธนาคารเลือด รพ.สิชล",
             blood_types_needed: bloodTypes || "ทุกหมู่",
             status: "active",
@@ -1078,24 +1468,35 @@
           });
         }
 
+        // บันทึกนัดหมายพร้อมรอบเวลา 15 นาที
         await addDoc(collection(db, "appointments"), {
           donor_id: currentDonor.id_card,
+          donor_name: `${currentDonor.title || ''}${currentDonor.first_name} ${currentDonor.last_name}`,
           schedule_id: scheduleId,
           schedule_date: scheduleDate,
+          appointment_time: selectedSlot.time,
+          appointment_slot: selectedSlot.slotRange,
           start_time: startTime || "08:30",
-          end_time: endTime || "15:00",
+          end_time: endTime || "15:30",
           location: location || "อาคารธนาคารเลือด รพ.สิชล",
           status: "confirmed",
           created_at: serverTimestamp()
         });
 
-        alert(`จองคิวสำเร็จ! วันที่ ${formatThaiDateDisplay(scheduleDate)} คุณ ${currentDonor.first_name} ${currentDonor.last_name}`);
+        closeTimeSlotModal();
+        alert(`🎉 จองคิวสำเร็จ!\n📅 วันที่: ${formatThaiDateDisplay(scheduleDate)}\n⏰ รอบเวลา: ${selectedSlot.slotRange}\n👤 ผู้บริจาค: คุณ ${currentDonor.first_name} ${currentDonor.last_name}\n\n* กรุณาเดินทางมาถึงก่อนเวลานัด 10 นาที`);
         await loadDonorDashboardAndHistory(currentDonor.id_card);
         await loadSchedules();
         switchTab('home');
       } catch (error) {
         alert("เกิดข้อผิดพลาดในการจองคิว: " + error.message);
+        confirmBtn.disabled = false;
+        confirmBtn.innerText = `ยืนยันรอบ ${selectedSlot.time} น.`;
       }
+    };
+
+    window.bookQueue = function(scheduleId, scheduleDate, startTime, endTime, location, bloodTypes) {
+      openTimeSlotModal(scheduleId, scheduleDate, startTime, endTime, location, bloodTypes);
     };
 
     window.loadDonorDashboardAndHistory = async function(idCard) {
@@ -1155,11 +1556,11 @@
             }
 
             const targetDate = (schedData && schedData.schedule_date) || apptData.schedule_date;
-            const targetTime = (schedData && schedData.start_time) ? `${schedData.start_time}-${schedData.end_time || '15:00'} น.` : (apptData.start_time ? `${apptData.start_time}-${apptData.end_time || '15:00'} น.` : '08:30-15:00 น.');
+            const targetTime = apptData.appointment_slot || (apptData.appointment_time ? `รอบเวลา ${apptData.appointment_time} น.` : ((schedData && schedData.start_time) ? `${schedData.start_time}-${schedData.end_time || '15:30'} น.` : (apptData.start_time ? `${apptData.start_time}-${apptData.end_time || '15:30'} น.` : '08:30-15:30 น.')));
             const targetLoc = (schedData && schedData.location) || apptData.location || 'อาคารธนาคารเลือด รพ.สิชล';
 
             if (targetDate) {
-              scheduleInfo = `<br><span class="text-xs font-normal text-emerald-100">📅 ${formatThaiDateDisplay(targetDate)} (${targetTime})<br>📍 ${targetLoc}</span>`;
+              scheduleInfo = `<br><span class="text-xs font-normal text-emerald-100">📅 ${formatThaiDateDisplay(targetDate)} ⏰ <b>${targetTime}</b><br>📍 ${targetLoc}</span>`;
             }
 
             apptStatusEl.innerHTML = `📅 จองคิวสำเร็จ ${scheduleInfo}`;
