@@ -61,7 +61,7 @@
     </section>
 
     <!-- DONOR DASHBOARD (HIDDEN UNTIL LOGIN) -->
-    <section id="dashboardSection" class="hidden space-y-4">
+    <section id="dashboardSection" class="tab-content hidden space-y-4">
       
       <!-- USER PROFILE CARD -->
       <div class="bg-gradient-to-br from-red-700 to-red-900 text-white rounded-2xl p-5 shadow-lg relative overflow-hidden">
@@ -99,7 +99,7 @@
     </section>
 
     <!-- SCHEDULES / EVENT LIST -->
-    <section class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+    <section id="scheduleSection" class="tab-content bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
       <div class="flex justify-between items-center mb-4">
         <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
           📅 ตารางรับบริจาคโลหิต
@@ -113,7 +113,7 @@
     </section>
 
     <!-- DONATION HISTORY -->
-    <section id="historySection" class="hidden bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+    <section id="historySection" class="tab-content hidden bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
       <h3 class="font-bold text-slate-800 text-lg mb-4 flex items-center gap-2">
         📜 ประวัติการบริจาค
       </h3>
@@ -126,15 +126,15 @@
 
   <!-- BOTTOM NAVIGATION BAR -->
   <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 flex justify-around p-2 z-40 max-w-md mx-auto">
-    <button onclick="switchTab('home')" class="flex flex-col items-center text-red-600 font-semibold text-xs py-1">
+    <button onclick="switchTab('home')" id="tab-home" class="nav-btn flex flex-col items-center text-red-600 font-semibold text-xs py-1">
       <span class="text-xl">🏠</span>
       <span>หน้าหลัก</span>
     </button>
-    <button onclick="switchTab('schedules')" class="flex flex-col items-center text-slate-500 hover:text-red-600 text-xs py-1">
+    <button onclick="switchTab('schedules')" id="tab-schedules" class="nav-btn flex flex-col items-center text-slate-500 hover:text-red-600 text-xs py-1">
       <span class="text-xl">📅</span>
       <span>ตารางนัด</span>
     </button>
-    <button onclick="switchTab('history')" class="flex flex-col items-center text-slate-500 hover:text-red-600 text-xs py-1">
+    <button onclick="switchTab('history')" id="tab-history" class="nav-btn flex flex-col items-center text-slate-500 hover:text-red-600 text-xs py-1">
       <span class="text-xl">📜</span>
       <span>ประวัติ</span>
     </button>
@@ -143,10 +143,8 @@
   <!-- FIREBASE INTEGRATION SCRIPT -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // 🔴 กำหนดค่า Firebase Config ของคุณที่นี่
-    // ตัวอย่างหน้าตาหลังนำค่าจาก Firebase Console มาวางทับ
     const firebaseConfig = {
       apiKey: "AIzaSyB05fcPEPt-bV4Qu4YTI_9NCAP5tylpXco",
       authDomain: "bbsysai.firebaseapp.com",
@@ -162,6 +160,43 @@
     const db = getFirestore(app);
 
     let currentDonor = null;
+
+    // --- FUNCTION: Switch Tab ---
+    window.switchTab = function(tabName) {
+      const navBtns = document.querySelectorAll('.nav-btn');
+      navBtns.forEach(btn => {
+        btn.classList.remove('text-red-600', 'font-semibold');
+        btn.classList.add('text-slate-500');
+      });
+
+      if (tabName === 'home') {
+        document.getElementById('tab-home').classList.add('text-red-600', 'font-semibold');
+        document.getElementById('tab-home').classList.remove('text-slate-500');
+        if (currentDonor) {
+          document.getElementById('dashboardSection').classList.remove('hidden');
+          document.getElementById('loginSection').classList.add('hidden');
+        } else {
+          document.getElementById('loginSection').classList.remove('hidden');
+          document.getElementById('dashboardSection').classList.add('hidden');
+        }
+        document.getElementById('scheduleSection').classList.remove('hidden');
+        document.getElementById('historySection').classList.add('hidden');
+      } else if (tabName === 'schedules') {
+        document.getElementById('tab-schedules').classList.add('text-red-600', 'font-semibold');
+        document.getElementById('tab-schedules').classList.remove('text-slate-500');
+        document.getElementById('scheduleSection').classList.remove('hidden');
+        document.getElementById('loginSection').classList.add('hidden');
+        document.getElementById('dashboardSection').classList.add('hidden');
+        document.getElementById('historySection').classList.add('hidden');
+      } else if (tabName === 'history') {
+        document.getElementById('tab-history').classList.add('text-red-600', 'font-semibold');
+        document.getElementById('tab-history').classList.remove('text-slate-500');
+        document.getElementById('historySection').classList.remove('hidden');
+        document.getElementById('scheduleSection').classList.add('hidden');
+        document.getElementById('loginSection').classList.add('hidden');
+        document.getElementById('dashboardSection').classList.add('hidden');
+      }
+    };
 
     // --- FUNCTION: Search Donor ---
     window.searchDonor = async function() {
@@ -193,7 +228,6 @@
     function renderDonorProfile(donor) {
       document.getElementById('loginSection').classList.add('hidden');
       document.getElementById('dashboardSection').classList.remove('hidden');
-      document.getElementById('historySection').classList.remove('hidden');
 
       document.getElementById('donorFullName').innerText = `${donor.title || ''}${donor.first_name} ${donor.last_name}`;
       document.getElementById('donorIdCardText').innerText = `ID Card: ${donor.id_card}`;
@@ -209,6 +243,17 @@
         height: 140
       });
     }
+
+    // --- FUNCTION: Book Queue ---
+    window.bookQueue = function(scheduleId) {
+      if (!currentDonor) {
+        alert('กรุณาเข้าสู่ระบบด้วยเลขบัตรประชาชนก่อนทำการจองคิว');
+        switchTab('home');
+        document.getElementById('searchIdCard').focus();
+        return;
+      }
+      alert(`ยืนยันการจองคิวบริจาคสำหรับคุณ ${currentDonor.first_name} ${currentDonor.last_name}`);
+    };
 
     // --- FUNCTION: Load Schedules ---
     window.loadSchedules = async function() {
@@ -236,7 +281,7 @@
                 <p>⏰ เวลา: <b>${item.start_time || ''} - ${item.end_time || ''} น.</b></p>
                 <p>🩸 รับหมู่โลหิต: <b>${item.blood_types_needed || 'ทุกหมู่'}</b></p>
               </div>
-              <button onclick="bookQueue('${doc.id}')" class="w-full mt-2 bg-red-600 hover:bg-red-700 text-white font-semibold text-xs py-2 rounded-lg transition">
+              <button onclick="bookQueue('${doc.id}')" class="w-full mt-2 bg-red-600 hover:bg-red-700 text-white font-semibold text-xs py-2 rounded-lg transition active:scale-95">
                 📝 จองคิวบริจาค
               </button>
             </div>
