@@ -146,13 +146,16 @@
     import { getFirestore, collection, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     // 🔴 กำหนดค่า Firebase Config ของคุณที่นี่
+    // ตัวอย่างหน้าตาหลังนำค่าจาก Firebase Console มาวางทับ
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT_ID.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
+      apiKey: "AIzaSyB05fcPEPt-bV4Qu4YTI_9NCAP5tylpXco",
+      authDomain: "bbsysai.firebaseapp.com",
+      databaseURL: "https://bbsysai-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "bbsysai",
+      storageBucket: "bbsysai.firebasestorage.app",
+      messagingSenderId: "751629649725",
+      appId: "1:751629649725:web:a9b62259d0c31aa839a754",
+      measurementId: "G-QNX0MSPPJ5"
     };
 
     const app = initializeApp(firebaseConfig);
