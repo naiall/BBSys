@@ -291,15 +291,21 @@
         if (q.cat) {
           html += `<div class="font-bold text-red-700 text-sm mt-3 mb-1 border-b pb-1">📌 ${q.cat}</div>`;
         }
-        html += `
-          <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs space-y-2">
-            <p class="font-medium text-slate-800">${i+1}. ${q.q}</p>
-            <div class="flex gap-2">
-              <button onclick="setAnswer(${i}, 'yes', this)" class="btn-ans bg-white border border-slate-300 text-slate-600 px-4 py-1.5 rounded-lg flex-1 font-semibold transition">ใช่</button>
-              <button onclick="setAnswer(${i}, 'no', this)" class="btn-ans bg-white border border-slate-300 text-slate-600 px-4 py-1.5 rounded-lg flex-1 font-semibold transition">ไม่ใช่</button>
-            </div>
+      html += `
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-sm space-y-3">
+          <p class="font-medium text-slate-800 leading-relaxed">${i+1}. ${q.q}</p>
+          <div class="flex gap-3 pt-1">
+            <button onclick="setAnswer(${i}, 'yes', this)" 
+              class="btn-ans bg-white border border-slate-300 text-slate-600 px-4 py-2 rounded-xl flex-1 font-bold text-sm transition-all duration-200 shadow-sm opacity-60 hover:opacity-100">
+              ใช่
+            </button>
+            <button onclick="setAnswer(${i}, 'no', this)" 
+              class="btn-ans bg-white border border-slate-300 text-slate-600 px-4 py-2 rounded-xl flex-1 font-bold text-sm transition-all duration-200 shadow-sm opacity-60 hover:opacity-100">
+              ไม่ใช่
+            </button>
           </div>
-        `;
+        </div>
+      `;
       });
       document.getElementById('questions-list').innerHTML = html;
     };
@@ -307,17 +313,22 @@
     window.setAnswer = function(index, value, btn) {
       screeningAnswers[`q${index+1}`] = value;
       const parent = btn.parentElement;
+      
+      // 1. ล้างสไตล์ของปุ่มทั้งสองปุ่มกลับเป็นสีเริ่มต้นก่อน
       parent.querySelectorAll('.btn-ans').forEach(b => {
-        b.classList.remove('bg-red-600', 'bg-emerald-600', 'text-white', 'border-transparent');
-        b.classList.add('bg-white', 'text-slate-600', 'border-slate-300');
+        b.className = 'btn-ans bg-white border border-slate-300 text-slate-600 px-4 py-2 rounded-xl flex-1 font-bold text-sm transition-all duration-200 shadow-sm opacity-60';
       });
-
+    
+      // 2. ปรับเน้นสีของปุ่มที่ถูกกดให้เข้ม เด่นชัด และมีขนาดใหญ่ขึ้นเล็กน้อย
       if (value === 'yes') {
-        btn.classList.add('bg-red-600', 'text-white', 'border-transparent');
+        // ปุ่มใช่: สีแดงเข้ม + ตัวอักษรขาว + เงาเน้น
+        btn.className = 'btn-ans bg-red-600 text-white border-2 border-red-700 px-4 py-2 rounded-xl flex-1 font-extrabold text-sm transition-all duration-200 shadow-md scale-105 opacity-100';
       } else {
-        btn.classList.add('bg-emerald-600', 'text-white', 'border-transparent');
+        // ปุ่มไม่ใช่: สีเขียวเข้ม + ตัวอักษรขาว + เงาเน้น
+        btn.className = 'btn-ans bg-emerald-600 text-white border-2 border-emerald-700 px-4 py-2 rounded-xl flex-1 font-extrabold text-sm transition-all duration-200 shadow-md scale-105 opacity-100';
       }
-
+    
+      // อัปเดตตัวนับความคืบหน้า
       const count = Object.keys(screeningAnswers).length;
       document.getElementById('screen-progress').innerText = `${count}/37`;
     };
