@@ -565,6 +565,20 @@
       listEl.innerHTML = '<div class="text-center py-4 text-slate-400 text-sm">กำลังโหลด...</div>';
 
       try {
+        // เช็กก่อนว่าผู้บริจาคอนี้มีคิวค้างอยู่หรือไม่
+        let hasActiveAppt = false;
+        if (currentDonor) {
+          const qAppt = query(
+            collection(db, "appointments"), 
+            where("donor_id", "==", currentDonor.id_card),
+            where("status", "==", "confirmed")
+          );
+          const apptSnap = await getDocs(qAppt);
+          if (!apptSnap.empty) {
+            hasActiveAppt = true;
+          }
+        }
+
         const querySnapshot = await getDocs(collection(db, "schedules"));
         if (querySnapshot.empty) {
           listEl.innerHTML = '<div class="text-center py-4 text-slate-400 text-sm">ไม่มีตารางเปิดรับบริจาคในขณะนี้</div>';
@@ -574,6 +588,23 @@
         let html = '';
         querySnapshot.forEach((doc) => {
           const item = doc.data();
+          
+          // กำหนดสถานะปุ่มจอง
+          let buttonHtml = '';
+          if (hasActiveAppt) {
+            buttonHtml = `
+              <button disabled class="w-full mt-2 bg-slate-300 text-slate-500 font-semibold text-xs py-2 rounded-lg cursor-not-allowed">
+                ⚠️ ท่านมีคิวนัดหมายอยู่แล้ว
+              </button>
+            `;
+          } else {
+            buttonHtml = `
+              <button onclick="bookQueue('${doc.id}')" class="w-full mt-2 bg-red-600 hover:bg-red-700 text-white font-semibold text-xs py-2 rounded-lg transition active:scale-95">
+                📝 ยืนยันจองคิวบริจาค
+              </button>
+            `;
+          }
+
           html += `
             <div class="border border-slate-100 bg-slate-50 p-3.5 rounded-xl space-y-2">
               <div class="flex justify-between items-start">
@@ -585,9 +616,7 @@
                 <p>⏰ เวลา: <b>${item.start_time || ''} - ${item.end_time || ''} น.</b></p>
                 <p>🩸 รับหมู่โลหิต: <b>${item.blood_types_needed || 'ทุกหมู่'}</b></p>
               </div>
-              <button onclick="bookQueue('${doc.id}')" class="w-full mt-2 bg-red-600 hover:bg-red-700 text-white font-semibold text-xs py-2 rounded-lg transition active:scale-95">
-                📝 ยืนยันจองคิวบริจาค
-              </button>
+              ${buttonHtml}
             </div>
           `;
         });
@@ -633,7 +662,7 @@
       }
     };
 
-    window.loadDonorDashboardAndHistory = async function(idCard) {
+window.loadDonorDashboardAndHistory = async function(idCard) {
       try {
         // 1. อ่านข้อมูลโปรไฟล์ผู้บริจาค
         const qDonor = query(collection(db, "donors"), where("id_card", "==", idCard));
@@ -654,7 +683,7 @@
           }
         }
 
-        // 2. ดึงสถานะคิวล่าสุด
+        // 2. ดึงสถานะคิวล่าสุด และรายละเอียดวันเวลานัดหมาย
         const qAppt = query(collection(db, "appointments"), where("donor_id", "==", idCard));
         const apptSnap = await getDocs(qAppt);
         const apptStatusEl = document.getElementById('d-appt-status');
@@ -664,7 +693,17 @@
           const apptData = apptSnap.docs[apptSnap.docs.length - 1].data();
           
           if (apptData.status === 'confirmed') {
-            apptStatusEl.innerText = "📅 จองคิวสำเร็จ";
+            // ดึงรายละเอียดตารางนัดหมายจาก schedule_id
+            let scheduleInfo = "";
+            if (apptData.schedule_id) {
+              const schedDoc = await getDoc(doc(db, "schedules", apptData.schedule_id));
+              if (schedDoc.exists()) {
+                const s = schedDoc.data();
+                scheduleInfo = `<br><span class="text-xs font-normal text-emerald-100">📅 ${s.schedule_date || ''} (${s.start_time || ''}-${s.end_time || ''} น.)<br>📍 ${s.location || 'รพ.สิชล'}</span>`;
+              }
+            }
+
+            apptStatusEl.innerHTML = `📅 จองคิวสำเร็จ ${scheduleInfo}`;
             apptStatusEl.className = "text-sm font-bold mt-1 text-emerald-300";
             
             if (btnScreening) {
