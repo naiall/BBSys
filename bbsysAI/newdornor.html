@@ -68,40 +68,62 @@
     </section>
 
     <!-- REGISTER FORM -->
-    <section id="registerSection" class="tab-content hidden bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-3">
-      <h3 class="font-bold text-slate-800 text-lg border-b pb-2">📝 ลงทะเบียนผู้บริจาคใหม่</h3>
+    <section id="registerSection" class="tab-content hidden bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-3.5">
+      <div class="border-b pb-2">
+        <h3 class="font-bold text-slate-800 text-lg">📝 ลงทะเบียนผู้บริจาคใหม่</h3>
+        <p class="text-xs text-slate-400 mt-0.5">กรุณากรอกข้อมูลส่วนตัวให้ครบถ้วนเพื่อบันทึกประวัติเวชระเบียนผู้บริจาค</p>
+      </div>
       
-      <div>
-        <label class="text-xs font-semibold text-slate-600">คำนำหน้า *</label>
-        <select id="regTitle" class="w-full p-2.5 border rounded-xl text-sm bg-white mt-1">
-          <option value="นาย">นาย</option>
-          <option value="นาง">นาง</option>
-          <option value="นางสาว">นางสาว</option>
-        </select>
-      </div>
-
-      <div class="grid grid-cols-2 gap-2">
-        <div>
-          <label class="text-xs font-semibold text-slate-600">ชื่อ *</label>
-          <input type="text" id="regFirstName" class="w-full p-2.5 border rounded-xl text-sm mt-1" placeholder="ชื่อ">
-        </div>
-        <div>
-          <label class="text-xs font-semibold text-slate-600">นามสกุล *</label>
-          <input type="text" id="regLastName" class="w-full p-2.5 border rounded-xl text-sm mt-1" placeholder="นามสกุล">
-        </div>
-      </div>
-
+      <!-- เลขบัตรประชาชน (13 หลัก) -->
       <div>
         <label class="text-xs font-semibold text-slate-600">เลขบัตรประชาชน (13 หลัก) *</label>
         <input type="tel" id="regIdCard" maxlength="13" 
           oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-          class="w-full p-2.5 border rounded-xl text-sm mt-1" placeholder="ตัวเลข 13 หลัก">
+          class="w-full p-2.5 border rounded-xl text-sm mt-1 focus:ring-2 focus:ring-red-500 focus:outline-none font-mono" placeholder="ตัวเลข 13 หลัก">
       </div>
 
+      <!-- คำนำหน้า & เพศ -->
       <div class="grid grid-cols-2 gap-2">
         <div>
-          <label class="text-xs font-semibold text-slate-600">หมู่โลหิต *</label>
-          <select id="regBloodType" class="w-full p-2.5 border rounded-xl text-sm bg-white mt-1">
+          <label class="text-xs font-semibold text-slate-600">คำนำหน้า *</label>
+          <select id="regTitle" class="w-full p-2.5 border rounded-xl text-sm bg-white mt-1 focus:ring-2 focus:ring-red-500 focus:outline-none">
+            <option value="นาย">นาย</option>
+            <option value="นาง">นาง</option>
+            <option value="นางสาว">นางสาว</option>
+            <option value="อื่นๆ">อื่นๆ</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-slate-600">เพศ *</label>
+          <select id="regGender" class="w-full p-2.5 border rounded-xl text-sm bg-white mt-1 focus:ring-2 focus:ring-red-500 focus:outline-none">
+            <option value="ชาย">ชาย</option>
+            <option value="หญิง">หญิง</option>
+            <option value="อื่นๆ">อื่นๆ</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- ชื่อ - นามสกุล -->
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="text-xs font-semibold text-slate-600">ชื่อ *</label>
+          <input type="text" id="regFirstName" class="w-full p-2.5 border rounded-xl text-sm mt-1 focus:ring-2 focus:ring-red-500 focus:outline-none" placeholder="ชื่อ">
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-slate-600">นามสกุล *</label>
+          <input type="text" id="regLastName" class="w-full p-2.5 border rounded-xl text-sm mt-1 focus:ring-2 focus:ring-red-500 focus:outline-none" placeholder="นามสกุล">
+        </div>
+      </div>
+
+      <!-- วันเกิด & หมู่โลหิต -->
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="text-xs font-semibold text-slate-600">วัน/เดือน/ปีเกิด *</label>
+          <input type="date" id="regBirthDate" class="w-full p-2.5 border rounded-xl text-sm mt-1 focus:ring-2 focus:ring-red-500 focus:outline-none">
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-slate-600">หมู่โลหิต (Blood Type) *</label>
+          <select id="regBloodType" class="w-full p-2.5 border rounded-xl text-sm bg-white mt-1 focus:ring-2 focus:ring-red-500 focus:outline-none">
             <option value="A+">A+ (A Rh+)</option>
             <option value="A-">A- (A Rh-)</option>
             <option value="B+">B+ (B Rh+)</option>
@@ -116,12 +138,55 @@
             <option value="AB">AB</option>
           </select>
         </div>
+      </div>
+
+      <!-- น้ำหนัก & อาชีพ -->
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="text-xs font-semibold text-slate-600">น้ำหนักตัว (กก.) *</label>
+          <input type="number" id="regWeight" step="0.1" min="30" max="250" placeholder="เช่น 55"
+            class="w-full p-2.5 border rounded-xl text-sm mt-1 focus:ring-2 focus:ring-red-500 focus:outline-none">
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-slate-600">อาชีพ</label>
+          <input type="text" id="regOccupation" placeholder="เช่น รับราชการ, ค้าขาย"
+            class="w-full p-2.5 border rounded-xl text-sm mt-1 focus:ring-2 focus:ring-red-500 focus:outline-none">
+        </div>
+      </div>
+
+      <!-- เบอร์โทร & อีเมล -->
+      <div class="grid grid-cols-2 gap-2">
         <div>
           <label class="text-xs font-semibold text-slate-600">เบอร์โทรศัพท์ *</label>
           <input type="tel" id="regPhone" maxlength="12"
             oninput="this.value = this.value.replace(/[^0-9\-]/g, '')"
-            class="w-full p-2.5 border rounded-xl text-sm mt-1" placeholder="08x-xxx-xxxx">
+            class="w-full p-2.5 border rounded-xl text-sm mt-1 focus:ring-2 focus:ring-red-500 focus:outline-none" placeholder="08x-xxx-xxxx">
         </div>
+        <div>
+          <label class="text-xs font-semibold text-slate-600">อีเมล</label>
+          <input type="email" id="regEmail" placeholder="name@email.com"
+            class="w-full p-2.5 border rounded-xl text-sm mt-1 focus:ring-2 focus:ring-red-500 focus:outline-none">
+        </div>
+      </div>
+
+      <!-- ที่อยู่ตามบัตรประชาชน -->
+      <div>
+        <label class="text-xs font-semibold text-slate-600">ที่อยู่ตามบัตรประชาชน *</label>
+        <textarea id="regAddressIdCard" rows="2" placeholder="เลขที่ หมู่บ้าน ซอย ถนน ตำบล อำเภอ จังหวัด"
+          class="w-full p-2.5 border rounded-xl text-sm mt-1 focus:ring-2 focus:ring-red-500 focus:outline-none"></textarea>
+      </div>
+
+      <!-- ที่อยู่ที่ติดต่อได้ -->
+      <div>
+        <div class="flex justify-between items-center">
+          <label class="text-xs font-semibold text-slate-600">ที่อยู่ที่ติดต่อได้</label>
+          <label class="text-xs text-red-600 cursor-pointer flex items-center gap-1">
+            <input type="checkbox" id="regSameAddressCheckbox" onchange="syncRegContactAddress(this)" class="rounded text-red-600">
+            <span>เหมือนที่อยู่ตามบัตร</span>
+          </label>
+        </div>
+        <textarea id="regAddressContact" rows="2" placeholder="เลขที่ หมู่บ้าน ซอย ถนน ตำบล อำเภอ จังหวัด"
+          class="w-full p-2.5 border rounded-xl text-sm mt-1 focus:ring-2 focus:ring-red-500 focus:outline-none"></textarea>
       </div>
 
       <!-- ข้อตกลงความยินยอมตามมาตรฐาน PDPA -->
@@ -625,6 +690,16 @@
     window.showRegisterForm = function() {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
       document.getElementById('registerSection').classList.remove('hidden');
+      const searchId = document.getElementById('searchIdCard')?.value.trim();
+      if (searchId && /^\d{13}$/.test(searchId)) {
+        document.getElementById('regIdCard').value = searchId;
+      }
+    };
+
+    window.syncRegContactAddress = function(checkbox) {
+      if (checkbox.checked) {
+        document.getElementById('regAddressContact').value = document.getElementById('regAddressIdCard').value;
+      }
     };
 
     window.syncContactAddress = function(checkbox) {
@@ -716,12 +791,19 @@
     };
 
     window.submitRegister = async function() {
+      const idCard = document.getElementById('regIdCard').value.trim();
+      const title = document.getElementById('regTitle').value;
+      const gender = document.getElementById('regGender').value;
       const fname = document.getElementById('regFirstName').value.trim();
       const lname = document.getElementById('regLastName').value.trim();
-      const idCard = document.getElementById('regIdCard').value.trim();
-      const phone = document.getElementById('regPhone').value.trim();
+      const birthDate = document.getElementById('regBirthDate').value;
       const blood = document.getElementById('regBloodType').value;
-      const title = document.getElementById('regTitle').value;
+      const weightVal = document.getElementById('regWeight').value.trim();
+      const occupation = document.getElementById('regOccupation').value.trim();
+      const phone = document.getElementById('regPhone').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const addressIdCard = document.getElementById('regAddressIdCard').value.trim();
+      let addressContact = document.getElementById('regAddressContact').value.trim();
       const pdpaConsent = document.getElementById('regPdpaConsent')?.checked;
 
       if (!pdpaConsent) {
@@ -729,9 +811,44 @@
         return;
       }
 
-      if (!fname || !lname || !/^\d{13}$/.test(idCard) || !phone) {
-        alert('กรุณากรอกข้อมูลให้ครบถ้วน และเลขบัตรประชาชนต้องเป็นตัวเลข 13 หลัก');
+      if (!idCard || !/^\d{13}$/.test(idCard)) {
+        alert('กรุณากรอกเลขบัตรประชาชนเป็นตัวเลขให้ครบ 13 หลัก');
         return;
+      }
+
+      if (!fname || !lname) {
+        alert('กรุณากรอกชื่อและนามสกุล');
+        return;
+      }
+
+      if (!birthDate) {
+        alert('กรุณาระบุวัน/เดือน/ปีเกิด');
+        return;
+      }
+
+      if (!weightVal) {
+        alert('กรุณาระบุน้ำหนักตัว (กก.) เพื่อประเมินความพร้อมในการบริจาคโลหิต');
+        return;
+      }
+
+      if (!phone) {
+        alert('กรุณากรอกเบอร์โทรศัพท์ที่สามารถติดต่อได้');
+        return;
+      }
+
+      if (!addressIdCard) {
+        alert('กรุณากรอกที่อยู่ตามบัตรประชาชน');
+        return;
+      }
+
+      if (!addressContact) {
+        addressContact = addressIdCard;
+      }
+
+      let parsedWeight = null;
+      if (weightVal !== "") {
+        const numW = Number(weightVal);
+        if (!isNaN(numW)) parsedWeight = numW;
       }
 
       try {
@@ -748,21 +865,33 @@
           return;
         }
 
-        const docRef = await addDoc(collection(db, "donors"), {
+        const newDonorData = {
           title: title,
           first_name: fname,
           last_name: lname,
+          gender: gender,
           id_card: idCard,
-          phone: phone,
+          birth_date: birthDate || '',
           blood_type: blood,
+          phone: phone,
+          email: email || '',
+          occupation: occupation || '',
+          address_id_card: addressIdCard || '',
+          address_contact: addressContact || addressIdCard || '',
           total_donations: 0,
           pdpa_consent: true,
           pdpa_consent_at: serverTimestamp(),
           created_at: serverTimestamp()
-        });
+        };
 
-        alert('ลงทะเบียนสำเร็จ!');
-        currentDonor = { id: docRef.id, title, first_name: fname, last_name: lname, id_card: idCard, blood_type: blood, phone: phone, total_donations: 0, pdpa_consent: true };
+        if (parsedWeight !== null) {
+          newDonorData.weight = parsedWeight;
+        }
+
+        const docRef = await addDoc(collection(db, "donors"), newDonorData);
+
+        alert('🎉 ลงทะเบียนผู้บริจาคใหม่สำเร็จ!');
+        currentDonor = { id: docRef.id, ...newDonorData };
         document.getElementById('registerSection').classList.add('hidden');
         renderDonorProfile(currentDonor);
         loadDonorDashboardAndHistory(currentDonor.id_card);
