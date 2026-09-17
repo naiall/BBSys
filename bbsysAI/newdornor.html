@@ -66,7 +66,7 @@
       </div>
     </section>
 
-    <!-- REGISTER FORM (NEW) -->
+    <!-- REGISTER FORM -->
     <section id="registerSection" class="tab-content hidden bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-3">
       <h3 class="font-bold text-slate-800 text-lg border-b pb-2">📝 ลงทะเบียนผู้บริจาคใหม่</h3>
       
@@ -126,6 +126,8 @@
             <span class="bg-white/20 text-xs px-2.5 py-1 rounded-full backdrop-blur-sm">ผู้บริจาคโลหิต</span>
             <h3 id="donorFullName" class="text-2xl font-bold mt-1">คุณ...</h3>
             <p id="donorIdCardText" class="text-xs text-red-200">ID: -</p>
+            <!-- เพิ่ม Element แสดงวันที่บริจาคถัดไป -->
+            <p id="nextEligibleDateText" class="text-xs text-emerald-200 mt-1 font-semibold"></p>
           </div>
           <div id="donorBloodBadge" class="bg-white text-red-700 font-bold text-xl px-3 py-1.5 rounded-xl shadow">-</div>
         </div>
@@ -175,7 +177,7 @@
       </div>
     </section>
 
-    <!-- DONATION HISTORY (IMPROVED) -->
+    <!-- DONATION HISTORY -->
     <section id="historySection" class="tab-content hidden bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
       <h3 class="font-bold text-slate-800 text-lg mb-4 flex items-center gap-2">📜 ประวัติการบริจาค</h3>
       <div id="historyList" class="space-y-3">
@@ -204,7 +206,17 @@
   <!-- FIREBASE INTEGRATION SCRIPT -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, query, where, getDocs, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { 
+      getFirestore, 
+      collection, 
+      query, 
+      where, 
+      getDocs, 
+      addDoc, 
+      doc, 
+      getDoc, 
+      serverTimestamp 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyB05fcPEPt-bV4Qu4YTI_9NCAP5tylpXco",
@@ -276,7 +288,7 @@
         loadSchedules();
       } else if (tabName === 'history') {
         document.getElementById('historySection').classList.remove('hidden');
-        if (currentDonor) loadDonationHistory(currentDonor.id_card);
+        if (currentDonor) loadDonorDashboardAndHistory(currentDonor.id_card);
       }
     };
 
@@ -335,7 +347,7 @@
           const doc = querySnapshot.docs[0];
           currentDonor = { id: doc.id, ...doc.data() };
           renderDonorProfile(currentDonor);
-          loadDonationHistory(currentDonor.id_card);
+          loadDonorDashboardAndHistory(currentDonor.id_card);
         } else {
           alert('ไม่พบข้อมูลในระบบ สามารถกดลงทะเบียนผู้บริจาคใหม่ได้ครับ');
         }
@@ -491,41 +503,58 @@
       }
     };
 
-    async function loadDonationHistory(idCard) {
-      const historyEl = document.getElementById('historyList');
+    // ดึงประวัติการบริจาคและสถานะมาแสดงผลบน Web Frontend
+    window.loadDonorDashboardAndHistory = async function(idCard) {
       try {
-        const q = query(collection(db, "donations"), where("id_card", "==", idCard));
-        const querySnapshot = await getDocs(q);
+        // 1. อ่านข้อมูลผู้บริจาค (แสดงวันที่บริจาคได้ครั้งถัดไป)
+        const qDonor = query(collection(db, "donors"), where("id_card", "==", idCard));
+        const donorSnap = await getDocs(qDonor);
 
-        if (querySnapshot.empty) {
-          historyEl.innerHTML = `
-            <div class="text-center py-6 text-slate-400 text-sm space-y-1">
-              <p>ไม่พบประวัติการบริจาคในระบบออนไลน์</p>
-              <p class="text-xs text-slate-400">จำนวนบริจาคสะสมในโปรไฟล์: <b>${currentDonor?.total_donations || 0}</b> ครั้ง</p>
-            </div>`;
-          return;
+        if (!donorSnap.empty) {
+          const donor = donorSnap.docs[0].data();
+          document.getElementById('donorFullName').innerText = `${donor.title || ''}${donor.first_name} ${donor.last_name}`;
+          document.getElementById('donorTotalCount').innerText = donor.total_donations || 0;
+          
+          const nextDateEl = document.getElementById('nextEligibleDateText');
+          if (nextDateEl) {
+            nextDateEl.innerText = donor.next_eligible_date 
+              ? `บริจาคครั้งถัดไปได้ตั้งแต่วันที่: ${donor.next_eligible_date}`
+              : "พร้อมบริจาค";
+          }
         }
 
+        // 2. อ่านประวัติการบริจาคย้อนหลังทั้งหมด
+        const qHistory = query(collection(db, "donations"), where("id_card", "==", idCard));
+        const historySnap = await getDocs(qHistory);
+        
         let html = '';
-        querySnapshot.forEach((doc) => {
-          const item = doc.data();
-          html += `
-            <div class="flex justify-between items-center p-3 border-b border-slate-100 last:border-0">
-              <div>
-                <p class="font-bold text-sm text-slate-800">บริจาคครั้งที่ ${item.donation_no || item.total_donations || '-'}</p>
-                <p class="text-xs text-slate-500">วันที่: ${item.donation_date || item.date || '-'}</p>
+        if (historySnap.empty) {
+          html = '<div class="text-center text-slate-400 py-4">ยังไม่มีประวัติการบริจาค</div>';
+        } else {
+          historySnap.forEach((doc) => {
+            const item = doc.data();
+            const isOk = item.status === 'completed' || !item.status; // รองรับกรณีไม่มีฟิลด์ status
+            
+            html += `
+              <div class="flex justify-between items-center p-3 border-b border-slate-100">
+                <div>
+                  <p class="font-bold text-sm text-slate-800">วันที่: ${item.donation_date || item.date || '-'}</p>
+                  <p class="text-xs ${isOk ? 'text-emerald-600' : 'text-red-500'}">
+                    สถานะ: ${isOk ? '✅ บริจาคสำเร็จ' : '❌ ไม่สำเร็จ (' + (item.reject_reason || 'สุขภาพไม่ผ่านเกณฑ์') + ')'}
+                  </p>
+                </div>
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-full ${isOk ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-600'}">
+                  ${isOk ? ((item.volume_ml || 450) + ' ml') : 'ยกเลิก'}
+                </span>
               </div>
-              <span class="text-xs font-semibold bg-red-50 text-red-600 px-2.5 py-1 rounded-full">
-                ${item.volume_ml || 450} ml
-              </span>
-            </div>
-          `;
-        });
-        historyEl.innerHTML = html;
+            `;
+          });
+        }
+        document.getElementById('historyList').innerHTML = html;
       } catch (error) {
-        historyEl.innerHTML = '<div class="text-center py-4 text-red-500 text-sm">เกิดข้อผิดพลาดในการโหลดประวัติ</div>';
+        console.error("Error loading donor data:", error);
       }
-    }
+    };
   </script>
 </body>
 </html>
