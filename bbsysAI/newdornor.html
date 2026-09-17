@@ -1082,18 +1082,32 @@
 
     function formatThaiDateDisplay(dateStr) {
       if (!dateStr) return '-';
-      const parts = String(dateStr).split('-');
-      if (parts.length === 3) {
-        const y = parseInt(parts[0], 10);
-        const m = parseInt(parts[1], 10) - 1;
-        const d = parseInt(parts[2], 10);
-        const dateObj = new Date(y, m, d);
-        if (!isNaN(dateObj.getTime())) {
-          const dayName = THAI_DAYS[dateObj.getDay()];
-          return `${dayName}ที่ ${d} ${THAI_MONTHS_SHORT[m]} ${y + 543}`;
+      let dateObj = null;
+
+      if (dateStr && typeof dateStr === 'object' && dateStr.toDate) {
+        dateObj = dateStr.toDate();
+      } else {
+        const clean = String(dateStr).split('T')[0].trim();
+        const parts = clean.split('-');
+        if (parts.length === 3) {
+          const y = parseInt(parts[0], 10);
+          const m = parseInt(parts[1], 10) - 1;
+          const d = parseInt(parts[2], 10);
+          dateObj = new Date(y, m, d);
+        } else {
+          const parsed = new Date(dateStr);
+          if (!isNaN(parsed.getTime())) dateObj = parsed;
         }
       }
-      return dateStr;
+
+      if (dateObj && !isNaN(dateObj.getTime())) {
+        const y = dateObj.getFullYear();
+        const m = dateObj.getMonth();
+        const d = dateObj.getDate();
+        const dayName = THAI_DAYS[dateObj.getDay()];
+        return `${dayName}ที่ ${d} ${THAI_MONTHS_SHORT[m]} ${y + 543}`;
+      }
+      return String(dateStr);
     }
 
     // ฟังก์ชันคำนวณวันเปิดรับบริจาคล่วงหน้า 5 วันทำการ (จันทร์-ศุกร์ ไม่รวมเสาร์-อาทิตย์ และวันหยุดราชการ)
@@ -1717,33 +1731,77 @@
           resetScreeningButton(btnScreening);
         }
 
-        // 3. ดึงประวัติการบริจาค
+        // 3. ดึงประวัติการบริจาค พร้อมระบบกรองข้อมูลซ้ำ (Deduplication) และจัดเรียง
         const qHistory = query(collection(db, "donations"), where("id_card", "==", idCard));
         const historySnap = await getDocs(qHistory);
         
+        const allDonations = [];
+        const seenKeys = new Set();
+
+        historySnap.forEach((donationDoc) => {
+          const item = { id: donationDoc.id, ...donationDoc.data() };
+          
+          // ทำความสะอาดและตัดเวลาออกจากสตริงวันที่ (เช่น 2026-09-17T00:00:00 -> 2026-09-17)
+          const rawDate = item.donation_date || item.date || '';
+          const normDate = String(rawDate).split('T')[0].trim();
+          
+          // สร้าง Deduplication Key:
+          // 1) หากมี bt_number (รหัสถุง/หลอดโลหิต) ให้ใช้เป็นหลัก
+          // 2) หากไม่มี bt_number ให้ตรวจตาม normDate + '_' + location + '_' + (volume_ml || '')
+          const dedupKey = item.bt_number 
+            ? `bt_${item.bt_number}` 
+            : `${normDate}_${item.location || 'รพ.สิชล'}_${item.volume_ml || '450'}`;
+
+          if (!seenKeys.has(dedupKey)) {
+            seenKeys.add(dedupKey);
+            allDonations.push({
+              ...item,
+              normalized_date: normDate
+            });
+          }
+        });
+
+        // จัดเรียงประวัติการบริจาคจากวันที่ล่าสุดไปเก่าสุด
+        allDonations.sort((a, b) => {
+          const dateA = a.normalized_date || '';
+          const dateB = b.normalized_date || '';
+          return dateB.localeCompare(dateA);
+        });
+
         let html = '';
-        if (historySnap.empty) {
-          html = '<div class="text-center text-slate-400 py-4">ยังไม่มีประวัติการบริจาค</div>';
+        if (allDonations.length === 0) {
+          html = '<div class="text-center text-slate-400 py-6 text-sm">ยังไม่มีประวัติการบริจาค</div>';
         } else {
-          historySnap.forEach((donationDoc) => {
-            const item = donationDoc.data();
+          allDonations.forEach((item) => {
             const isOk = item.status === 'completed' || !item.status;
+            const displayDate = formatThaiDateDisplay(item.normalized_date || item.donation_date);
+            const btBadge = item.bt_number ? `<span class="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono font-normal">รหัส: ${item.bt_number}</span>` : '';
             
             html += `
-              <div class="flex justify-between items-center p-3 border-b border-slate-100">
-                <div>
-                  <p class="font-bold text-sm text-slate-800">วันที่: ${item.donation_date || item.date || '-'}</p>
+              <div class="flex justify-between items-center p-3.5 border-b border-slate-100 hover:bg-slate-50/60 transition rounded-xl">
+                <div class="space-y-1">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <p class="font-bold text-sm text-slate-800">วันที่: ${displayDate}</p>
+                    ${btBadge}
+                  </div>
                   <p class="text-xs text-slate-500">สถานที่: ${item.location || 'รพ.สิชล'}</p>
-                  <p class="text-xs ${isOk ? 'text-emerald-600' : 'text-red-500'}">
+                  <p class="text-xs ${isOk ? 'text-emerald-600 font-medium' : 'text-red-500 font-medium'}">
                     สถานะ: ${isOk ? '✅ บริจาคสำเร็จ' : '❌ ไม่สำเร็จ (' + (item.reject_reason || 'สุขภาพไม่ผ่านเกณฑ์') + ')'}
                   </p>
                 </div>
-                <span class="text-xs font-semibold px-2.5 py-1 rounded-full ${isOk ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-600'}">
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-full ${isOk ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-600'} shadow-xs">
                   ${isOk ? ((item.volume_ml || 450) + ' ml') : 'ยกเลิก'}
                 </span>
               </div>
             `;
           });
+
+          // อัปเดตสถิติจำนวนครั้งที่บริจาคสะสมให้ตรงกับประวัติจริง (Deduplicated Count)
+          const completedCount = allDonations.filter(d => d.status === 'completed' || !d.status).length;
+          if (completedCount > 0 && (!currentDonor.total_donations || currentDonor.total_donations < completedCount)) {
+            currentDonor.total_donations = completedCount;
+            document.getElementById('donorTotalCount').innerText = completedCount;
+          }
         }
         document.getElementById('historyList').innerHTML = html;
 
