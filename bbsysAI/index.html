@@ -4,59 +4,77 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ระบบย้ายข้อมูลไป Firebase</title>
-  <!-- ใช้ Tailwind CSS เพื่อความสวยงาม -->
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+<body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
 
-  <div class="bg-white p-8 rounded-xl shadow-lg max-w-md w-full text-center">
-    <h1 class="text-2xl font-bold text-gray-800 mb-2">🚀 ย้ายข้อมูลไป Firebase</h1>
-    <p class="text-gray-500 mb-6">ระบบจะทำการอ่านข้อมูลจาก Google Sheets และบันทึกลง Firestore</p>
+  <div class="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full text-center border border-gray-100">
+    <div class="mb-6">
+      <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
+      </div>
+      <h1 class="text-2xl font-bold text-gray-800">ย้ายข้อมูลไป Firebase</h1>
+      <p class="text-gray-500 text-sm mt-2">อ่านข้อมูลจาก Google Sheets และบันทึกลง Firestore</p>
+    </div>
 
-    <div id="statusBox" class="hidden mb-4 p-4 rounded-lg text-sm font-medium"></div>
+    <div id="statusBox" class="hidden mb-6 p-4 rounded-lg text-sm font-medium transition-all duration-300"></div>
 
     <button id="migrateBtn" onclick="startMigration()" 
-      class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-200 flex items-center justify-center gap-2">
-      <span>เริ่มย้ายข้อมูลทั้งหมด</span>
+      class="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold py-3 px-6 rounded-xl transition duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
+      <span id="btnText">🚀 เริ่มย้ายข้อมูลทั้งหมด</span>
     </button>
     
-    <p class="text-xs text-gray-400 mt-6">กระบวนการอาจใช้เวลาหลายนาที กรุณาอย่าปิดหน้าต่างนี้</p>
+    <p class="text-xs text-gray-400 mt-6">⚠️ กระบวนการอาจใช้เวลา 1-3 นาที กรุณาอย่าปิดหน้าต่างนี้</p>
   </div>
 
   <script>
-    // ⚠️ เปลี่ยน 2 ค่านี้ให้เป็นของคุณ
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx/exec';
-    const SECRET_PASSWORD = 'MY_SUPER_SECRET_PASSWORD_123'; // ต้องตรงกับใน Apps Script
+    // ⚠️ แก้ไข 2 ค่านี้ให้เป็นของคุณ
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwDAX_NuMCUakp3ygPdVAFC-Lhr2IV8z78bP9Y8lLCq9NoNso2gAlEMIjVAbJgqOXXNIA/exec';
+    const SECRET_PASSWORD = 'MY_SUPER_SECRET_PASSWORD_123'; 
 
     async function startMigration() {
       const btn = document.getElementById('migrateBtn');
+      const btnText = document.getElementById('btnText');
       const statusBox = document.getElementById('statusBox');
       
-      // ปิดปุ่มและแสดงสถานะกำลังทำงาน
+      // 1. ปิดปุ่มและแสดงสถานะกำลังทำงาน
       btn.disabled = true;
-      btn.innerHTML = '<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> กำลังดำเนินการ...';
+      btnText.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> กำลังประมวลผล...`;
       
-      statusBox.className = 'mb-4 p-4 rounded-lg text-sm font-medium bg-blue-100 text-blue-800 block';
-      statusBox.innerText = '🔄 กำลังเชื่อมต่อกับเซิร์ฟเวอร์และเริ่มย้ายข้อมูล...';
+      statusBox.className = 'mb-6 p-4 rounded-lg text-sm font-medium bg-blue-50 text-blue-700 border border-blue-200 block';
+      statusBox.innerText = '🔄 กำลังเชื่อมต่อกับเซิร์ฟเวอร์และเริ่มย้ายข้อมูล (อาจใช้เวลาสักครู่)';
 
       try {
-        // เรียก Google Apps Script ผ่าน URL
-        const response = await fetch(`${APPS_SCRIPT_URL}?action=migrateAll&secret=${SECRET_PASSWORD}`);
+        // 2. เรียก Google Apps Script (เพิ่ม timeout เผื่อไว้)
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 300000); // 5 นาที timeout
+
+        const response = await fetch(`${APPS_SCRIPT_URL}?action=migrateAll&secret=${SECRET_PASSWORD}`, {
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+
         const result = await response.json();
 
+        // 3. แสดงผลลัพธ์
         if (result.status === 'success') {
-          statusBox.className = 'mb-4 p-4 rounded-lg text-sm font-medium bg-green-100 text-green-800 block';
+          statusBox.className = 'mb-6 p-4 rounded-lg text-sm font-medium bg-green-50 text-green-700 border border-green-200 block';
           statusBox.innerText = '✅ ' + result.message;
         } else {
-          throw new Error(result.message);
+          throw new Error(result.message || 'เกิดข้อผิดพลาดที่ไม่ทราบสาเหตุ');
         }
       } catch (error) {
-        statusBox.className = 'mb-4 p-4 rounded-lg text-sm font-medium bg-red-100 text-red-800 block';
-        statusBox.innerText = '❌ เกิดข้อผิดพลาด: ' + error.message;
+        console.error(error);
+        statusBox.className = 'mb-6 p-4 rounded-lg text-sm font-medium bg-red-50 text-red-700 border border-red-200 block';
+        if (error.name === 'AbortError') {
+          statusBox.innerText = '⏱️ หมดเวลาการเชื่อมต่อ: ข้อมูลอาจกำลังย้ายอยู่เบื้องหลัง กรุณาตรวจสอบใน Firebase หรือลองใหม่อีกครั้งในภายหลัง';
+        } else {
+          statusBox.innerText = '❌ เกิดข้อผิดพลาด: ' + error.message;
+        }
       } finally {
-        // คืนค่าปุ่ม
+        // 4. คืนค่าปุ่ม
         btn.disabled = false;
-        btn.innerHTML = '<span>เริ่มย้ายข้อมูลทั้งหมด</span>';
+        btnText.innerText = '🚀 เริ่มย้ายข้อมูลทั้งหมด';
       }
     }
   </script>
