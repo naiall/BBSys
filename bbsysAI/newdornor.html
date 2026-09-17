@@ -117,13 +117,62 @@
       </div>
     </section>
 
+    <!-- EDIT PROFILE SECTION (ส่วนแก้ไขข้อมูลส่วนตัว) -->
+    <section id="editProfileSection" class="tab-content hidden bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-3">
+      <h3 class="font-bold text-slate-800 text-lg border-b pb-2">✏️ แก้ไขข้อมูลส่วนตัว</h3>
+      
+      <div>
+        <label class="text-xs font-semibold text-slate-600">คำนำหน้า</label>
+        <select id="editTitle" class="w-full p-2.5 border rounded-xl text-sm bg-white mt-1">
+          <option value="นาย">นาย</option>
+          <option value="นาง">นาง</option>
+          <option value="นางสาว">นางสาว</option>
+        </select>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="text-xs font-semibold text-slate-600">ชื่อ</label>
+          <input type="text" id="editFirstName" class="w-full p-2.5 border rounded-xl text-sm mt-1">
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-slate-600">นามสกุล</label>
+          <input type="text" id="editLastName" class="w-full p-2.5 border rounded-xl text-sm mt-1">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="text-xs font-semibold text-slate-600">หมู่โลหิต</label>
+          <select id="editBloodType" class="w-full p-2.5 border rounded-xl text-sm bg-white mt-1">
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="O">O</option>
+            <option value="AB">AB</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-slate-600">เบอร์โทรศัพท์</label>
+          <input type="tel" id="editPhone" class="w-full p-2.5 border rounded-xl text-sm mt-1">
+        </div>
+      </div>
+
+      <div class="pt-2 flex gap-2">
+        <button onclick="submitEditProfile()" class="flex-1 bg-emerald-600 text-white font-bold py-3 rounded-xl transition shadow-md active:scale-95">💾 บันทึกการแก้ไข</button>
+        <button onclick="switchTab('home')" class="bg-slate-100 text-slate-600 font-semibold px-4 py-3 rounded-xl">ยกเลิก</button>
+      </div>
+    </section>
+
     <!-- DONOR DASHBOARD -->
     <section id="dashboardSection" class="tab-content hidden space-y-4">
       <div class="bg-gradient-to-br from-red-700 to-red-900 text-white rounded-2xl p-5 shadow-lg relative overflow-hidden">
         <div class="absolute -right-4 -bottom-4 text-8xl opacity-10">🩸</div>
         <div class="flex justify-between items-start mb-4">
           <div>
-            <span class="bg-white/20 text-xs px-2.5 py-1 rounded-full backdrop-blur-sm">ผู้บริจาคโลหิต</span>
+            <div class="flex items-center gap-2">
+              <span class="bg-white/20 text-xs px-2.5 py-1 rounded-full backdrop-blur-sm">ผู้บริจาคโลหิต</span>
+              <button onclick="showEditProfileForm()" class="bg-white/20 hover:bg-white/30 text-white text-xs px-2 py-0.5 rounded-md transition">✏️ แก้ไขข้อมูล</button>
+            </div>
             <h3 id="donorFullName" class="text-2xl font-bold mt-1">คุณ...</h3>
             <p id="donorIdCardText" class="text-xs text-red-200">ID: -</p>
             <p id="nextEligibleDateText" class="text-xs text-emerald-200 mt-1 font-semibold"></p>
@@ -213,7 +262,7 @@
       getDocs, 
       addDoc, 
       doc, 
-      getDoc, 
+      updateDoc,
       serverTimestamp 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
@@ -297,6 +346,59 @@
       document.getElementById('registerSection').classList.remove('hidden');
     };
 
+    window.showEditProfileForm = function() {
+      if (!currentDonor) return;
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.getElementById('editProfileSection').classList.remove('hidden');
+
+      // ดึงข้อมูลเดิมมาใส่ใน Input
+      document.getElementById('editTitle').value = currentDonor.title || 'นาย';
+      document.getElementById('editFirstName').value = currentDonor.first_name || '';
+      document.getElementById('editLastName').value = currentDonor.last_name || '';
+      document.getElementById('editBloodType').value = currentDonor.blood_type || 'A';
+      document.getElementById('editPhone').value = currentDonor.phone || '';
+    };
+
+    window.submitEditProfile = async function() {
+      if (!currentDonor) return;
+
+      const title = document.getElementById('editTitle').value;
+      const fname = document.getElementById('editFirstName').value.trim();
+      const lname = document.getElementById('editLastName').value.trim();
+      const blood = document.getElementById('editBloodType').value;
+      const phone = document.getElementById('editPhone').value.trim();
+
+      if (!fname || !lname || !phone) {
+        alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+        return;
+      }
+
+      try {
+        const donorDocRef = doc(db, "donors", currentDonor.id);
+        await updateDoc(donorDocRef, {
+          title: title,
+          first_name: fname,
+          last_name: lname,
+          blood_type: blood,
+          phone: phone,
+          updated_at: serverTimestamp()
+        });
+
+        // อัปเดตข้อมูลในหน่วยความจำ local
+        currentDonor.title = title;
+        currentDonor.first_name = fname;
+        currentDonor.last_name = lname;
+        currentDonor.blood_type = blood;
+        currentDonor.phone = phone;
+
+        alert('แก้ไขข้อมูลส่วนตัวสำเร็จ!');
+        renderDonorProfile(currentDonor);
+        switchTab('home');
+      } catch (error) {
+        alert('เกิดข้อผิดพลาดในการแก้ไขข้อมูล: ' + error.message);
+      }
+    };
+
     window.submitRegister = async function() {
       const fname = document.getElementById('regFirstName').value.trim();
       const lname = document.getElementById('regLastName').value.trim();
@@ -323,7 +425,7 @@
         });
 
         alert('ลงทะเบียนสำเร็จ!');
-        currentDonor = { id: docRef.id, title, first_name: fname, last_name: lname, id_card: idCard, blood_type: blood, total_donations: 0 };
+        currentDonor = { id: docRef.id, title, first_name: fname, last_name: lname, id_card: idCard, blood_type: blood, phone: phone, total_donations: 0 };
         document.getElementById('registerSection').classList.add('hidden');
         renderDonorProfile(currentDonor);
         loadDonorDashboardAndHistory(currentDonor.id_card);
@@ -347,7 +449,7 @@
           const doc = querySnapshot.docs[0];
           currentDonor = { id: doc.id, ...doc.data() };
           renderDonorProfile(currentDonor);
-          loadDonorDashboardAndHistory(currentDonor.id_card);
+          await loadDonorDashboardAndHistory(currentDonor.id_card);
         } else {
           alert('ไม่พบข้อมูลในระบบ สามารถกดลงทะเบียนผู้บริจาคใหม่ได้ครับ');
         }
@@ -373,10 +475,26 @@
       });
     }
 
-    window.startScreening = function() {
+    window.startScreening = async function() {
       if (!currentDonor) {
         alert('กรุณาเข้าสู่ระบบด้วยเลขบัตรประชาชนก่อน');
         return;
+      }
+
+      try {
+        const qAppt = query(
+          collection(db, "appointments"), 
+          where("donor_id", "==", currentDonor.id_card),
+          where("status", "==", "confirmed")
+        );
+        const apptSnap = await getDocs(qAppt);
+
+        if (!apptSnap.empty) {
+          alert('⚠️ คุณมีรายการจองคิวบริจาคโลหิตที่รอดำเนินการอยู่แล้ว ไม่สามารถทำแบบคัดกรองหรือจองคิวซ้ำได้');
+          return;
+        }
+      } catch (error) {
+        console.error("Error checking existing appointments:", error);
       }
 
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
@@ -487,6 +605,19 @@
       }
 
       try {
+        const qAppt = query(
+          collection(db, "appointments"), 
+          where("donor_id", "==", currentDonor.id_card),
+          where("status", "==", "confirmed")
+        );
+        const apptSnap = await getDocs(qAppt);
+
+        if (!apptSnap.empty) {
+          alert('⚠️ คุณได้ทำการจองคิวไว้แล้ว ไม่สามารถจองซ้ำได้');
+          switchTab('home');
+          return;
+        }
+
         await addDoc(collection(db, "appointments"), {
           donor_id: currentDonor.id_card,
           schedule_id: scheduleId,
@@ -502,7 +633,6 @@
       }
     };
 
-    // ฟังก์ชันดึงแดชบอร์ด สถานะคิวล่าสุด และประวัติการบริจาค
     window.loadDonorDashboardAndHistory = async function(idCard) {
       try {
         // 1. อ่านข้อมูลโปรไฟล์ผู้บริจาค
@@ -510,22 +640,25 @@
         const donorSnap = await getDocs(qDonor);
 
         if (!donorSnap.empty) {
-          const donor = donorSnap.docs[0].data();
-          document.getElementById('donorFullName').innerText = `${donor.title || ''}${donor.first_name} ${donor.last_name}`;
-          document.getElementById('donorTotalCount').innerText = donor.total_donations || 0;
+          const donorDoc = donorSnap.docs[0];
+          currentDonor = { id: donorDoc.id, ...donorDoc.data() };
+
+          document.getElementById('donorFullName').innerText = `${currentDonor.title || ''}${currentDonor.first_name} ${currentDonor.last_name}`;
+          document.getElementById('donorTotalCount').innerText = currentDonor.total_donations || 0;
           
           const nextDateEl = document.getElementById('nextEligibleDateText');
           if (nextDateEl) {
-            nextDateEl.innerText = donor.next_eligible_date 
-              ? `บริจาคครั้งถัดไปได้ตั้งแต่วันที่: ${donor.next_eligible_date}`
+            nextDateEl.innerText = currentDonor.next_eligible_date 
+              ? `บริจาคครั้งถัดไปได้ตั้งแต่วันที่: ${currentDonor.next_eligible_date}`
               : "พร้อมบริจาค";
           }
         }
 
-        // 2. ดึงสถานะคิวล่าสุดจาก Collection appointments
+        // 2. ดึงสถานะคิวล่าสุด
         const qAppt = query(collection(db, "appointments"), where("donor_id", "==", idCard));
         const apptSnap = await getDocs(qAppt);
         const apptStatusEl = document.getElementById('d-appt-status');
+        const btnScreening = document.getElementById('btn-screening');
 
         if (!apptSnap.empty) {
           const apptData = apptSnap.docs[apptSnap.docs.length - 1].data();
@@ -533,12 +666,19 @@
           if (apptData.status === 'confirmed') {
             apptStatusEl.innerText = "📅 จองคิวสำเร็จ";
             apptStatusEl.className = "text-sm font-bold mt-1 text-emerald-300";
+            
+            if (btnScreening) {
+              btnScreening.innerText = "✅ ท่านมีคิวบริจาคแล้ว";
+              btnScreening.className = "w-full bg-slate-400 text-white font-bold py-3.5 px-4 rounded-xl cursor-not-allowed text-base";
+            }
           } else if (apptData.status === 'completed') {
             apptStatusEl.innerText = "✅ บริจาคเรียบร้อย";
             apptStatusEl.className = "text-sm font-bold mt-1 text-blue-300";
+            resetScreeningButton(btnScreening);
           } else if (apptData.status === 'cancelled') {
             apptStatusEl.innerText = "❌ ยกเลิกการจอง";
             apptStatusEl.className = "text-sm font-bold mt-1 text-red-300";
+            resetScreeningButton(btnScreening);
           } else {
             apptStatusEl.innerText = "⏳ รอยืนยัน";
             apptStatusEl.className = "text-sm font-bold mt-1 text-amber-300";
@@ -546,9 +686,10 @@
         } else {
           apptStatusEl.innerText = "ยังไม่มีนัดหมาย";
           apptStatusEl.className = "text-sm font-bold mt-1 text-white/80";
+          resetScreeningButton(btnScreening);
         }
 
-        // 3. ดึงประวัติการบริจาคย้อนหลังทั้งหมด
+        // 3. ดึงประวัติการบริจาค
         const qHistory = query(collection(db, "donations"), where("id_card", "==", idCard));
         const historySnap = await getDocs(qHistory);
         
@@ -564,6 +705,7 @@
               <div class="flex justify-between items-center p-3 border-b border-slate-100">
                 <div>
                   <p class="font-bold text-sm text-slate-800">วันที่: ${item.donation_date || item.date || '-'}</p>
+                  <p class="text-xs text-slate-500">สถานที่: ${item.location || 'รพ.สิชล'}</p>
                   <p class="text-xs ${isOk ? 'text-emerald-600' : 'text-red-500'}">
                     สถานะ: ${isOk ? '✅ บริจาคสำเร็จ' : '❌ ไม่สำเร็จ (' + (item.reject_reason || 'สุขภาพไม่ผ่านเกณฑ์') + ')'}
                   </p>
@@ -578,9 +720,16 @@
         document.getElementById('historyList').innerHTML = html;
 
       } catch (error) {
-        console.error("Error loading dashboard and history:", error);
+        console.error("Error loading dashboard:", error);
       }
     };
+
+    function resetScreeningButton(btn) {
+      if (btn) {
+        btn.innerText = "📋 ทำแบบคัดกรอง & จองคิว";
+        btn.className = "w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 px-4 rounded-xl transition shadow-md flex items-center justify-center gap-2 text-base";
+      }
+    }
   </script>
 </body>
 </html>
