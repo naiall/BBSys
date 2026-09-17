@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#C62828">
+  <title>🩸 ระบบผู้บริจาคโลหิต - รพ.สิชล</title>
+  
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Kanit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- QRCode.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <style>
+    :root {
+      --primary: #C62828;
+      --primary-dark: #8B0000;
+      --font-th: 'Sarabun', sans-serif;
+      --font-head: 'Kanit', sans-serif;
+    }
+    body { font-family: var(--font-th); }
+    h1, h2, h3, h4, .font-head { font-family: var(--font-head); }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen pb-20">
+
+  <!-- TOP BAR -->
+  <header class="bg-gradient-to-r from-red-800 to-red-600 text-white p-4 sticky top-0 z-50 shadow-md flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <span class="text-2xl">🩸</span>
+      <div>
+        <h1 class="font-bold text-lg leading-tight">ระบบผู้บริจาคโลหิต</h1>
+        <p class="text-xs text-red-100">โรงพยาบาลสิชล</p>
+      </div>
+    </div>
+    <div id="userBadge" class="hidden bg-red-900/50 px-3 py-1 rounded-full text-xs font-semibold text-red-200 border border-red-700">
+      <span id="badgeName"></span>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-md mx-auto p-4 space-y-4">
+
+    <!-- SEARCH / LOGIN SECTION -->
+    <section id="loginSection" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center">
+      <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-3">
+        🪪
+      </div>
+      <h2 class="text-xl font-bold text-slate-800">เข้าสู่ระบบผู้บริจาค</h2>
+      <p class="text-sm text-slate-500 mb-4">กรอกเลขบัตรประชาชน 13 หลัก เพื่อดูประวัติและจองคิว</p>
+      
+      <div class="space-y-3">
+        <input type="tel" id="searchIdCard" placeholder="เลขบัตรประชาชน 13 หลัก" maxlength="13"
+          class="w-full text-center text-lg tracking-widest p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:outline-none">
+        <button onclick="searchDonor()" 
+          class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl transition shadow-md active:scale-95">
+          🔍 ตรวจสอบข้อมูล / เข้าสู่ระบบ
+        </button>
+      </div>
+    </section>
+
+    <!-- DONOR DASHBOARD (HIDDEN UNTIL LOGIN) -->
+    <section id="dashboardSection" class="hidden space-y-4">
+      
+      <!-- USER PROFILE CARD -->
+      <div class="bg-gradient-to-br from-red-700 to-red-900 text-white rounded-2xl p-5 shadow-lg relative overflow-hidden">
+        <div class="absolute -right-4 -bottom-4 text-8xl opacity-10">🩸</div>
+        <div class="flex justify-between items-start mb-4">
+          <div>
+            <span class="bg-white/20 text-xs px-2.5 py-1 rounded-full backdrop-blur-sm">ผู้บริจาคโลหิต</span>
+            <h3 id="donorFullName" class="text-2xl font-bold mt-1">คุณ...</h3>
+            <p id="donorIdCardText" class="text-xs text-red-200">ID: -</p>
+          </div>
+          <div id="donorBloodBadge" class="bg-white text-red-700 font-bold text-xl px-3 py-1.5 rounded-xl shadow">
+            -
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 pt-3 border-t border-white/10 text-center">
+          <div class="bg-white/10 p-2.5 rounded-xl backdrop-blur-sm">
+            <p class="text-xs text-red-200">บริจาคสะสม</p>
+            <p class="text-xl font-bold"><span id="donorTotalCount">0</span> <span class="text-xs font-normal">ครั้ง</span></p>
+          </div>
+          <div class="bg-white/10 p-2.5 rounded-xl backdrop-blur-sm">
+            <p class="text-xs text-red-200">บริจาคครั้งถัดไป</p>
+            <p id="donorNextDate" class="text-sm font-bold mt-1">พร้อมบริจาค</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- MY QR CODE -->
+      <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 text-center">
+        <h4 class="font-bold text-slate-700 mb-2">QR Code ประจำตัวผู้บริจาค</h4>
+        <div id="qrcode" class="flex justify-center p-3 bg-slate-50 rounded-xl border border-slate-200 my-2"></div>
+        <p class="text-xs text-slate-400">แสดง QR Code นี้แก่เจ้าหน้าที่เมื่อเดินทางมาถึง</p>
+      </div>
+
+    </section>
+
+    <!-- SCHEDULES / EVENT LIST -->
+    <section class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
+          📅 ตารางรับบริจาคโลหิต
+        </h3>
+        <button onclick="loadSchedules()" class="text-xs text-red-600 font-semibold hover:underline">รีเฟรช</button>
+      </div>
+
+      <div id="scheduleList" class="space-y-3">
+        <div class="text-center py-6 text-slate-400 text-sm">กำลังโหลดตารางรับบริจาค...</div>
+      </div>
+    </section>
+
+    <!-- DONATION HISTORY -->
+    <section id="historySection" class="hidden bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+      <h3 class="font-bold text-slate-800 text-lg mb-4 flex items-center gap-2">
+        📜 ประวัติการบริจาค
+      </h3>
+      <div id="historyList" class="space-y-3">
+        <div class="text-center py-4 text-slate-400 text-sm">ไม่พบประวัติการบริจาค</div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- BOTTOM NAVIGATION BAR -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 flex justify-around p-2 z-40 max-w-md mx-auto">
+    <button onclick="switchTab('home')" class="flex flex-col items-center text-red-600 font-semibold text-xs py-1">
+      <span class="text-xl">🏠</span>
+      <span>หน้าหลัก</span>
+    </button>
+    <button onclick="switchTab('schedules')" class="flex flex-col items-center text-slate-500 hover:text-red-600 text-xs py-1">
+      <span class="text-xl">📅</span>
+      <span>ตารางนัด</span>
+    </button>
+    <button onclick="switchTab('history')" class="flex flex-col items-center text-slate-500 hover:text-red-600 text-xs py-1">
+      <span class="text-xl">📜</span>
+      <span>ประวัติ</span>
+    </button>
+  </nav>
+
+  <!-- FIREBASE INTEGRATION SCRIPT -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // 🔴 กำหนดค่า Firebase Config ของคุณที่นี่
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let currentDonor = null;
+
+    // --- FUNCTION: Search Donor ---
+    window.searchDonor = async function() {
+      const idCard = document.getElementById('searchIdCard').value.trim();
+      if (idCard.length !== 13) {
+        alert('กรุณากรอกเลขบัตรประชาชนให้ครบ 13 หลัก');
+        return;
+      }
+
+      try {
+        const q = query(collection(db, "donors"), where("id_card", "==", idCard));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+          const doc = querySnapshot.docs[0];
+          currentDonor = { id: doc.id, ...doc.data() };
+          renderDonorProfile(currentDonor);
+          loadDonationHistory(currentDonor.id_card);
+        } else {
+          alert('ไม่พบข้อมูลผู้บริจาคในระบบ หากท่านเป็นผู้บริจาคใหม่ กรุณาติดต่อเจ้าหน้าที่เพื่อลงทะเบียน');
+        }
+      } catch (error) {
+        console.error("Error searching donor:", error);
+        alert("เกิดข้อผิดพลาดในการดึงข้อมูล: " + error.message);
+      }
+    };
+
+    // --- FUNCTION: Render Profile ---
+    function renderDonorProfile(donor) {
+      document.getElementById('loginSection').classList.add('hidden');
+      document.getElementById('dashboardSection').classList.remove('hidden');
+      document.getElementById('historySection').classList.remove('hidden');
+
+      document.getElementById('donorFullName').innerText = `${donor.title || ''}${donor.first_name} ${donor.last_name}`;
+      document.getElementById('donorIdCardText').innerText = `ID Card: ${donor.id_card}`;
+      document.getElementById('donorBloodBadge').innerText = donor.blood_type || '-';
+      document.getElementById('donorTotalCount').innerText = donor.total_donations || 0;
+      document.getElementById('donorNextDate').innerText = donor.next_donation_date || 'พร้อมบริจาค';
+
+      // Generate QR Code
+      document.getElementById('qrcode').innerHTML = "";
+      new QRCode(document.getElementById("qrcode"), {
+        text: donor.id_card,
+        width: 140,
+        height: 140
+      });
+    }
+
+    // --- FUNCTION: Load Schedules ---
+    window.loadSchedules = async function() {
+      const listEl = document.getElementById('scheduleList');
+      listEl.innerHTML = '<div class="text-center py-4 text-slate-400 text-sm">กำลังโหลด...</div>';
+
+      try {
+        const querySnapshot = await getDocs(collection(db, "schedules"));
+        if (querySnapshot.empty) {
+          listEl.innerHTML = '<div class="text-center py-4 text-slate-400 text-sm">ไม่มีตารางเปิดรับบริจาคในขณะนี้</div>';
+          return;
+        }
+
+        let html = '';
+        querySnapshot.forEach((doc) => {
+          const item = doc.data();
+          html += `
+            <div class="border border-slate-100 bg-slate-50 p-3.5 rounded-xl space-y-2">
+              <div class="flex justify-between items-start">
+                <span class="font-bold text-slate-800 text-sm">📍 ${item.location || 'รพ.สิชล'}</span>
+                <span class="text-xs bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded-md">เปิดรับจอง</span>
+              </div>
+              <div class="text-xs text-slate-600 space-y-1">
+                <p>📅 วันที่: <b>${item.schedule_date || '-'}</b></p>
+                <p>⏰ เวลา: <b>${item.start_time || ''} - ${item.end_time || ''} น.</b></p>
+                <p>🩸 รับหมู่โลหิต: <b>${item.blood_types_needed || 'ทุกหมู่'}</b></p>
+              </div>
+              <button onclick="bookQueue('${doc.id}')" class="w-full mt-2 bg-red-600 hover:bg-red-700 text-white font-semibold text-xs py-2 rounded-lg transition">
+                📝 จองคิวบริจาค
+              </button>
+            </div>
+          `;
+        });
+        listEl.innerHTML = html;
+      } catch (error) {
+        console.error("Error loading schedules:", error);
+        listEl.innerHTML = '<div class="text-center py-4 text-red-500 text-sm">ไม่สามารถโหลดตารางได้</div>';
+      }
+    };
+
+    // --- FUNCTION: Load Donation History ---
+    async function loadDonationHistory(idCard) {
+      const historyEl = document.getElementById('historyList');
+      try {
+        const q = query(collection(db, "donations"), where("id_card", "==", idCard));
+        const querySnapshot = await getDocs(q);
+
+        if (querySnapshot.empty) {
+          historyEl.innerHTML = '<div class="text-center py-4 text-slate-400 text-sm">ยังไม่มีประวัติการบริจาค</div>';
+          return;
+        }
+
+        let html = '';
+        querySnapshot.forEach((doc) => {
+          const item = doc.data();
+          html += `
+            <div class="flex justify-between items-center p-3 border-b border-slate-100 last:border-0">
+              <div>
+                <p class="font-bold text-sm text-slate-800">ครั้งที่ ${item.donation_no || '-'}</p>
+                <p class="text-xs text-slate-500">วันที่: ${item.donation_date || '-'}</p>
+              </div>
+              <span class="text-xs font-semibold bg-red-50 text-red-600 px-2.5 py-1 rounded-full">
+                ${item.volume_ml || 450} ml
+              </span>
+            </div>
+          `;
+        });
+        historyEl.innerHTML = html;
+      } catch (error) {
+        console.error("Error loading history:", error);
+      }
+    }
+
+    // Auto load schedules on startup
+    window.loadSchedules();
+  </script>
+</body>
+</html>
