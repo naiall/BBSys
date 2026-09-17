@@ -369,6 +369,7 @@
       where, 
       getDocs, 
       getDoc,
+      setDoc,
       addDoc, 
       doc, 
       updateDoc,
@@ -757,11 +758,69 @@
       }
     };
 
+    const THAI_MONTHS_SHORT = [
+      "ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.",
+      "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."
+    ];
+    const THAI_DAYS = [
+      "วันอาทิตย์", "วันจันทร์", "วันอังคาร", "วันพุธ", "วันพฤหัสบดี", "วันศุกร์", "วันเสาร์"
+    ];
+
+    function formatThaiDateDisplay(dateStr) {
+      if (!dateStr) return '-';
+      const parts = String(dateStr).split('-');
+      if (parts.length === 3) {
+        const y = parseInt(parts[0], 10);
+        const m = parseInt(parts[1], 10) - 1;
+        const d = parseInt(parts[2], 10);
+        const dateObj = new Date(y, m, d);
+        if (!isNaN(dateObj.getTime())) {
+          const dayName = THAI_DAYS[dateObj.getDay()];
+          return `${dayName}ที่ ${d} ${THAI_MONTHS_SHORT[m]} ${y + 543}`;
+        }
+      }
+      return dateStr;
+    }
+
+    // ฟังก์ชันคำนวณวันเปิดรับบริจาคล่วงหน้า 5 วันทำการ (จันทร์-ศุกร์ ไม่รวมเสาร์-อาทิตย์ และวันหยุดราชการ)
+    function getNext5EligibleWorkingDays(holidaysMap) {
+      const eligibleDays = [];
+      const d = new Date();
+
+      // หากเวลาเกิน 12:00 น. หรือเป็นวันเสาร์/อาทิตย์ หรือเป็นวันหยุด ให้เริ่มนับจากวันพรุ่งนี้
+      const todayStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      if (d.getHours() >= 12 || d.getDay() === 0 || d.getDay() === 6 || holidaysMap.has(todayStr)) {
+        d.setDate(d.getDate() + 1);
+      }
+
+      while (eligibleDays.length < 5) {
+        const dayOfWeek = d.getDay(); // 0 = อาทิตย์, 6 = เสาร์
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        const dateStr = `${yyyy}-${mm}-${dd}`;
+
+        const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
+        const holiday = holidaysMap.get(dateStr);
+
+        // จันทร์-ศุกร์ (ไม่รวมเสาร์-อาทิตย์) และไม่ใช่วันหยุดราชการ
+        if (!isWeekend && !holiday) {
+          eligibleDays.push({
+            dateStr: dateStr,
+            thaiDisplay: formatThaiDateDisplay(dateStr),
+            dayName: THAI_DAYS[dayOfWeek]
+          });
+        }
+        d.setDate(d.getDate() + 1);
+      }
+      return eligibleDays;
+    }
+
     window.loadSchedules = async function() {
       const myApptEl = document.getElementById('myAppointmentContainer');
       const listEl = document.getElementById('scheduleList');
       if (myApptEl) myApptEl.innerHTML = '';
-      if (listEl) listEl.innerHTML = '<div class="text-center py-4 text-slate-400 text-sm">กำลังโหลดตารางรับบริจาค...</div>';
+      if (listEl) listEl.innerHTML = '<div class="text-center py-6 text-slate-400 text-sm">กำลังโหลดตารางรับบริจาค...</div>';
 
       try {
         let activeAppt = null;
@@ -795,6 +854,7 @@
           // แสดงการ์ดข้อมูลคิวที่จองไว้ด้านบนสุดอย่างเด่นชัด
           if (activeAppt) {
             const s = activeSchedule || {};
+            const displayDate = formatThaiDateDisplay(s.schedule_date || activeAppt.schedule_date);
             myApptEl.innerHTML = `
               <div class="bg-gradient-to-br from-emerald-600 to-teal-800 text-white p-4 rounded-2xl shadow-md space-y-3">
                 <div class="flex justify-between items-center">
@@ -808,13 +868,13 @@
                 
                 <div class="bg-white/10 p-3 rounded-xl backdrop-blur-sm space-y-1.5 text-xs">
                   <p class="font-bold text-sm text-white flex items-center gap-1.5">
-                    <span>📍</span> สถานที่: ${s.location || 'โรงพยาบาลสิชล'}
+                    <span>📍</span> สถานที่: ${s.location || activeAppt.location || 'อาคารธนาคารเลือด รพ.สิชล'}
                   </p>
                   <p class="text-emerald-100">
-                    📅 วันที่นัด: <b class="text-white text-sm">${s.schedule_date || '-'}</b>
+                    📅 วันที่นัด: <b class="text-white text-sm">${displayDate}</b>
                   </p>
                   <p class="text-emerald-100">
-                    ⏰ เวลา: <b class="text-white">${s.start_time || ''} - ${s.end_time || ''} น.</b>
+                    ⏰ เวลา: <b class="text-white">${s.start_time || activeAppt.start_time || '08:30'} - ${s.end_time || activeAppt.end_time || '15:00'} น.</b>
                   </p>
                   <p class="text-emerald-100">
                     🩸 หมู่โลหิตที่รับ: <b>${s.blood_types_needed || 'ทุกหมู่'}</b>
@@ -855,18 +915,65 @@
           `;
         }
 
-        // 2. ดึงรายการรอบเปิดรับบริจาคทั้งหมด
-        const querySnapshot = await getDocs(collection(db, "schedules"));
-        if (querySnapshot.empty) {
-          listEl.innerHTML = '<div class="text-center py-6 text-slate-400 text-sm">ไม่มีตารางเปิดรับบริจาคในขณะนี้</div>';
-          return;
+        // 2. ดึงข้อมูลวันหยุดราชการจาก Open Data API
+        const holidaysMap = new Map();
+        try {
+          const res = await fetch(
+            "https://raw.githubusercontent.com/ppraserts/thailand-open-data/main/data/thai-public-holidays/2026.json"
+          );
+          const data = await res.json();
+
+          console.log(`วันหยุดปี ${data.year} มีทั้งหมด ${data.total_holidays} วัน`);
+          data.holidays.forEach((h) => {
+            console.log(`${h.date} - ${h.name_th} (${h.name_en})`);
+            holidaysMap.set(h.date, h);
+          });
+        } catch (err) {
+          console.warn("ไม่สามารถดึงข้อมูลวันหยุดราชการได้ ใช้การกรองวันหยุดสุดสัปดาห์แทน:", err);
         }
 
-        let html = '';
-        querySnapshot.forEach((schedDoc) => {
-          const item = schedDoc.data();
-          const isBookedThis = activeAppt && activeAppt.schedule_id === schedDoc.id;
-          
+        // 3. คำนวณวันเปิดรับบริจาคล่วงหน้า 5 วันทำการ (จันทร์-ศุกร์ หยุดเสาร์-อาทิตย์และวันหยุดราชการ)
+        const eligibleWorkingDays = getNext5EligibleWorkingDays(holidaysMap);
+
+        // 4. ดึงตารางจาก Firestore เพื่อนำข้อมูลสถานที่/เวลาเฉพาะวันมาผสาน (ถ้ามี)
+        const firestoreMap = new Map();
+        try {
+          const querySnapshot = await getDocs(collection(db, "schedules"));
+          querySnapshot.forEach((schedDoc) => {
+            const d = schedDoc.data();
+            if (d.schedule_date) {
+              firestoreMap.set(d.schedule_date, { id: schedDoc.id, ...d });
+            }
+            firestoreMap.set(schedDoc.id, { id: schedDoc.id, ...d });
+          });
+        } catch (err) {
+          console.warn("Firestore schedules lookup warning:", err);
+        }
+
+        // 5. แสดงผลตารางเปิดรับบริจาคทั้ง 5 วัน
+        let html = `
+          <div class="bg-blue-50 border border-blue-200 text-blue-800 p-3 rounded-xl text-xs space-y-1 mb-3">
+            <p class="font-bold flex items-center gap-1.5">
+              <span>ℹ️</span> เปิดรับจองคิวล่วงหน้า 5 วันทำการ
+            </p>
+            <p class="text-blue-700 leading-relaxed">
+              ให้บริการทุก<b>วันจันทร์ - วันศุกร์</b> (08:30 - 15:00 น.)<br>
+              <span class="text-red-600 font-semibold">* ปิดให้บริการในวันเสาร์-อาทิตย์ และวันหยุดนักขัตฤกษ์/วันหยุดราชการ</span>
+            </p>
+          </div>
+        `;
+
+        eligibleWorkingDays.forEach((day) => {
+          const schedId = `SCH_${day.dateStr.replace(/-/g, '')}`;
+          const existing = firestoreMap.get(day.dateStr) || firestoreMap.get(schedId);
+
+          const location = (existing && existing.location) ? existing.location : 'อาคารธนาคารเลือด รพ.สิชล';
+          const startTime = (existing && existing.start_time) ? existing.start_time : '08:30';
+          const endTime = (existing && existing.end_time) ? existing.end_time : '15:00';
+          const bloodTypes = (existing && existing.blood_types_needed) ? existing.blood_types_needed : 'ทุกหมู่';
+
+          const isBookedThis = activeAppt && (activeAppt.schedule_id === schedId || activeAppt.schedule_id === (existing && existing.id) || activeAppt.schedule_date === day.dateStr);
+
           let buttonHtml = '';
           if (activeAppt) {
             if (isBookedThis) {
@@ -884,7 +991,8 @@
             }
           } else {
             buttonHtml = `
-              <button onclick="bookQueue('${schedDoc.id}')" class="w-full mt-2 bg-red-600 hover:bg-red-700 text-white font-semibold text-xs py-2 rounded-lg transition active:scale-95 shadow">
+              <button onclick="bookQueue('${schedId}', '${day.dateStr}', '${startTime}', '${endTime}', '${location}', '${bloodTypes}')" 
+                class="w-full mt-2 bg-red-600 hover:bg-red-700 text-white font-semibold text-xs py-2.5 rounded-lg transition active:scale-95 shadow">
                 📝 ยืนยันจองคิวบริจาค
               </button>
             `;
@@ -893,20 +1001,21 @@
           html += `
             <div class="border ${isBookedThis ? 'border-emerald-500 bg-emerald-50/40 ring-2 ring-emerald-400/30' : 'border-slate-200 bg-slate-50'} p-3.5 rounded-xl space-y-2 transition-all">
               <div class="flex justify-between items-start">
-                <span class="font-bold text-slate-800 text-sm">📍 ${item.location || 'รพ.สิชล'}</span>
+                <span class="font-bold text-slate-800 text-sm">📍 ${location}</span>
                 <span class="text-xs ${isBookedThis ? 'bg-emerald-600 text-white font-extrabold' : 'bg-emerald-100 text-emerald-700 font-bold'} px-2 py-0.5 rounded-md">
                   ${isBookedThis ? 'รอบที่คุณจอง' : 'เปิดรับจอง'}
                 </span>
               </div>
               <div class="text-xs text-slate-600 space-y-1">
-                <p>📅 วันที่: <b>${item.schedule_date || '-'}</b></p>
-                <p>⏰ เวลา: <b>${item.start_time || ''} - ${item.end_time || ''} น.</b></p>
-                <p>🩸 รับหมู่โลหิต: <b>${item.blood_types_needed || 'ทุกหมู่'}</b></p>
+                <p>📅 วันที่: <b class="text-slate-800 text-sm">${day.thaiDisplay}</b></p>
+                <p>⏰ เวลา: <b>${startTime} - ${endTime} น.</b></p>
+                <p>🩸 รับหมู่โลหิต: <b>${bloodTypes}</b></p>
               </div>
               ${buttonHtml}
             </div>
           `;
         });
+
         listEl.innerHTML = html;
       } catch (error) {
         listEl.innerHTML = '<div class="text-center py-4 text-red-500 text-sm">ไม่สามารถโหลดตารางได้: ' + error.message + '</div>';
@@ -933,7 +1042,7 @@
       }
     };
 
-    window.bookQueue = async function(scheduleId) {
+    window.bookQueue = async function(scheduleId, scheduleDate, startTime, endTime, location, bloodTypes) {
       if (!currentDonor) {
         alert('กรุณาเข้าสู่ระบบด้วยเลขบัตรประชาชนก่อนทำการจองคิว');
         switchTab('home');
@@ -954,14 +1063,33 @@
           return;
         }
 
+        // ตรวจสอบและสร้าง schedule บน Firestore หากยังไม่มี
+        const schedDocRef = doc(db, "schedules", scheduleId);
+        const schedSnap = await getDoc(schedDocRef);
+        if (!schedSnap.exists()) {
+          await setDoc(schedDocRef, {
+            schedule_date: scheduleDate,
+            start_time: startTime || "08:30",
+            end_time: endTime || "15:00",
+            location: location || "อาคารธนาคารเลือด รพ.สิชล",
+            blood_types_needed: bloodTypes || "ทุกหมู่",
+            status: "active",
+            created_at: serverTimestamp()
+          });
+        }
+
         await addDoc(collection(db, "appointments"), {
           donor_id: currentDonor.id_card,
           schedule_id: scheduleId,
+          schedule_date: scheduleDate,
+          start_time: startTime || "08:30",
+          end_time: endTime || "15:00",
+          location: location || "อาคารธนาคารเลือด รพ.สิชล",
           status: "confirmed",
           created_at: serverTimestamp()
         });
 
-        alert(`จองคิวสำเร็จ! คุณ ${currentDonor.first_name} ${currentDonor.last_name}`);
+        alert(`จองคิวสำเร็จ! วันที่ ${formatThaiDateDisplay(scheduleDate)} คุณ ${currentDonor.first_name} ${currentDonor.last_name}`);
         await loadDonorDashboardAndHistory(currentDonor.id_card);
         await loadSchedules();
         switchTab('home');
@@ -1014,16 +1142,24 @@
           if (apptData.status === 'confirmed') {
             // ดึงรายละเอียดตารางนัดหมายจาก schedule_id
             let scheduleInfo = "";
+            let schedData = null;
             if (apptData.schedule_id) {
               try {
                 const schedDoc = await getDoc(doc(db, "schedules", apptData.schedule_id));
                 if (schedDoc.exists()) {
-                  const s = schedDoc.data();
-                  scheduleInfo = `<br><span class="text-xs font-normal text-emerald-100">📅 ${s.schedule_date || ''} (${s.start_time || ''}-${s.end_time || ''} น.)<br>📍 ${s.location || 'รพ.สิชล'}</span>`;
+                  schedData = schedDoc.data();
                 }
               } catch (err) {
                 console.warn("Could not fetch schedule details:", err);
               }
+            }
+
+            const targetDate = (schedData && schedData.schedule_date) || apptData.schedule_date;
+            const targetTime = (schedData && schedData.start_time) ? `${schedData.start_time}-${schedData.end_time || '15:00'} น.` : (apptData.start_time ? `${apptData.start_time}-${apptData.end_time || '15:00'} น.` : '08:30-15:00 น.');
+            const targetLoc = (schedData && schedData.location) || apptData.location || 'อาคารธนาคารเลือด รพ.สิชล';
+
+            if (targetDate) {
+              scheduleInfo = `<br><span class="text-xs font-normal text-emerald-100">📅 ${formatThaiDateDisplay(targetDate)} (${targetTime})<br>📍 ${targetLoc}</span>`;
             }
 
             apptStatusEl.innerHTML = `📅 จองคิวสำเร็จ ${scheduleInfo}`;
