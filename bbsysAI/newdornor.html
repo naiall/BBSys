@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#C62828">
+  <title>🩸 ระบบผู้บริจาคโลหิต - รพ.สิชล</title>
+  
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Kanit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- QRCode.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <style>
+    :root {
+      --primary: #C62828;
+      --primary-dark: #8B0000;
+      --font-th: 'Sarabun', sans-serif;
+      --font-head: 'Kanit', sans-serif;
+    }
+    body { font-family: var(--font-th); }
+    h1, h2, h3, h4, .font-head { font-family: var(--font-head); }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen pb-24">
+
+  <!-- TOP BAR -->
+  <header class="bg-gradient-to-r from-red-800 to-red-600 text-white p-4 sticky top-0 z-50 shadow-md flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <span class="text-2xl">🩸</span>
+      <div>
+        <h1 class="font-bold text-lg leading-tight">ระบบผู้บริจาคโลหิต</h1>
+        <p class="text-xs text-red-100">โรงพยาบาลสิชล</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-md mx-auto p-4 space-y-4">
+
+    <!-- SEARCH / LOGIN SECTION -->
+    <section id="loginSection" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center">
+      <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-3">
+        🪪
+      </div>
+      <h2 class="text-xl font-bold text-slate-800">เข้าสู่ระบบผู้บริจาค</h2>
+      <p class="text-sm text-slate-500 mb-4">กรอกเลขบัตรประชาชน 13 หลัก เพื่อทำแบบสอบถามและจองคิว</p>
+      
+      <div class="space-y-3">
+        <input type="tel" id="searchIdCard" placeholder="เลขบัตรประชาชน 13 หลัก" maxlength="13"
+          class="w-full text-center text-lg tracking-widest p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:outline-none">
+        <button onclick="searchDonor()" 
+          class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl transition shadow-md active:scale-95">
+          🔍 ตรวจสอบข้อมูล / เข้าสู่ระบบ
+        </button>
+      </div>
+    </section>
+
+    <!-- DONOR DASHBOARD -->
+    <section id="dashboardSection" class="tab-content hidden space-y-4">
+      <div class="bg-gradient-to-br from-red-700 to-red-900 text-white rounded-2xl p-5 shadow-lg relative overflow-hidden">
+        <div class="absolute -right-4 -bottom-4 text-8xl opacity-10">🩸</div>
+        <div class="flex justify-between items-start mb-4">
+          <div>
+            <span class="bg-white/20 text-xs px-2.5 py-1 rounded-full backdrop-blur-sm">ผู้บริจาคโลหิต</span>
+            <h3 id="donorFullName" class="text-2xl font-bold mt-1">คุณ...</h3>
+            <p id="donorIdCardText" class="text-xs text-red-200">ID: -</p>
+          </div>
+          <div id="donorBloodBadge" class="bg-white text-red-700 font-bold text-xl px-3 py-1.5 rounded-xl shadow">-</div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 pt-3 border-t border-white/10 text-center">
+          <div class="bg-white/10 p-2.5 rounded-xl backdrop-blur-sm">
+            <p class="text-xs text-red-200">บริจาคสะสม</p>
+            <p class="text-xl font-bold"><span id="donorTotalCount">0</span> <span class="text-xs font-normal">ครั้ง</span></p>
+          </div>
+          <div class="bg-white/10 p-2.5 rounded-xl backdrop-blur-sm">
+            <p class="text-xs text-red-200">สถานะคิว</p>
+            <p id="d-appt-status" class="text-sm font-bold mt-1">ยังไม่มีนัดหมาย</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- BUTTON START SCREENING -->
+      <button id="btn-screening" onclick="startScreening()" 
+        class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 px-4 rounded-xl transition shadow-md flex items-center justify-center gap-2 text-base">
+        📋 ทำแบบคัดกรอง & จองคิว
+      </button>
+
+      <!-- MY QR CODE -->
+      <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 text-center">
+        <h4 class="font-bold text-slate-700 mb-2">QR Code ประจำตัวผู้บริจาค</h4>
+        <div id="qrcode" class="flex justify-center p-3 bg-slate-50 rounded-xl border border-slate-200 my-2"></div>
+        <p class="text-xs text-slate-400">แสดง QR Code นี้แก่เจ้าหน้าที่เมื่อเดินทางมาถึง</p>
+      </div>
+    </section>
+
+    <!-- SCREENING SECTION (แบบคัดกรอง 37 ข้อ) -->
+    <section id="screeningSection" class="tab-content hidden bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+      <div class="flex justify-between items-center border-b pb-3">
+        <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
+          📋 แบบคัดกรองสุขภาพ
+        </h3>
+        <span id="screen-progress" class="text-xs bg-red-100 text-red-700 font-bold px-2.5 py-1 rounded-full">0/37</span>
+      </div>
+
+      <div id="questions-list" class="space-y-4 max-h-[60vh] overflow-y-auto pr-1"></div>
+
+      <button onclick="submitScreeningForm()" 
+        class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl transition shadow-md active:scale-95">
+        ส่งแบบประเมินและไปหน้าจองคิว ›
+      </button>
+    </section>
+
+    <!-- SCHEDULES SECTION -->
+    <section id="scheduleSection" class="tab-content hidden bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">📅 เลือกวันบริจาคโลหิต</h3>
+        <button onclick="loadSchedules()" class="text-xs text-red-600 font-semibold hover:underline">รีเฟรช</button>
+      </div>
+
+      <div id="scheduleList" class="space-y-3">
+        <div class="text-center py-6 text-slate-400 text-sm">กำลังโหลดตารางรับบริจาค...</div>
+      </div>
+    </section>
+
+    <!-- DONATION HISTORY -->
+    <section id="historySection" class="tab-content hidden bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+      <h3 class="font-bold text-slate-800 text-lg mb-4 flex items-center gap-2">📜 ประวัติการบริจาค</h3>
+      <div id="historyList" class="space-y-3">
+        <div class="text-center py-4 text-slate-400 text-sm">ไม่พบประวัติการบริจาค</div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- BOTTOM NAVIGATION BAR -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 flex justify-around p-2 z-40 max-w-md mx-auto">
+    <button onclick="switchTab('home')" id="tab-home" class="nav-btn flex flex-col items-center text-red-600 font-semibold text-xs py-1">
+      <span class="text-xl">🏠</span>
+      <span>หน้าหลัก</span>
+    </button>
+    <button onclick="switchTab('schedules')" id="tab-schedules" class="nav-btn flex flex-col items-center text-slate-500 hover:text-red-600 text-xs py-1">
+      <span class="text-xl">📅</span>
+      <span>ตารางนัด</span>
+    </button>
+    <button onclick="switchTab('history')" id="tab-history" class="nav-btn flex flex-col items-center text-slate-500 hover:text-red-600 text-xs py-1">
+      <span class="text-xl">📜</span>
+      <span>ประวัติ</span>
+    </button>
+  </nav>
+
+  <!-- FIREBASE INTEGRATION SCRIPT -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, query, where, getDocs, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB05fcPEPt-bV4Qu4YTI_9NCAP5tylpXco",
+      authDomain: "bbsysai.firebaseapp.com",
+      databaseURL: "https://bbsysai-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "bbsysai",
+      storageBucket: "bbsysai.firebasestorage.app",
+      messagingSenderId: "751629649725",
+      appId: "1:751629649725:web:a9b62259d0c31aa839a754",
+      measurementId: "G-QNX0MSPPJ5"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let currentDonor = null;
+    let screeningAnswers = {};
+
+    const QUESTIONS = [
+      { cat:'สุขภาพทั่วไป', q:'ท่านรู้สึกสบายดี สุขภาพแข็งแรง พร้อมที่จะบริจาคโลหิต' },
+      { cat:null, q:'ท่านนอนหลับพักผ่อนเพียงพอ (ไม่น้อยกว่า 5 ชั่วโมง)' },
+      { cat:null, q:'ท่านรับประทานอาหารที่มีไขมันสูง ภายใน 6 ชั่วโมงที่ผ่านมา' },
+      { cat:null, q:'ท่านมีโรคประจำตัว หรือเคยเป็นโรค' },
+      { cat:null, q:'ท่านรับประทานยาปฏิชีวนะ ภายใน 7 วันที่ผ่านมา' },
+      { cat:null, q:'ท่านรับประทานยาแอสไพริน หรือยาแก้ปวดข้อ ภายใน 2 วันที่ผ่านมา' },
+      { cat:null, q:'ท่านใช้ยา/สมุนไพร/อาหารเสริมที่มีไบโอตินเป็นส่วนประกอบ' },
+      { cat:null, q:'ท่านดื่มแอลกอฮอล์ภายใน 24 ชั่วโมงที่ผ่านมา' },
+      { cat:null, q:'ท่านเคยบริจาคเซลล์ต้นกำเนิดเม็ดโลหิตในระยะ 6 เดือนที่ผ่านมา' },
+      { cat:'การตั้งครรภ์ / คลอดบุตร', q:'ท่านเคยตั้งครรภ์ หรือแท้งบุตร มาก่อน' },
+      { cat:null, q:'ท่านอยู่ในช่วงตั้งครรภ์ หรือให้นมบุตร' },
+      { cat:null, q:'ท่านคลอดบุตร หรือแท้งบุตร ภายใน 6 เดือนที่ผ่านมา' },
+      { cat:'ประวัติด้านเพศสัมพันธ์', q:'ท่านหรือคู่เคยมีเพศสัมพันธ์กับผู้ทำงานบริการทางเพศ / ผู้เสพยาเสพติด' },
+      { cat:null, q:'ท่านเคยใช้ยารักษาหรือป้องกันการติดเชื้อเอชไอวี' },
+      { cat:null, q:'ท่านเป็นเพศชายที่เคยมีเพศสัมพันธ์กับเพศชาย' },
+      { cat:'ประวัติความเสี่ยงของการติดเชื้อ', q:'ท่านอุดฟัน ขูดหินปูน ภายใน 3 วัน / ถอนฟัน ภายใน 7 วันที่ผ่านมา' },
+      { cat:null, q:'ท่านท้องเสีย ท้องร่วง ภายใน 7 วันที่ผ่านมา' },
+      { cat:null, q:'ท่านเคยเจาะหู เจาะผิวหนัง สัก ลบรอยสัก ฝังเข็ม ภายใน 4 เดือนที่ผ่านมา' },
+      { cat:null, q:'ท่านเคยได้รับการผ่าตัดเล็ก ภายใน 7 วันที่ผ่านมา' },
+      { cat:null, q:'ท่านเคยผ่าตัดใหญ่ ภายใน 6 เดือนที่ผ่านมา' },
+      { cat:null, q:'ท่านเคยป่วยและได้รับโลหิต / ส่วนประกอบโลหิต ภายใน 1 ปีที่ผ่านมา' },
+      { cat:null, q:'ท่านเคยได้รับการปลูกถ่ายอวัยวะ หรือเซลล์ต้นกำเนิดเม็ดโลหิต' },
+      { cat:null, q:'ท่านเคยถูกเข็มที่เปื้อนเลือดตำ ในระยะ 1 ปีที่ผ่านมา' },
+      { cat:null, q:'ท่านเคยป่วยเป็นโรคตับอักเสบ หลังอายุ 11 ปี' },
+      { cat:null, q:'คู่หรือครอบครัวเป็นโรคตับอักเสบ ในระยะ 1 ปีที่ผ่านมา' },
+      { cat:null, q:'ท่านเคยตรวจพบว่าเป็นพาหะของโรคตับอักเสบ' },
+      { cat:null, q:'ท่านเคยป่วยเป็นโรคมาลาเรีย ในระยะ 3 ปีที่ผ่านมา' },
+      { cat:null, q:'ท่านเคยเข้าไปในพื้นที่ที่มีเชื้อมาลาเรียชุกชุม ในระยะ 1 ปีที่ผ่านมา' },
+      { cat:null, q:'ท่านเคยป่วยเป็นโรคไข้หวัดใหญ่ / ไข้เลือดออก / โควิด-19 ในระยะ 1 เดือนที่ผ่านมา' },
+      { cat:null, q:'ท่านได้รับวัคซีนเพื่อป้องกันโรคในระยะ 2 เดือนที่ผ่านมา' },
+      { cat:null, q:'ท่านได้รับเซรุ่ม ภายใน 1 ปีที่ผ่านมา' },
+      { cat:null, q:'ท่านเคยมีประวัติเสพยาเสพติด' },
+      { cat:null, q:'ท่านเคยถูกควบคุมตัว/จำคุกติดต่อกันเกิน 72 ชั่วโมง ในช่วง 1 ปีที่ผ่านมา' },
+      { cat:null, q:'ท่านเคยมีน้ำหนักลด มีไข้ มีต่อมน้ำเหลืองโต โดยไม่ทราบสาเหตุ ในระยะ 3 เดือนที่ผ่านมา' },
+      { cat:null, q:'ช่วง พ.ศ.2523-2539 ท่านเคยพำนักในอังกฤษ ไอร์แลนด์เหนือ สก๊อตแลนด์ นานกว่า 3 เดือน' },
+      { cat:null, q:'ช่วง พ.ศ.2523-2544 ท่านเคยพำนักในประเทศฝรั่งเศส นานกว่า 5 ปี' },
+      { cat:null, q:'ท่านมั่นใจว่าโลหิตของท่านมีความปลอดภัยต่อผู้ป่วย' }
+    ];
+
+    // --- FUNCTION: Switch Tab ---
+    window.switchTab = function(tabName) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      if (tabName === 'home') {
+        if (currentDonor) {
+          document.getElementById('dashboardSection').classList.remove('hidden');
+        } else {
+          document.getElementById('loginSection').classList.remove('hidden');
+        }
+      } else if (tabName === 'schedules') {
+        document.getElementById('scheduleSection').classList.remove('hidden');
+        loadSchedules();
+      } else if (tabName === 'history') {
+        document.getElementById('historySection').classList.remove('hidden');
+      }
+    };
+
+    // --- FUNCTION: Search Donor ---
+    window.searchDonor = async function() {
+      const idCard = document.getElementById('searchIdCard').value.trim();
+      if (idCard.length !== 13) {
+        alert('กรุณากรอกเลขบัตรประชาชนให้ครบ 13 หลัก');
+        return;
+      }
+
+      try {
+        const q = query(collection(db, "donors"), where("id_card", "==", idCard));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+          const doc = querySnapshot.docs[0];
+          currentDonor = { id: doc.id, ...doc.data() };
+          renderDonorProfile(currentDonor);
+          loadDonationHistory(currentDonor.id_card);
+        } else {
+          alert('ไม่พบข้อมูลผู้บริจาคในระบบ กรุณาติดต่อเจ้าหน้าที่เพื่อลงทะเบียน');
+        }
+      } catch (error) {
+        console.error("Error searching donor:", error);
+        alert("เกิดข้อผิดพลาดในการดึงข้อมูล: " + error.message);
+      }
+    };
+
+    // --- FUNCTION: Render Profile ---
+    function renderDonorProfile(donor) {
+      document.getElementById('loginSection').classList.add('hidden');
+      document.getElementById('dashboardSection').classList.remove('hidden');
+
+      document.getElementById('donorFullName').innerText = `${donor.title || ''}${donor.first_name} ${donor.last_name}`;
+      document.getElementById('donorIdCardText').innerText = `ID Card: ${donor.id_card}`;
+      document.getElementById('donorBloodBadge').innerText = donor.blood_type || '-';
+      document.getElementById('donorTotalCount').innerText = donor.total_donations || 0;
+
+      // Generate QR Code
+      document.getElementById('qrcode').innerHTML = "";
+      new QRCode(document.getElementById("qrcode"), {
+        text: donor.id_card,
+        width: 140,
+        height: 140
+      });
+    }
+
+    // --- FUNCTION: Render Screening Questions ---
+    window.startScreening = function() {
+      if (!currentDonor) {
+        alert('กรุณาเข้าสู่ระบบด้วยเลขบัตรประชาชนก่อน');
+        return;
+      }
+
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.getElementById('screeningSection').classList.remove('hidden');
+      
+      screeningAnswers = {};
+      let html = '';
+      QUESTIONS.forEach((q, i) => {
+        if (q.cat) {
+          html += `<div class="font-bold text-red-700 text-sm mt-3 mb-1 border-b pb-1">📌 ${q.cat}</div>`;
+        }
+        html += `
+          <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs space-y-2">
+            <p class="font-medium text-slate-800">${i+1}. ${q.q}</p>
+            <div class="flex gap-2">
+              <button onclick="setAnswer(${i}, 'yes', this)" class="btn-ans bg-white border border-slate-300 text-slate-600 px-4 py-1.5 rounded-lg flex-1 font-semibold transition">ใช่</button>
+              <button onclick="setAnswer(${i}, 'no', this)" class="btn-ans bg-white border border-slate-300 text-slate-600 px-4 py-1.5 rounded-lg flex-1 font-semibold transition">ไม่ใช่</button>
+            </div>
+          </div>
+        `;
+      });
+      document.getElementById('questions-list').innerHTML = html;
+    };
+
+    window.setAnswer = function(index, value, btn) {
+      screeningAnswers[`q${index+1}`] = value;
+      const parent = btn.parentElement;
+      parent.querySelectorAll('.btn-ans').forEach(b => {
+        b.classList.remove('bg-red-600', 'bg-emerald-600', 'text-white', 'border-transparent');
+        b.classList.add('bg-white', 'text-slate-600', 'border-slate-300');
+      });
+
+      if (value === 'yes') {
+        btn.classList.add('bg-red-600', 'text-white', 'border-transparent');
+      } else {
+        btn.classList.add('bg-emerald-600', 'text-white', 'border-transparent');
+      }
+
+      const count = Object.keys(screeningAnswers).length;
+      document.getElementById('screen-progress').innerText = `${count}/37`;
+    };
+
+    // --- FUNCTION: Submit Screening ---
+    window.submitScreeningForm = async function() {
+      const count = Object.keys(screeningAnswers).length;
+      if (count < 37) {
+        alert(`กรุณาตอบแบบคัดกรองให้ครบทั้ง 37 ข้อ (ตอบแล้ว ${count}/37)`);
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "screenings"), {
+          donor_id: currentDonor.id_card,
+          answers: screeningAnswers,
+          created_at: serverTimestamp()
+        });
+
+        alert('ทำแบบคัดกรองสำเร็จ! กำลังพาท่านไปหน้าเลือกวันจองคิว');
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+        document.getElementById('scheduleSection').classList.remove('hidden');
+        loadSchedules();
+      } catch (error) {
+        console.error("Error submitting screening:", error);
+        alert("เกิดข้อผิดพลาดในการบันทึกแบบคัดกรอง: " + error.message);
+      }
+    };
+
+    // --- FUNCTION: Load Schedules ---
+    window.loadSchedules = async function() {
+      const listEl = document.getElementById('scheduleList');
+      listEl.innerHTML = '<div class="text-center py-4 text-slate-400 text-sm">กำลังโหลด...</div>';
+
+      try {
+        const querySnapshot = await getDocs(collection(db, "schedules"));
+        if (querySnapshot.empty) {
+          listEl.innerHTML = '<div class="text-center py-4 text-slate-400 text-sm">ไม่มีตารางเปิดรับบริจาคในขณะนี้</div>';
+          return;
+        }
+
+        let html = '';
+        querySnapshot.forEach((doc) => {
+          const item = doc.data();
+          html += `
+            <div class="border border-slate-100 bg-slate-50 p-3.5 rounded-xl space-y-2">
+              <div class="flex justify-between items-start">
+                <span class="font-bold text-slate-800 text-sm">📍 ${item.location || 'รพ.สิชล'}</span>
+                <span class="text-xs bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded-md">เปิดรับจอง</span>
+              </div>
+              <div class="text-xs text-slate-600 space-y-1">
+                <p>📅 วันที่: <b>${item.schedule_date || '-'}</b></p>
+                <p>⏰ เวลา: <b>${item.start_time || ''} - ${item.end_time || ''} น.</b></p>
+                <p>🩸 รับหมู่โลหิต: <b>${item.blood_types_needed || 'ทุกหมู่'}</b></p>
+              </div>
+              <button onclick="bookQueue('${doc.id}')" class="w-full mt-2 bg-red-600 hover:bg-red-700 text-white font-semibold text-xs py-2 rounded-lg transition active:scale-95">
+                📝 ยืนยันจองคิวบริจาค
+              </button>
+            </div>
+          `;
+        });
+        listEl.innerHTML = html;
+      } catch (error) {
+        console.error("Error loading schedules:", error);
+        listEl.innerHTML = '<div class="text-center py-4 text-red-500 text-sm">ไม่สามารถโหลดตารางได้</div>';
+      }
+    };
+
+    // --- FUNCTION: Book Queue ---
+    window.bookQueue = async function(scheduleId) {
+      if (!currentDonor) {
+        alert('กรุณาเข้าสู่ระบบด้วยเลขบัตรประชาชนก่อนทำการจองคิว');
+        switchTab('home');
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "appointments"), {
+          donor_id: currentDonor.id_card,
+          schedule_id: scheduleId,
+          status: "confirmed",
+          created_at: serverTimestamp()
+        });
+
+        alert(`จองคิวสำเร็จ! คุณ ${currentDonor.first_name} ${currentDonor.last_name}`);
+        switchTab('home');
+        document.getElementById('d-appt-status').innerText = "📅 จองคิวสำเร็จ";
+        document.getElementById('d-appt-status').classList.add('text-emerald-300');
+      } catch (error) {
+        console.error("Error booking queue:", error);
+        alert("เกิดข้อผิดพลาดในการจองคิว: " + error.message);
+      }
+    };
+
+    // --- FUNCTION: Load Donation History ---
+    async function loadDonationHistory(idCard) {
+      const historyEl = document.getElementById('historyList');
+      try {
+        const q = query(collection(db, "donations"), where("id_card", "==", idCard));
+        const querySnapshot = await getDocs(q);
+
+        if (querySnapshot.empty) {
+          historyEl.innerHTML = '<div class="text-center py-4 text-slate-400 text-sm">ยังไม่มีประวัติการบริจาค</div>';
+          return;
+        }
+
+        let html = '';
+        querySnapshot.forEach((doc) => {
+          const item = doc.data();
+          html += `
+            <div class="flex justify-between items-center p-3 border-b border-slate-100 last:border-0">
+              <div>
+                <p class="font-bold text-sm text-slate-800">ครั้งที่ ${item.donation_no || '-'}</p>
+                <p class="text-xs text-slate-500">วันที่: ${item.donation_date || '-'}</p>
+              </div>
+              <span class="text-xs font-semibold bg-red-50 text-red-600 px-2.5 py-1 rounded-full">
+                ${item.volume_ml || 450} ml
+              </span>
+            </div>
+          `;
+        });
+        historyEl.innerHTML = html;
+      } catch (error) {
+        console.error("Error loading history:", error);
+      }
+    }
+  </script>
+</body>
+</html>
