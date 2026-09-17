@@ -6,16 +6,13 @@
   <meta name="theme-color" content="#C62828">
   <title>🩸 ระบบผู้บริจาคโลหิต - รพ.สิชล</title>
   
-  <!-- Fonts & Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Kanit:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- QRCode.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <style>
     :root {
       --primary: #C62828;
-      --primary-dark: #8B0000;
       --font-th: 'Sarabun', sans-serif;
       --font-head: 'Kanit', sans-serif;
     }
@@ -39,21 +36,84 @@
   <!-- MAIN CONTAINER -->
   <main class="max-w-md mx-auto p-4 space-y-4">
 
-    <!-- SEARCH / LOGIN SECTION -->
-    <section id="loginSection" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center">
-      <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-3">
+    <!-- LOGIN / REGISTER CHOICE -->
+    <section id="loginSection" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center space-y-4">
+      <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-3xl mx-auto">
         🪪
       </div>
-      <h2 class="text-xl font-bold text-slate-800">เข้าสู่ระบบผู้บริจาค</h2>
-      <p class="text-sm text-slate-500 mb-4">กรอกเลขบัตรประชาชน 13 หลัก เพื่อทำแบบสอบถามและจองคิว</p>
+      <h2 class="text-xl font-bold text-slate-800">เข้าสู่ระบบ / ลงทะเบียน</h2>
+      <p class="text-xs text-slate-500">กรอกเลขบัตรประชาชน 13 หลัก เพื่อค้นหาข้อมูล หรือลงทะเบียนใหม่</p>
       
       <div class="space-y-3">
         <input type="tel" id="searchIdCard" placeholder="เลขบัตรประชาชน 13 หลัก" maxlength="13"
           class="w-full text-center text-lg tracking-widest p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:outline-none">
+        
         <button onclick="searchDonor()" 
           class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl transition shadow-md active:scale-95">
-          🔍 ตรวจสอบข้อมูล / เข้าสู่ระบบ
+          🔍 ค้นหาข้อมูลผู้บริจาค
         </button>
+
+        <div class="relative flex py-2 items-center">
+          <div class="flex-grow border-t border-slate-200"></div>
+          <span class="flex-shrink mx-4 text-xs text-slate-400">หรือ</span>
+          <div class="flex-grow border-t border-slate-200"></div>
+        </div>
+
+        <button onclick="showRegisterForm()" 
+          class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 rounded-xl transition active:scale-95 border border-slate-200">
+          📝 ลงทะเบียนผู้บริจาคใหม่
+        </button>
+      </div>
+    </section>
+
+    <!-- REGISTER FORM (NEW) -->
+    <section id="registerSection" class="tab-content hidden bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-3">
+      <h3 class="font-bold text-slate-800 text-lg border-b pb-2">📝 ลงทะเบียนผู้บริจาคใหม่</h3>
+      
+      <div>
+        <label class="text-xs font-semibold text-slate-600">คำนำหน้า *</label>
+        <select id="regTitle" class="w-full p-2.5 border rounded-xl text-sm bg-white mt-1">
+          <option value="นาย">นาย</option>
+          <option value="นาง">นาง</option>
+          <option value="นางสาว">นางสาว</option>
+        </select>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="text-xs font-semibold text-slate-600">ชื่อ *</label>
+          <input type="text" id="regFirstName" class="w-full p-2.5 border rounded-xl text-sm mt-1" placeholder="ชื่อ">
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-slate-600">นามสกุล *</label>
+          <input type="text" id="regLastName" class="w-full p-2.5 border rounded-xl text-sm mt-1" placeholder="นามสกุล">
+        </div>
+      </div>
+
+      <div>
+        <label class="text-xs font-semibold text-slate-600">เลขบัตรประชาชน (13 หลัก) *</label>
+        <input type="tel" id="regIdCard" maxlength="13" class="w-full p-2.5 border rounded-xl text-sm mt-1" placeholder="x-xxxx-xxxxx-xx-x">
+      </div>
+
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="text-xs font-semibold text-slate-600">หมู่โลหิต *</label>
+          <select id="regBloodType" class="w-full p-2.5 border rounded-xl text-sm bg-white mt-1">
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="O">O</option>
+            <option value="AB">AB</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-slate-600">เบอร์โทรศัพท์ *</label>
+          <input type="tel" id="regPhone" class="w-full p-2.5 border rounded-xl text-sm mt-1" placeholder="08x-xxx-xxxx">
+        </div>
+      </div>
+
+      <div class="pt-2 flex gap-2">
+        <button onclick="submitRegister()" class="flex-1 bg-red-600 text-white font-bold py-3 rounded-xl transition shadow-md active:scale-95">✅ บันทึกการลงทะเบียน</button>
+        <button onclick="switchTab('home')" class="bg-slate-100 text-slate-600 font-semibold px-4 py-3 rounded-xl">ยกเลิก</button>
       </div>
     </section>
 
@@ -82,13 +142,11 @@
         </div>
       </div>
 
-      <!-- BUTTON START SCREENING -->
       <button id="btn-screening" onclick="startScreening()" 
         class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 px-4 rounded-xl transition shadow-md flex items-center justify-center gap-2 text-base">
         📋 ทำแบบคัดกรอง & จองคิว
       </button>
 
-      <!-- MY QR CODE -->
       <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 text-center">
         <h4 class="font-bold text-slate-700 mb-2">QR Code ประจำตัวผู้บริจาค</h4>
         <div id="qrcode" class="flex justify-center p-3 bg-slate-50 rounded-xl border border-slate-200 my-2"></div>
@@ -96,21 +154,14 @@
       </div>
     </section>
 
-    <!-- SCREENING SECTION (แบบคัดกรอง 37 ข้อ) -->
+    <!-- SCREENING SECTION -->
     <section id="screeningSection" class="tab-content hidden bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4">
       <div class="flex justify-between items-center border-b pb-3">
-        <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
-          📋 แบบคัดกรองสุขภาพ
-        </h3>
+        <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">📋 แบบคัดกรองสุขภาพ</h3>
         <span id="screen-progress" class="text-xs bg-red-100 text-red-700 font-bold px-2.5 py-1 rounded-full">0/37</span>
       </div>
-
       <div id="questions-list" class="space-y-4 max-h-[60vh] overflow-y-auto pr-1"></div>
-
-      <button onclick="submitScreeningForm()" 
-        class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl transition shadow-md active:scale-95">
-        ส่งแบบประเมินและไปหน้าจองคิว ›
-      </button>
+      <button onclick="submitScreeningForm()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl transition shadow-md active:scale-95">ส่งแบบประเมินและไปหน้าจองคิว ›</button>
     </section>
 
     <!-- SCHEDULES SECTION -->
@@ -119,13 +170,12 @@
         <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">📅 เลือกวันบริจาคโลหิต</h3>
         <button onclick="loadSchedules()" class="text-xs text-red-600 font-semibold hover:underline">รีเฟรช</button>
       </div>
-
       <div id="scheduleList" class="space-y-3">
         <div class="text-center py-6 text-slate-400 text-sm">กำลังโหลดตารางรับบริจาค...</div>
       </div>
     </section>
 
-    <!-- DONATION HISTORY -->
+    <!-- DONATION HISTORY (IMPROVED) -->
     <section id="historySection" class="tab-content hidden bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
       <h3 class="font-bold text-slate-800 text-lg mb-4 flex items-center gap-2">📜 ประวัติการบริจาค</h3>
       <div id="historyList" class="space-y-3">
@@ -213,7 +263,6 @@
       { cat:null, q:'ท่านมั่นใจว่าโลหิตของท่านมีความปลอดภัยต่อผู้ป่วย' }
     ];
 
-    // --- FUNCTION: Switch Tab ---
     window.switchTab = function(tabName) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
       if (tabName === 'home') {
@@ -227,10 +276,50 @@
         loadSchedules();
       } else if (tabName === 'history') {
         document.getElementById('historySection').classList.remove('hidden');
+        if (currentDonor) loadDonationHistory(currentDonor.id_card);
       }
     };
 
-    // --- FUNCTION: Search Donor ---
+    window.showRegisterForm = function() {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.getElementById('loginSection').classList.add('hidden');
+      document.getElementById('registerSection').classList.remove('hidden');
+    };
+
+    window.submitRegister = async function() {
+      const fname = document.getElementById('regFirstName').value.trim();
+      const lname = document.getElementById('regLastName').value.trim();
+      const idCard = document.getElementById('regIdCard').value.trim();
+      const phone = document.getElementById('regPhone').value.trim();
+      const blood = document.getElementById('regBloodType').value;
+      const title = document.getElementById('regTitle').value;
+
+      if (!fname || !lname || idCard.length !== 13 || !phone) {
+        alert('กรุณากรอกข้อมูลให้ครบถ้วน และเลขบัตรประชาชนต้องมี 13 หลัก');
+        return;
+      }
+
+      try {
+        const docRef = await addDoc(collection(db, "donors"), {
+          title: title,
+          first_name: fname,
+          last_name: lname,
+          id_card: idCard,
+          phone: phone,
+          blood_type: blood,
+          total_donations: 0,
+          created_at: serverTimestamp()
+        });
+
+        alert('ลงทะเบียนสำเร็จ!');
+        currentDonor = { id: docRef.id, title, first_name: fname, last_name: lname, id_card: idCard, blood_type: blood, total_donations: 0 };
+        document.getElementById('registerSection').classList.add('hidden');
+        renderDonorProfile(currentDonor);
+      } catch (error) {
+        alert('เกิดข้อผิดพลาดในการลงทะเบียน: ' + error.message);
+      }
+    };
+
     window.searchDonor = async function() {
       const idCard = document.getElementById('searchIdCard').value.trim();
       if (idCard.length !== 13) {
@@ -248,15 +337,13 @@
           renderDonorProfile(currentDonor);
           loadDonationHistory(currentDonor.id_card);
         } else {
-          alert('ไม่พบข้อมูลผู้บริจาคในระบบ กรุณาติดต่อเจ้าหน้าที่เพื่อลงทะเบียน');
+          alert('ไม่พบข้อมูลในระบบ สามารถกดลงทะเบียนผู้บริจาคใหม่ได้ครับ');
         }
       } catch (error) {
-        console.error("Error searching donor:", error);
         alert("เกิดข้อผิดพลาดในการดึงข้อมูล: " + error.message);
       }
     };
 
-    // --- FUNCTION: Render Profile ---
     function renderDonorProfile(donor) {
       document.getElementById('loginSection').classList.add('hidden');
       document.getElementById('dashboardSection').classList.remove('hidden');
@@ -266,7 +353,6 @@
       document.getElementById('donorBloodBadge').innerText = donor.blood_type || '-';
       document.getElementById('donorTotalCount').innerText = donor.total_donations || 0;
 
-      // Generate QR Code
       document.getElementById('qrcode').innerHTML = "";
       new QRCode(document.getElementById("qrcode"), {
         text: donor.id_card,
@@ -275,7 +361,6 @@
       });
     }
 
-    // --- FUNCTION: Render Screening Questions ---
     window.startScreening = function() {
       if (!currentDonor) {
         alert('กรุณาเข้าสู่ระบบด้วยเลขบัตรประชาชนก่อน');
@@ -291,21 +376,15 @@
         if (q.cat) {
           html += `<div class="font-bold text-red-700 text-sm mt-3 mb-1 border-b pb-1">📌 ${q.cat}</div>`;
         }
-      html += `
-        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-sm space-y-3">
-          <p class="font-medium text-slate-800 leading-relaxed">${i+1}. ${q.q}</p>
-          <div class="flex gap-3 pt-1">
-            <button onclick="setAnswer(${i}, 'yes', this)" 
-              class="btn-ans bg-white border border-slate-300 text-slate-600 px-4 py-2 rounded-xl flex-1 font-bold text-sm transition-all duration-200 shadow-sm opacity-60 hover:opacity-100">
-              ใช่
-            </button>
-            <button onclick="setAnswer(${i}, 'no', this)" 
-              class="btn-ans bg-white border border-slate-300 text-slate-600 px-4 py-2 rounded-xl flex-1 font-bold text-sm transition-all duration-200 shadow-sm opacity-60 hover:opacity-100">
-              ไม่ใช่
-            </button>
+        html += `
+          <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs space-y-2">
+            <p class="font-medium text-slate-800">${i+1}. ${q.q}</p>
+            <div class="flex gap-2">
+              <button onclick="setAnswer(${i}, 'yes', this)" class="btn-ans bg-white border border-slate-300 text-slate-600 px-4 py-2 rounded-xl flex-1 font-bold text-sm transition-all duration-200 shadow-sm opacity-60">ใช่</button>
+              <button onclick="setAnswer(${i}, 'no', this)" class="btn-ans bg-white border border-slate-300 text-slate-600 px-4 py-2 rounded-xl flex-1 font-bold text-sm transition-all duration-200 shadow-sm opacity-60">ไม่ใช่</button>
+            </div>
           </div>
-        </div>
-      `;
+        `;
       });
       document.getElementById('questions-list').innerHTML = html;
     };
@@ -314,26 +393,20 @@
       screeningAnswers[`q${index+1}`] = value;
       const parent = btn.parentElement;
       
-      // 1. ล้างสไตล์ของปุ่มทั้งสองปุ่มกลับเป็นสีเริ่มต้นก่อน
       parent.querySelectorAll('.btn-ans').forEach(b => {
         b.className = 'btn-ans bg-white border border-slate-300 text-slate-600 px-4 py-2 rounded-xl flex-1 font-bold text-sm transition-all duration-200 shadow-sm opacity-60';
       });
-    
-      // 2. ปรับเน้นสีของปุ่มที่ถูกกดให้เข้ม เด่นชัด และมีขนาดใหญ่ขึ้นเล็กน้อย
+
       if (value === 'yes') {
-        // ปุ่มใช่: สีแดงเข้ม + ตัวอักษรขาว + เงาเน้น
         btn.className = 'btn-ans bg-red-600 text-white border-2 border-red-700 px-4 py-2 rounded-xl flex-1 font-extrabold text-sm transition-all duration-200 shadow-md scale-105 opacity-100';
       } else {
-        // ปุ่มไม่ใช่: สีเขียวเข้ม + ตัวอักษรขาว + เงาเน้น
         btn.className = 'btn-ans bg-emerald-600 text-white border-2 border-emerald-700 px-4 py-2 rounded-xl flex-1 font-extrabold text-sm transition-all duration-200 shadow-md scale-105 opacity-100';
       }
-    
-      // อัปเดตตัวนับความคืบหน้า
+
       const count = Object.keys(screeningAnswers).length;
       document.getElementById('screen-progress').innerText = `${count}/37`;
     };
 
-    // --- FUNCTION: Submit Screening ---
     window.submitScreeningForm = async function() {
       const count = Object.keys(screeningAnswers).length;
       if (count < 37) {
@@ -353,12 +426,10 @@
         document.getElementById('scheduleSection').classList.remove('hidden');
         loadSchedules();
       } catch (error) {
-        console.error("Error submitting screening:", error);
         alert("เกิดข้อผิดพลาดในการบันทึกแบบคัดกรอง: " + error.message);
       }
     };
 
-    // --- FUNCTION: Load Schedules ---
     window.loadSchedules = async function() {
       const listEl = document.getElementById('scheduleList');
       listEl.innerHTML = '<div class="text-center py-4 text-slate-400 text-sm">กำลังโหลด...</div>';
@@ -392,12 +463,10 @@
         });
         listEl.innerHTML = html;
       } catch (error) {
-        console.error("Error loading schedules:", error);
         listEl.innerHTML = '<div class="text-center py-4 text-red-500 text-sm">ไม่สามารถโหลดตารางได้</div>';
       }
     };
 
-    // --- FUNCTION: Book Queue ---
     window.bookQueue = async function(scheduleId) {
       if (!currentDonor) {
         alert('กรุณาเข้าสู่ระบบด้วยเลขบัตรประชาชนก่อนทำการจองคิว');
@@ -418,12 +487,10 @@
         document.getElementById('d-appt-status').innerText = "📅 จองคิวสำเร็จ";
         document.getElementById('d-appt-status').classList.add('text-emerald-300');
       } catch (error) {
-        console.error("Error booking queue:", error);
         alert("เกิดข้อผิดพลาดในการจองคิว: " + error.message);
       }
     };
 
-    // --- FUNCTION: Load Donation History ---
     async function loadDonationHistory(idCard) {
       const historyEl = document.getElementById('historyList');
       try {
@@ -431,7 +498,11 @@
         const querySnapshot = await getDocs(q);
 
         if (querySnapshot.empty) {
-          historyEl.innerHTML = '<div class="text-center py-4 text-slate-400 text-sm">ยังไม่มีประวัติการบริจาค</div>';
+          historyEl.innerHTML = `
+            <div class="text-center py-6 text-slate-400 text-sm space-y-1">
+              <p>ไม่พบประวัติการบริจาคในระบบออนไลน์</p>
+              <p class="text-xs text-slate-400">จำนวนบริจาคสะสมในโปรไฟล์: <b>${currentDonor?.total_donations || 0}</b> ครั้ง</p>
+            </div>`;
           return;
         }
 
@@ -441,8 +512,8 @@
           html += `
             <div class="flex justify-between items-center p-3 border-b border-slate-100 last:border-0">
               <div>
-                <p class="font-bold text-sm text-slate-800">ครั้งที่ ${item.donation_no || '-'}</p>
-                <p class="text-xs text-slate-500">วันที่: ${item.donation_date || '-'}</p>
+                <p class="font-bold text-sm text-slate-800">บริจาคครั้งที่ ${item.donation_no || item.total_donations || '-'}</p>
+                <p class="text-xs text-slate-500">วันที่: ${item.donation_date || item.date || '-'}</p>
               </div>
               <span class="text-xs font-semibold bg-red-50 text-red-600 px-2.5 py-1 rounded-full">
                 ${item.volume_ml || 450} ml
@@ -452,7 +523,7 @@
         });
         historyEl.innerHTML = html;
       } catch (error) {
-        console.error("Error loading history:", error);
+        historyEl.innerHTML = '<div class="text-center py-4 text-red-500 text-sm">เกิดข้อผิดพลาดในการโหลดประวัติ</div>';
       }
     }
   </script>
