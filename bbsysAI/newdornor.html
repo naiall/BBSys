@@ -102,6 +102,14 @@
         <div>
           <label class="text-xs font-semibold text-slate-600">หมู่โลหิต *</label>
           <select id="regBloodType" class="w-full p-2.5 border rounded-xl text-sm bg-white mt-1">
+            <option value="A+">A+ (A Rh+)</option>
+            <option value="A-">A- (A Rh-)</option>
+            <option value="B+">B+ (B Rh+)</option>
+            <option value="B-">B- (B Rh-)</option>
+            <option value="O+">O+ (O Rh+)</option>
+            <option value="O-">O- (O Rh-)</option>
+            <option value="AB+">AB+ (AB Rh+)</option>
+            <option value="AB-">AB- (AB Rh-)</option>
             <option value="A">A</option>
             <option value="B">B</option>
             <option value="O">O</option>
@@ -123,45 +131,124 @@
     </section>
 
     <!-- EDIT PROFILE SECTION (ส่วนแก้ไขข้อมูลส่วนตัว) -->
-    <section id="editProfileSection" class="tab-content hidden bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-3">
-      <h3 class="font-bold text-slate-800 text-lg border-b pb-2">✏️ แก้ไขข้อมูลส่วนตัว</h3>
-      
+    <section id="editProfileSection" class="tab-content hidden bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-3.5">
+      <div class="border-b pb-2">
+        <h3 class="font-bold text-slate-800 text-lg">✏️ แก้ไขข้อมูลส่วนตัวผู้บริจาค</h3>
+        <p class="text-xs text-slate-400 mt-0.5">กรุณาตรวจสอบและปรับปรุงข้อมูลให้เป็นปัจจุบัน</p>
+      </div>
+
+      <!-- เลขบัตรประชาชน (อ่านอย่างเดียว) -->
       <div>
-        <label class="text-xs font-semibold text-slate-600">คำนำหน้า</label>
-        <select id="editTitle" class="w-full p-2.5 border rounded-xl text-sm bg-white mt-1">
-          <option value="นาย">นาย</option>
-          <option value="นาง">นาง</option>
-          <option value="นางสาว">นางสาว</option>
-        </select>
+        <label class="text-xs font-semibold text-slate-500">เลขบัตรประชาชน</label>
+        <input type="text" id="editIdCard" disabled 
+          class="w-full p-2.5 border border-slate-200 rounded-xl text-sm bg-slate-100 text-slate-600 mt-1 cursor-not-allowed font-mono font-medium">
       </div>
-
+      
+      <!-- คำนำหน้า & เพศ -->
       <div class="grid grid-cols-2 gap-2">
         <div>
-          <label class="text-xs font-semibold text-slate-600">ชื่อ</label>
-          <input type="text" id="editFirstName" class="w-full p-2.5 border rounded-xl text-sm mt-1">
+          <label class="text-xs font-semibold text-slate-600">คำนำหน้า *</label>
+          <select id="editTitle" class="w-full p-2.5 border rounded-xl text-sm bg-white mt-1 focus:ring-2 focus:ring-red-500 focus:outline-none">
+            <option value="นาย">นาย</option>
+            <option value="นาง">นาง</option>
+            <option value="นางสาว">นางสาว</option>
+            <option value="อื่นๆ">อื่นๆ</option>
+          </select>
         </div>
         <div>
-          <label class="text-xs font-semibold text-slate-600">นามสกุล</label>
-          <input type="text" id="editLastName" class="w-full p-2.5 border rounded-xl text-sm mt-1">
+          <label class="text-xs font-semibold text-slate-600">เพศ</label>
+          <select id="editGender" class="w-full p-2.5 border rounded-xl text-sm bg-white mt-1 focus:ring-2 focus:ring-red-500 focus:outline-none">
+            <option value="ชาย">ชาย</option>
+            <option value="หญิง">หญิง</option>
+            <option value="อื่นๆ">อื่นๆ</option>
+          </select>
         </div>
       </div>
 
+      <!-- ชื่อ - นามสกุล -->
       <div class="grid grid-cols-2 gap-2">
         <div>
-          <label class="text-xs font-semibold text-slate-600">หมู่โลหิต</label>
-          <select id="editBloodType" class="w-full p-2.5 border rounded-xl text-sm bg-white mt-1">
+          <label class="text-xs font-semibold text-slate-600">ชื่อ *</label>
+          <input type="text" id="editFirstName" class="w-full p-2.5 border rounded-xl text-sm mt-1 focus:ring-2 focus:ring-red-500 focus:outline-none">
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-slate-600">นามสกุล *</label>
+          <input type="text" id="editLastName" class="w-full p-2.5 border rounded-xl text-sm mt-1 focus:ring-2 focus:ring-red-500 focus:outline-none">
+        </div>
+      </div>
+
+      <!-- วันเกิด & หมู่โลหิต -->
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="text-xs font-semibold text-slate-600">วัน/เดือน/ปีเกิด</label>
+          <input type="date" id="editBirthDate" class="w-full p-2.5 border rounded-xl text-sm mt-1 focus:ring-2 focus:ring-red-500 focus:outline-none">
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-slate-600">หมู่โลหิต (Blood Type)</label>
+          <select id="editBloodType" class="w-full p-2.5 border rounded-xl text-sm bg-white mt-1 focus:ring-2 focus:ring-red-500 focus:outline-none">
+            <option value="A+">A+ (A Rh+)</option>
+            <option value="A-">A- (A Rh-)</option>
+            <option value="B+">B+ (B Rh+)</option>
+            <option value="B-">B- (B Rh-)</option>
+            <option value="O+">O+ (O Rh+)</option>
+            <option value="O-">O- (O Rh-)</option>
+            <option value="AB+">AB+ (AB Rh+)</option>
+            <option value="AB-">AB- (AB Rh-)</option>
             <option value="A">A</option>
             <option value="B">B</option>
             <option value="O">O</option>
             <option value="AB">AB</option>
           </select>
         </div>
+      </div>
+
+      <!-- น้ำหนัก & อาชีพ -->
+      <div class="grid grid-cols-2 gap-2">
         <div>
-          <label class="text-xs font-semibold text-slate-600">เบอร์โทรศัพท์</label>
+          <label class="text-xs font-semibold text-slate-600">น้ำหนักตัว (กก.)</label>
+          <input type="number" id="editWeight" step="0.1" min="30" max="250" placeholder="เช่น 55"
+            class="w-full p-2.5 border rounded-xl text-sm mt-1 focus:ring-2 focus:ring-red-500 focus:outline-none">
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-slate-600">อาชีพ</label>
+          <input type="text" id="editOccupation" placeholder="เช่น รับราชการ, ค้าขาย"
+            class="w-full p-2.5 border rounded-xl text-sm mt-1 focus:ring-2 focus:ring-red-500 focus:outline-none">
+        </div>
+      </div>
+
+      <!-- เบอร์โทร & อีเมล -->
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="text-xs font-semibold text-slate-600">เบอร์โทรศัพท์ *</label>
           <input type="tel" id="editPhone" maxlength="12"
             oninput="this.value = this.value.replace(/[^0-9\-]/g, '')"
-            class="w-full p-2.5 border rounded-xl text-sm mt-1">
+            class="w-full p-2.5 border rounded-xl text-sm mt-1 focus:ring-2 focus:ring-red-500 focus:outline-none">
         </div>
+        <div>
+          <label class="text-xs font-semibold text-slate-600">อีเมล</label>
+          <input type="email" id="editEmail" placeholder="name@email.com"
+            class="w-full p-2.5 border rounded-xl text-sm mt-1 focus:ring-2 focus:ring-red-500 focus:outline-none">
+        </div>
+      </div>
+
+      <!-- ที่อยู่ตามบัตรประชาชน -->
+      <div>
+        <label class="text-xs font-semibold text-slate-600">ที่อยู่ตามบัตรประชาชน</label>
+        <textarea id="editAddressIdCard" rows="2" placeholder="เลขที่ หมู่บ้าน ซอย ถนน ตำบล อำเภอ จังหวัด"
+          class="w-full p-2.5 border rounded-xl text-sm mt-1 focus:ring-2 focus:ring-red-500 focus:outline-none"></textarea>
+      </div>
+
+      <!-- ที่อยู่ที่ติดต่อได้ -->
+      <div>
+        <div class="flex justify-between items-center">
+          <label class="text-xs font-semibold text-slate-600">ที่อยู่ที่ติดต่อได้</label>
+          <label class="text-xs text-red-600 cursor-pointer flex items-center gap-1">
+            <input type="checkbox" id="sameAddressCheckbox" onchange="syncContactAddress(this)" class="rounded text-red-600">
+            <span>เหมือนที่อยู่ตามบัตร</span>
+          </label>
+        </div>
+        <textarea id="editAddressContact" rows="2" placeholder="เลขที่ หมู่บ้าน ซอย ถนน ตำบล อำเภอ จังหวัด"
+          class="w-full p-2.5 border rounded-xl text-sm mt-1 focus:ring-2 focus:ring-red-500 focus:outline-none"></textarea>
       </div>
 
       <div class="pt-2 flex gap-2">
@@ -387,17 +474,36 @@
       document.getElementById('registerSection').classList.remove('hidden');
     };
 
+    window.syncContactAddress = function(checkbox) {
+      if (checkbox.checked) {
+        document.getElementById('editAddressContact').value = document.getElementById('editAddressIdCard').value;
+      }
+    };
+
     window.showEditProfileForm = function() {
       if (!currentDonor) return;
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
       document.getElementById('editProfileSection').classList.remove('hidden');
 
-      // ดึงข้อมูลเดิมมาใส่ใน Input
+      // ดึงข้อมูลเดิมมาใส่ใน Input ทุกช่อง
+      document.getElementById('editIdCard').value = currentDonor.id_card || '';
       document.getElementById('editTitle').value = currentDonor.title || 'นาย';
       document.getElementById('editFirstName').value = currentDonor.first_name || '';
       document.getElementById('editLastName').value = currentDonor.last_name || '';
-      document.getElementById('editBloodType').value = currentDonor.blood_type || 'A';
+      document.getElementById('editGender').value = currentDonor.gender || 'ชาย';
+      document.getElementById('editBirthDate').value = currentDonor.birth_date || '';
+      document.getElementById('editBloodType').value = currentDonor.blood_type || 'A+';
+      document.getElementById('editWeight').value = (currentDonor.weight !== undefined && currentDonor.weight !== null) ? currentDonor.weight : '';
+      document.getElementById('editOccupation').value = currentDonor.occupation || '';
       document.getElementById('editPhone').value = currentDonor.phone || '';
+      document.getElementById('editEmail').value = currentDonor.email || '';
+      document.getElementById('editAddressIdCard').value = currentDonor.address_id_card || '';
+      document.getElementById('editAddressContact').value = currentDonor.address_contact || '';
+
+      const sameCheckbox = document.getElementById('sameAddressCheckbox');
+      if (sameCheckbox) {
+        sameCheckbox.checked = !!(currentDonor.address_id_card && currentDonor.address_id_card === currentDonor.address_contact);
+      }
     };
 
     window.submitEditProfile = async function() {
@@ -406,31 +512,47 @@
       const title = document.getElementById('editTitle').value;
       const fname = document.getElementById('editFirstName').value.trim();
       const lname = document.getElementById('editLastName').value.trim();
+      const gender = document.getElementById('editGender').value;
+      const birthDate = document.getElementById('editBirthDate').value;
       const blood = document.getElementById('editBloodType').value;
+      const weightVal = document.getElementById('editWeight').value.trim();
+      const occupation = document.getElementById('editOccupation').value.trim();
       const phone = document.getElementById('editPhone').value.trim();
+      const email = document.getElementById('editEmail').value.trim();
+      const addressIdCard = document.getElementById('editAddressIdCard').value.trim();
+      const addressContact = document.getElementById('editAddressContact').value.trim();
 
       if (!fname || !lname || !phone) {
-        alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+        alert('กรุณากรอกชื่อ นามสกุล และเบอร์โทรศัพท์ให้ครบถ้วน');
         return;
       }
 
       try {
         const donorDocRef = doc(db, "donors", currentDonor.id);
-        await updateDoc(donorDocRef, {
+        const updateData = {
           title: title,
           first_name: fname,
           last_name: lname,
+          gender: gender,
+          birth_date: birthDate,
           blood_type: blood,
+          occupation: occupation,
           phone: phone,
+          email: email,
+          address_id_card: addressIdCard,
+          address_contact: addressContact,
           updated_at: serverTimestamp()
-        });
+        };
+
+        if (weightVal !== "") {
+          const numWeight = Number(weightVal);
+          if (!isNaN(numWeight)) updateData.weight = numWeight;
+        }
+
+        await updateDoc(donorDocRef, updateData);
 
         // อัปเดตข้อมูลในหน่วยความจำ local
-        currentDonor.title = title;
-        currentDonor.first_name = fname;
-        currentDonor.last_name = lname;
-        currentDonor.blood_type = blood;
-        currentDonor.phone = phone;
+        Object.assign(currentDonor, updateData);
 
         alert('แก้ไขข้อมูลส่วนตัวสำเร็จ!');
         renderDonorProfile(currentDonor);
@@ -523,8 +645,9 @@
 
       const nextDateEl = document.getElementById('nextEligibleDateText');
       if (nextDateEl) {
-        nextDateEl.innerText = donor.next_eligible_date 
-          ? `บริจาคครั้งถัดไปได้ตั้งแต่วันที่: ${donor.next_eligible_date}`
+        const nextDate = donor.next_donation_date || donor.next_eligible_date;
+        nextDateEl.innerText = nextDate 
+          ? `บริจาคครั้งถัดไปได้ตั้งแต่วันที่: ${nextDate}`
           : "พร้อมบริจาค";
       }
 
@@ -738,8 +861,9 @@ window.loadDonorDashboardAndHistory = async function(idCard) {
           
           const nextDateEl = document.getElementById('nextEligibleDateText');
           if (nextDateEl) {
-            nextDateEl.innerText = currentDonor.next_eligible_date 
-              ? `บริจาคครั้งถัดไปได้ตั้งแต่วันที่: ${currentDonor.next_eligible_date}`
+            const nextDate = currentDonor.next_donation_date || currentDonor.next_eligible_date;
+            nextDateEl.innerText = nextDate 
+              ? `บริจาคครั้งถัดไปได้ตั้งแต่วันที่: ${nextDate}`
               : "พร้อมบริจาค";
           }
         }
