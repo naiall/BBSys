@@ -126,7 +126,6 @@
             <span class="bg-white/20 text-xs px-2.5 py-1 rounded-full backdrop-blur-sm">ผู้บริจาคโลหิต</span>
             <h3 id="donorFullName" class="text-2xl font-bold mt-1">คุณ...</h3>
             <p id="donorIdCardText" class="text-xs text-red-200">ID: -</p>
-            <!-- เพิ่ม Element แสดงวันที่บริจาคถัดไป -->
             <p id="nextEligibleDateText" class="text-xs text-emerald-200 mt-1 font-semibold"></p>
           </div>
           <div id="donorBloodBadge" class="bg-white text-red-700 font-bold text-xl px-3 py-1.5 rounded-xl shadow">-</div>
@@ -139,7 +138,7 @@
           </div>
           <div class="bg-white/10 p-2.5 rounded-xl backdrop-blur-sm">
             <p class="text-xs text-red-200">สถานะคิว</p>
-            <p id="d-appt-status" class="text-sm font-bold mt-1">ยังไม่มีนัดหมาย</p>
+            <p id="d-appt-status" class="text-sm font-bold mt-1 text-white/80">ยังไม่มีนัดหมาย</p>
           </div>
         </div>
       </div>
@@ -327,6 +326,7 @@
         currentDonor = { id: docRef.id, title, first_name: fname, last_name: lname, id_card: idCard, blood_type: blood, total_donations: 0 };
         document.getElementById('registerSection').classList.add('hidden');
         renderDonorProfile(currentDonor);
+        loadDonorDashboardAndHistory(currentDonor.id_card);
       } catch (error) {
         alert('เกิดข้อผิดพลาดในการลงทะเบียน: ' + error.message);
       }
@@ -495,21 +495,20 @@
         });
 
         alert(`จองคิวสำเร็จ! คุณ ${currentDonor.first_name} ${currentDonor.last_name}`);
+        await loadDonorDashboardAndHistory(currentDonor.id_card);
         switchTab('home');
-        document.getElementById('d-appt-status').innerText = "📅 จองคิวสำเร็จ";
-        document.getElementById('d-appt-status').classList.add('text-emerald-300');
       } catch (error) {
         alert("เกิดข้อผิดพลาดในการจองคิว: " + error.message);
       }
     };
 
-    // ดึงประวัติการบริจาคและสถานะมาแสดงผลบน Web Frontend
+    // ฟังก์ชันดึงแดชบอร์ด สถานะคิวล่าสุด และประวัติการบริจาค
     window.loadDonorDashboardAndHistory = async function(idCard) {
       try {
-        // 1. ดึงข้อมูลโปรไฟล์ผู้บริจาค
+        // 1. อ่านข้อมูลโปรไฟล์ผู้บริจาค
         const qDonor = query(collection(db, "donors"), where("id_card", "==", idCard));
         const donorSnap = await getDocs(qDonor);
-    
+
         if (!donorSnap.empty) {
           const donor = donorSnap.docs[0].data();
           document.getElementById('donorFullName').innerText = `${donor.title || ''}${donor.first_name} ${donor.last_name}`;
@@ -522,35 +521,34 @@
               : "พร้อมบริจาค";
           }
         }
-    
-        // 2. ดึงข้อมูล "สถานะคิวการจองล่าสุด" (appointments)
+
+        // 2. ดึงสถานะคิวล่าสุดจาก Collection appointments
         const qAppt = query(collection(db, "appointments"), where("donor_id", "==", idCard));
         const apptSnap = await getDocs(qAppt);
         const apptStatusEl = document.getElementById('d-appt-status');
-    
+
         if (!apptSnap.empty) {
-          // ดึงรายการจองล่าสุดขึ้นมาแสดง
           const apptData = apptSnap.docs[apptSnap.docs.length - 1].data();
           
           if (apptData.status === 'confirmed') {
             apptStatusEl.innerText = "📅 จองคิวสำเร็จ";
             apptStatusEl.className = "text-sm font-bold mt-1 text-emerald-300";
           } else if (apptData.status === 'completed') {
-            apptStatusEl.innerText = "✅ รับบริการเรียบร้อย";
+            apptStatusEl.innerText = "✅ บริจาคเรียบร้อย";
             apptStatusEl.className = "text-sm font-bold mt-1 text-blue-300";
           } else if (apptData.status === 'cancelled') {
             apptStatusEl.innerText = "❌ ยกเลิกการจอง";
             apptStatusEl.className = "text-sm font-bold mt-1 text-red-300";
           } else {
-            apptStatusEl.innerText = "⏳ รอการยืนยัน";
+            apptStatusEl.innerText = "⏳ รอยืนยัน";
             apptStatusEl.className = "text-sm font-bold mt-1 text-amber-300";
           }
         } else {
           apptStatusEl.innerText = "ยังไม่มีนัดหมาย";
           apptStatusEl.className = "text-sm font-bold mt-1 text-white/80";
         }
-    
-        // 3. ดึงประวัติการบริจาคย้อนหลัง (donations)
+
+        // 3. ดึงประวัติการบริจาคย้อนหลังทั้งหมด
         const qHistory = query(collection(db, "donations"), where("id_card", "==", idCard));
         const historySnap = await getDocs(qHistory);
         
@@ -578,9 +576,9 @@
           });
         }
         document.getElementById('historyList').innerHTML = html;
-    
+
       } catch (error) {
-        console.error("Error loading donor dashboard:", error);
+        console.error("Error loading dashboard and history:", error);
       }
     };
   </script>
