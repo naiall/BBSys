@@ -332,26 +332,70 @@
           </div>
         </div>
 
-        <!-- Mermaid Flowchart Preview -->
-        <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-3">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider font-heading">
-              <i class="fa-solid fa-diagram-project mr-1.5 text-brand-600"></i> แผนภาพผังกระบวนการทำงานหลัก (End-to-End Workflow)
-            </span>
-            <span class="text-xs text-brand-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/50 px-2 py-0.5 rounded">ISO 15189 Process Map</span>
+        <!-- High-Impact Workflow Process Map Image Card -->
+        <div class="bg-slate-900 text-white p-5 rounded-2xl border border-slate-700/80 shadow-xl space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse"></span>
+              <span class="text-xs font-bold text-slate-300 uppercase tracking-wider font-heading">
+                <i class="fa-solid fa-diagram-project mr-1.5 text-brand-500"></i> แผนภาพผังกระบวนการทำงานหลัก (End-to-End Workflow)
+              </span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-rose-300 bg-rose-950/80 border border-rose-800/60 px-2.5 py-0.5 rounded-full font-medium">
+                ISO 15189 Process Map
+              </span>
+              <button onclick="openImageModal()" title="ขยายรูปภาพเต็มจอ" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs transition flex items-center gap-1.5 border border-slate-700">
+                <i class="fa-solid fa-expand text-xs"></i> <span>ขยายรูป</span>
+              </button>
+            </div>
           </div>
-          <div class="mermaid text-center overflow-x-auto py-2">
-flowchart LR
-    A[รับบริจาคโลหิต] --> B[ตรวจคัดกรอง TTI & ABO]
-    B --> C{ผลแล็บผ่าน?}
-    C -->|ไม่ผ่าน| D[ล็อก & ทำลาย Discard]
-    C -->|ผ่านทุกตัว| E[รับเข้าคลัง Blood In]
-    E --> F[รับใบขอเลือดจาก HOSxP]
-    F --> G[ทดสอบ Cross-matching]
-    G --> H{Compatible?}
-    H -->|ผ่าน| I[ล็อกสถานะ Reserved]
-    I --> J[Two-Person Check & จ่ายเลือด]
-    J --> K[ส่งมอบขึ้น Ward]
+
+          <!-- Workflow Image Banner with Lightbox Trigger -->
+          <div class="relative group cursor-pointer overflow-hidden rounded-xl border border-slate-800 bg-black/60 shadow-inner" onclick="openImageModal()">
+            <img src="images/workflow_process_map.jpg" alt="แผนภาพผังกระบวนการทำงานหลัก (End-to-End Workflow) ISO 15189 Process Map" 
+                 class="w-full h-auto object-contain transition-transform duration-300 group-hover:scale-[1.01] rounded-lg">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-between p-3 pointer-events-none">
+              <span class="text-xs text-slate-200 bg-black/80 px-2.5 py-1 rounded backdrop-blur-sm">
+                <i class="fa-solid fa-magnifying-glass-plus mr-1"></i> คลิกเพื่อดูภาพขยายความละเอียดสูง
+              </span>
+              <span class="text-[11px] text-rose-300 bg-rose-950/80 px-2.5 py-1 rounded border border-rose-800/50">
+                Vein-to-Vein Flow
+              </span>
+            </div>
+          </div>
+
+          <!-- Interactive Process Step Hotspots (Quick Navigation) -->
+          <div class="space-y-2 pt-1">
+            <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+              <i class="fa-solid fa-hand-pointer text-brand-400 text-xs"></i> คลิกเลือกขั้นตอนเพื่อดูคู่มือและวิธีปฏิบัติงานโดยละเอียด:
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-xs">
+              <a href="#sec-donor" class="p-2.5 rounded-lg bg-slate-800/80 hover:bg-rose-950/60 border border-slate-700/80 hover:border-rose-700 text-slate-200 transition text-center flex flex-col items-center justify-center gap-1 group">
+                <span class="text-brand-400 font-bold group-hover:text-rose-300"><i class="fa-solid fa-user-plus"></i> 1. รับบริจาค</span>
+                <span class="text-[10px] text-slate-400">คัดกรอง & เจาะเก็บ</span>
+              </a>
+              <a href="#sec-lab" class="p-2.5 rounded-lg bg-slate-800/80 hover:bg-purple-950/60 border border-slate-700/80 hover:border-purple-700 text-slate-200 transition text-center flex flex-col items-center justify-center gap-1 group">
+                <span class="text-purple-400 font-bold group-hover:text-purple-300"><i class="fa-solid fa-vial-virus"></i> 2. คัดกรอง TTI</span>
+                <span class="text-[10px] text-slate-400">ตรวจแล็บ & บล็อก</span>
+              </a>
+              <a href="#sec-inventory" class="p-2.5 rounded-lg bg-slate-800/80 hover:bg-cyan-950/60 border border-slate-700/80 hover:border-cyan-700 text-slate-200 transition text-center flex flex-col items-center justify-center gap-1 group">
+                <span class="text-cyan-400 font-bold group-hover:text-cyan-300"><i class="fa-solid fa-boxes-stacked"></i> 3. เข้าคลัง In</span>
+                <span class="text-[10px] text-slate-400">สต็อก & FIFO</span>
+              </a>
+              <a href="#sec-crossmatch" class="p-2.5 rounded-lg bg-slate-800/80 hover:bg-brand-950/60 border border-slate-700/80 hover:border-brand-700 text-slate-200 transition text-center flex flex-col items-center justify-center gap-1 group">
+                <span class="text-rose-400 font-bold group-hover:text-rose-300"><i class="fa-solid fa-dna"></i> 4. Cross-match</span>
+                <span class="text-[10px] text-slate-400">ทดสอบ & ล็อกจอง</span>
+              </a>
+              <a href="#sec-dispense" class="p-2.5 rounded-lg bg-slate-800/80 hover:bg-emerald-950/60 border border-slate-700/80 hover:border-emerald-700 text-slate-200 transition text-center flex flex-col items-center justify-center gap-1 group">
+                <span class="text-emerald-400 font-bold group-hover:text-emerald-300"><i class="fa-solid fa-user-check"></i> 5. จ่ายเลือด</span>
+                <span class="text-[10px] text-slate-400">Two-Person Check</span>
+              </a>
+              <a href="#sec-dispense" class="p-2.5 rounded-lg bg-slate-800/80 hover:bg-fuchsia-950/60 border border-slate-700/80 hover:border-fuchsia-700 text-slate-200 transition text-center flex flex-col items-center justify-center gap-1 group">
+                <span class="text-fuchsia-400 font-bold group-hover:text-fuchsia-300"><i class="fa-solid fa-hospital-user"></i> 6. ส่งมอบ Ward</span>
+                <span class="text-[10px] text-slate-400">Cold Chain 30 นาที</span>
+              </a>
+            </div>
           </div>
         </div>
       </section>
@@ -1110,6 +1154,54 @@ flowchart LR
         plt.textContent = 'Group AB (แนะนำตรงหมู่)';
       }
     }
+
+    // Lightbox modal functions
+    function openImageModal() {
+      const modal = document.getElementById('imageModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeImageModal() {
+      const modal = document.getElementById('imageModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      document.body.style.overflow = '';
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeImageModal();
+      }
+    });
   </script>
+
+  <!-- High-Resolution Workflow Image Lightbox Modal -->
+  <div id="imageModal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden items-center justify-center p-3 sm:p-6" onclick="closeImageModal()">
+    <div class="relative max-w-6xl w-full bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl p-3 sm:p-5 flex flex-col max-h-[92vh]" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between pb-3 px-2 border-b border-slate-800 text-white shrink-0">
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-rose-500 animate-pulse"></span>
+          <span class="font-bold text-sm sm:text-base font-heading">แผนภาพผังกระบวนการทำงานหลัก (END-TO-END WORKFLOW) • ISO 15189 Process Map</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <a href="images/workflow_process_map.jpg" download="BBSys_Workflow_Process_Map.jpg" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 transition flex items-center gap-1.5 border border-slate-700">
+            <i class="fa-solid fa-download"></i> <span class="hidden sm:inline">บันทึกรูปภาพ</span>
+          </a>
+          <button onclick="closeImageModal()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-rose-900 text-slate-300 hover:text-white transition flex items-center justify-center">
+            <i class="fa-solid fa-xmark text-lg"></i>
+          </button>
+        </div>
+      </div>
+      <div class="p-2 sm:p-4 flex-1 overflow-auto flex items-center justify-center bg-slate-950/70 rounded-xl my-2 border border-slate-800/60">
+        <img src="images/workflow_process_map.jpg" alt="แผนภาพผังกระบวนการทำงานหลัก ขยายเต็มจอ" class="w-full h-auto max-h-[72vh] object-contain rounded-lg shadow-lg">
+      </div>
+      <div class="px-2 pt-2 text-center text-xs text-slate-400 border-t border-slate-800 shrink-0 flex items-center justify-between">
+        <span class="text-slate-500">ระบบบริหารจัดการธนาคารเลือด BBSys • โรงพยาบาลเบตง</span>
+        <span>กด <kbd class="px-1.5 py-0.5 bg-slate-800 rounded text-slate-300 font-mono text-[11px]">ESC</kbd> หรือคลิกภายนอกเพื่อปิด</span>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
