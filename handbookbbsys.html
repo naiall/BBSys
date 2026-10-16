@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="th" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BBSys : คู่มือการใช้งาน & วิธีปฏิบัติงาน (Work Instruction) | โรงพยาบาลเบตง</title>
+  
+  <!-- Google Fonts: Sarabun & Prompt -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Mermaid JS for diagrams -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Sarabun', 'sans-serif'],
+            display: ['Prompt', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#fff1f2',
+              100: '#ffe4e6',
+              200: '#fecdd3',
+              300: '#fda4af',
+              400: '#fb7185',
+              500: '#e11d48',
+              600: '#be123c',
+              700: '#9f1239',
+              800: '#881337',
+              900: '#4c0519',
+              primary: '#C81E3D',
+              dark: '#851229',
+              accent: '#E02424',
+            },
+            medical: {
+              blue: '#0284c7',
+              cyan: '#0891b2',
+              green: '#059669',
+              amber: '#d97706',
+              purple: '#7c3aed',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom styles and print optimizations */
+    body {
+      font-family: 'Sarabun', sans-serif;
+    }
+    h1, h2, h3, h4, h5, h6, .font-heading {
+      font-family: 'Prompt', sans-serif;
+    }
+    
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    .dark ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    .dark ::-webkit-scrollbar-thumb {
+      background: #334155;
+    }
+
+    /* Print styles */
+    @media print {
+      aside, header, #viewToggle, .no-print, button, .interactive-sim {
+        display: none !important;
+      }
+      main {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      .printable-card {
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+        page-break-inside: avoid;
+      }
+      body {
+        background: white !important;
+        color: black !important;
+        font-size: 11pt !important;
+      }
+      .print-header {
+        display: block !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 min-h-screen flex flex-col antialiased transition-colors duration-200">
+
+  <!-- Top Sticky Navigation Bar -->
+  <header class="sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+      
+      <!-- Brand & Hospital Logo -->
+      <div class="flex items-center gap-3">
+        <button id="sidebarToggle" class="lg:hidden p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <i class="fa-solid fa-bars text-lg"></i>
+        </button>
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-700 via-brand-600 to-rose-500 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
+          <i class="fa-solid fa-droplet text-xl"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-bold text-lg text-slate-900 dark:text-white font-heading tracking-tight">BBSys</span>
+            <span class="px-2 py-0.5 text-xs rounded-full bg-rose-100 text-brand-700 dark:bg-rose-950/60 dark:text-rose-300 font-semibold border border-rose-200 dark:border-rose-900">v3.0 Betong</span>
+          </div>
+          <p class="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">ระบบบริหารจัดการธนาคารเลือด • โรงพยาบาลเบตง</p>
+        </div>
+      </div>
+
+      <!-- Quick Search Bar -->
+      <div class="flex-1 max-w-md hidden md:block relative">
+        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+        <input type="text" id="searchInput" placeholder="ค้นหาขั้นตอน, เมนู, รหัสแล็บ, คำเตือน (Ctrl + K)..." 
+               class="w-full pl-10 pr-4 py-1.5 text-sm bg-slate-100 dark:bg-slate-800 border-none rounded-lg focus:ring-2 focus:ring-brand-500 text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none transition">
+      </div>
+
+      <!-- Right Action Controls -->
+      <div class="flex items-center gap-2">
+        <!-- View Mode Switcher: WI vs User Manual -->
+        <div id="viewToggle" class="bg-slate-100 dark:bg-slate-800 p-1 rounded-xl flex items-center text-xs font-semibold border border-slate-200 dark:border-slate-700">
+          <button id="btnManualMode" class="px-3 py-1.5 rounded-lg bg-white dark:bg-slate-700 text-brand-600 dark:text-rose-400 shadow-sm transition flex items-center gap-1.5">
+            <i class="fa-solid fa-book-open"></i>
+            <span class="hidden sm:inline">คู่มือการใช้งาน</span>
+          </button>
+          <button id="btnWiMode" class="px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition flex items-center gap-1.5">
+            <i class="fa-solid fa-clipboard-check"></i>
+            <span class="hidden sm:inline">วิธีปฏิบัติงาน (WI)</span>
+          </button>
+        </div>
+
+        <!-- Print Action -->
+        <button onclick="window.print()" title="พิมพ์คู่มือ/วิธีปฏิบัติงาน" class="p-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <i class="fa-solid fa-print"></i>
+        </button>
+
+        <!-- Dark Mode Toggle -->
+        <button id="themeToggle" title="สลับโหมดมืด/สว่าง" class="p-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <i id="themeIcon" class="fa-solid fa-moon"></i>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Document Header for Quality Standard (Visible in Print & Top of Content) -->
+  <div class="bg-gradient-to-r from-rose-900 via-brand-800 to-slate-900 text-white py-8 px-4 sm:px-8 border-b border-rose-950 relative overflow-hidden">
+    <div class="absolute right-0 top-0 bottom-0 opacity-10 pointer-events-none flex items-center pr-12">
+      <i class="fa-solid fa-hand-holding-droplet text-9xl"></i>
+    </div>
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
+      <div>
+        <div class="flex flex-wrap items-center gap-2 mb-2">
+          <span class="bg-rose-500/20 text-rose-200 border border-rose-400/30 text-xs px-2.5 py-1 rounded-md font-semibold tracking-wide">
+            <i class="fa-solid fa-certificate mr-1"></i> ISO 15189:2022 / LA / HA Compliant
+          </span>
+          <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs px-2.5 py-1 rounded-md font-semibold">
+            <i class="fa-solid fa-shield-halved mr-1"></i> Transfusion Safety Standard
+          </span>
+          <span class="text-xs text-rose-200/80">รหัสเอกสาร: WI-LAB-BB-002 (Rev.01)</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-heading">
+          คู่มือการใช้งาน & วิธีปฏิบัติงานระบบธนาคารเลือด BBSys
+        </h1>
+        <p class="text-sm sm:text-base text-rose-100/90 mt-1 max-w-3xl">
+          งานธนาคารเลือด กลุ่มงานเทคนิคการแพทย์และพยาธิวิทยาคลินิก โรงพยาบาลเบตง จ.ยะลา
+        </p>
+      </div>
+      
+      <!-- Quality Control Metadata Box -->
+      <div class="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 text-xs space-y-1.5 min-w-[240px]">
+        <div class="flex justify-between text-rose-200"><span class="text-white/70">วันที่ประกาศใช้:</span> <span class="font-medium text-white">16 ตุลาคม 2569</span></div>
+        <div class="flex justify-between text-rose-200"><span class="text-white/70">สถานะเอกสาร:</span> <span class="font-medium text-emerald-300">เอกสารควบคุม (Controlled)</span></div>
+        <div class="flex justify-between text-rose-200"><span class="text-white/70">การเชื่อมโยง HIS:</span> <span class="font-medium text-cyan-300">HOSxP Database Link</span></div>
+        <div class="flex justify-between text-rose-200"><span class="text-white/70">ช่องทางแจ้งเตือน:</span> <span class="font-medium text-emerald-300">LINE Notify Alert</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Layout Container: Sidebar + Content -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 flex gap-8 w-full">
+    
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="w-72 shrink-0 hidden lg:block sticky top-24 h-[calc(100vh-7rem)] overflow-y-auto pr-2 space-y-6">
+      
+      <!-- Navigation Sections -->
+      <nav class="space-y-1 text-sm font-medium">
+        <div class="px-3 py-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">บทนำและโครงสร้าง</div>
+        <a href="#sec-intro" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <i class="fa-solid fa-network-wired w-4 text-brand-600"></i>
+          <span>1. สถาปัตยกรรม & คุณสมบัติ</span>
+        </a>
+        <a href="#sec-login" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <i class="fa-solid fa-key w-4 text-amber-500"></i>
+          <span>2. เข้าสู่ระบบ & สิทธิ์ผู้ใช้</span>
+        </a>
+
+        <div class="px-3 pt-4 pb-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">ขั้นตอนการทำงานหลัก</div>
+        <a href="#sec-donor" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <i class="fa-solid fa-user-plus w-4 text-rose-500"></i>
+          <span>3. งานรับบริจาค & คัดกรอง</span>
+        </a>
+        <a href="#sec-lab" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <i class="fa-solid fa-vial-virus w-4 text-purple-500"></i>
+          <span>4. บันทึกผลแล็บ & TTI</span>
+        </a>
+        <a href="#sec-inventory" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <i class="fa-solid fa-boxes-stacked w-4 text-cyan-600"></i>
+          <span>5. คลังโลหิต & เตือน FIFO</span>
+        </a>
+        <a href="#sec-crossmatch" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <i class="fa-solid fa-dna w-4 text-brand-600 font-bold"></i>
+          <span>6. Cross-matching & จองเลือด</span>
+        </a>
+        <a href="#sec-dispense" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <i class="fa-solid fa-truck-medical w-4 text-emerald-600"></i>
+          <span>7. การจ่ายเลือด & รับคืน</span>
+        </a>
+        <a href="#sec-reaction" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <i class="fa-solid fa-triangle-exclamation w-4 text-red-600"></i>
+          <span>8. สอบสวนการแพ้เลือด</span>
+        </a>
+
+        <div class="px-3 pt-4 pb-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">การจัดการ & คุณภาพ</div>
+        <a href="#sec-reports" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <i class="fa-solid fa-chart-pie w-4 text-blue-500"></i>
+          <span>9. รายงาน สถิติ & C/T Ratio</span>
+        </a>
+        <a href="#sec-admin" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <i class="fa-solid fa-server w-4 text-slate-500"></i>
+          <span>10. สำรองข้อมูล & Downtime</span>
+        </a>
+        <a href="#sec-trouble" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <i class="fa-solid fa-wrench w-4 text-amber-600"></i>
+          <span>11. การแก้ไขปัญหาเบื้องต้น</span>
+        </a>
+        <a href="#sec-simulator" class="nav-link flex items-center gap-3 px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <i class="fa-solid fa-gamepad w-4 text-teal-600"></i>
+          <span>12. เครื่องมือจำลอง (Simulators)</span>
+        </a>
+      </nav>
+
+      <!-- Safety Rule Pill -->
+      <div class="bg-gradient-to-br from-rose-50 to-red-100 dark:from-rose-950/40 dark:to-red-900/30 p-4 rounded-2xl border border-rose-200 dark:border-rose-900/50 text-xs space-y-2">
+        <div class="flex items-center gap-2 text-brand-700 dark:text-rose-400 font-bold">
+          <i class="fa-solid fa-shield-virus text-base"></i>
+          <span>กฎเหล็กความปลอดภัย</span>
+        </div>
+        <p class="text-slate-600 dark:text-slate-300 leading-relaxed">
+          ห้ามจ่ายโลหิตหากพบ <strong>ABO Discrepancy</strong> หรือผลตรวจ TTI ไม่ผ่าน และต้องใช้ระบบ <strong>Two-Person Verification</strong> ตรวจสอบซ้ำก่อนส่งมอบทุกครั้ง
+        </p>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 min-w-0 space-y-12">
+
+      <!-- Section 1: Intro & System Architecture -->
+      <section id="sec-intro" class="scroll-mt-24 space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-brand-100 dark:bg-rose-950/60 text-brand-600 dark:text-rose-400 flex items-center justify-center font-bold">1</div>
+            <h2 class="text-xl sm:text-2xl font-bold font-heading">บทนำและสถาปัตยกรรมระบบ (System Architecture)</h2>
+          </div>
+          <span class="text-xs px-2.5 py-1 bg-slate-100 dark:bg-slate-800 text-slate-500 rounded-md">Overview</span>
+        </div>
+
+        <p class="text-slate-600 dark:text-slate-300 leading-relaxed">
+          โปรแกรม <strong>BBSys (Blood Bank System)</strong> โรงพยาบาลเบตง ได้รับการพัฒนาขึ้นเพื่อบริหารจัดการสารสนเทศงานธนาคารเลือดครบวงจร ตั้งแต่การรับบริจาคโลหิต การตรวจวิเคราะห์ทางห้องปฏิบัติการ การบริหารคลังและการควบคุมอุณหภูมิ การตรวจความเข้ากันได้ของโลหิต (Cross-matching) ตลอดจนการจ่ายโลหิตให้ผู้ป่วยอย่างปลอดภัยสูงสุด รองรับการเชื่อมต่อกับระบบสารสนเทศโรงพยาบาล <strong>HOSxP</strong> และระบบแจ้งเตือนผ่าน <strong>LINE Notify</strong>
+        </p>
+
+        <!-- Feature Cards Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
+          <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-start gap-3">
+            <div class="p-2.5 bg-rose-50 dark:bg-rose-950/60 text-brand-600 dark:text-rose-400 rounded-lg shrink-0">
+              <i class="fa-solid fa-arrows-split-up-and-left text-lg"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-sm text-slate-900 dark:text-white font-heading">Vein-to-Vein Traceability</h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">สามารถสืบค้นย้อนกลับได้ตั้งแต่ประวัติผู้บริจาค (Donor) ไปจนถึงผู้รับโลหิต (Recipient)</p>
+            </div>
+          </div>
+
+          <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-start gap-3">
+            <div class="p-2.5 bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 rounded-lg shrink-0">
+              <i class="fa-solid fa-link text-lg"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-sm text-slate-900 dark:text-white font-heading">HOSxP Direct Linkage</h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">เชื่อมต่อตารางผู้ป่วยและใบขอตรวจแล็บแบบเรียลไทม์ ป้องกันข้อผิดพลาดจากการพิมพ์ซ้ำ</p>
+            </div>
+          </div>
+
+          <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-start gap-3">
+            <div class="p-2.5 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 rounded-lg shrink-0">
+              <i class="fa-solid fa-bell text-lg"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-sm text-slate-900 dark:text-white font-heading">LINE Notify & Alerts</h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">แจ้งเตือนโลหิตใกล้หมดอายุ โลหิตหมู่วิกฤต และเคสขอเลือดฉุกเฉินเข้าสมาร์ตโฟนทันที</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mermaid Flowchart Preview -->
+        <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider font-heading">
+              <i class="fa-solid fa-diagram-project mr-1.5 text-brand-600"></i> แผนภาพผังกระบวนการทำงานหลัก (End-to-End Workflow)
+            </span>
+            <span class="text-xs text-brand-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/50 px-2 py-0.5 rounded">ISO 15189 Process Map</span>
+          </div>
+          <div class="mermaid text-center overflow-x-auto py-2">
+flowchart LR
+    A[รับบริจาคโลหิต] --> B[ตรวจคัดกรอง TTI & ABO]
+    B --> C{ผลแล็บผ่าน?}
+    C -->|ไม่ผ่าน| D[ล็อก & ทำลาย Discard]
+    C -->|ผ่านทุกตัว| E[รับเข้าคลัง Blood In]
+    E --> F[รับใบขอเลือดจาก HOSxP]
+    F --> G[ทดสอบ Cross-matching]
+    G --> H{Compatible?}
+    H -->|ผ่าน| I[ล็อกสถานะ Reserved]
+    I --> J[Two-Person Check & จ่ายเลือด]
+    J --> K[ส่งมอบขึ้น Ward]
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 2: Login & Security Roles -->
+      <section id="sec-login" class="scroll-mt-24 space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold">2</div>
+            <h2 class="text-xl sm:text-2xl font-bold font-heading">การเข้าสู่ระบบและสิทธิ์การใช้งาน (Login & Privileges)</h2>
+          </div>
+          <span class="text-xs px-2.5 py-1 bg-amber-50 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300 rounded-md">Security</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="md:col-span-2 space-y-4">
+            <h3 class="font-bold text-base text-slate-800 dark:text-white font-heading">ขั้นตอนการเข้าใช้งานโปรแกรม</h3>
+            <ol class="list-decimal list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+              <li>เปิดโปรแกรม <strong>BBSys</strong> จากไอคอนบน Desktop</li>
+              <li>กรอก <strong>Username</strong> และ <strong>Password</strong> ประจำตัว (ห้ามใช้รหัสร่วมกันเด็ดขาด)</li>
+              <li>กดปุ่ม <span class="px-2 py-0.5 bg-slate-200 dark:bg-slate-700 rounded text-xs font-mono">Enter</span> หรือคลิก <strong>"ตกลง"</strong></li>
+              <li>ตรวจสอบแถบ <strong>Status Bar</strong> ด้านล่างจอ: ต้องแสดงชื่อผู้ใช้งานจริง และสถานะเชื่อมต่อฐานข้อมูลเป็นสีเขียว</li>
+            </ol>
+
+            <div class="p-4 bg-amber-50 dark:bg-amber-950/30 rounded-xl border border-amber-200 dark:border-amber-900/50 text-xs text-amber-800 dark:text-amber-300 space-y-1">
+              <p class="font-bold"><i class="fa-solid fa-triangle-exclamation mr-1"></i> ข้อกำหนดความปลอดภัยตามมาตรฐาน ISO 15189:</p>
+              <p>ระบบมีระบบ Audit Trail บันทึกชื่อผู้ทำรายการและเวลา (Timestamp) ในทุกการแก้ไขผลแล็บ การยืนยันผล และการตัดจ่ายเลือด หากส่งมอบเวร ต้องทำรายการ <strong>Log Out</strong> ก่อนเสมอ</p>
+            </div>
+          </div>
+
+          <!-- User Role Matrix Table -->
+          <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm text-xs space-y-3">
+            <h4 class="font-bold text-slate-800 dark:text-white font-heading flex items-center gap-1.5">
+              <i class="fa-solid fa-user-shield text-brand-600"></i> ตารางสิทธิ์ผู้ใช้งาน (Roles)
+            </h4>
+            <div class="divide-y divide-slate-100 dark:divide-slate-700">
+              <div class="py-2">
+                <span class="font-semibold text-slate-900 dark:text-white block">นักเทคนิคการแพทย์ (MT)</span>
+                <span class="text-slate-500 dark:text-slate-400">ตรวจแล็บ, อนุมัติ Cross-match, ตัดจ่ายโลหิต, สอบสวนแพ้เลือด</span>
+              </div>
+              <div class="py-2">
+                <span class="font-semibold text-slate-900 dark:text-white block">จพง.วิทยาศาสตร์การแพทย์ (MLT)</span>
+                <span class="text-slate-500 dark:text-slate-400">ลงทะเบียนบริจาค, คัดกรอง Vital Signs, รับเลือดเข้าคลัง, ตรวจนับสต็อก</span>
+              </div>
+              <div class="py-2">
+                <span class="font-semibold text-slate-900 dark:text-white block">ผู้ดูแลระบบ (Admin)</span>
+                <span class="text-slate-500 dark:text-slate-400">จัดการสิทธิ์, แก้ไขโครงสร้าง, จัดการฐานข้อมูล, ดูแลสำรองข้อมูล</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3: Blood Donation Module -->
+      <section id="sec-donor" class="scroll-mt-24 space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-rose-100 dark:bg-rose-950/60 text-brand-600 dark:text-rose-400 flex items-center justify-center font-bold">3</div>
+            <h2 class="text-xl sm:text-2xl font-bold font-heading">งานรับบริจาคโลหิตและคัดกรอง (Blood Donation)</h2>
+          </div>
+          <span class="text-xs px-2.5 py-1 bg-rose-50 text-brand-700 dark:bg-rose-950/50 dark:text-rose-300 rounded-md">Donor Module</span>
+        </div>
+
+        <p class="text-slate-600 dark:text-slate-300 leading-relaxed">
+          เมนูหลัก: <span class="font-semibold text-slate-800 dark:text-white">งานบริการโลหิต -> [@] ลงข้อมูลการบริจาคโลหิต</span> หรือกดปุ่ม <strong>"ลงทะเบียนผู้บริจาคใหม่"</strong>
+        </p>
+
+        <!-- Process Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Step 1 & 2 -->
+          <div class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-3">
+            <div class="flex items-center gap-2 font-bold text-slate-800 dark:text-white font-heading">
+              <span class="w-6 h-6 rounded-full bg-rose-100 dark:bg-rose-900 text-brand-600 dark:text-rose-300 text-xs flex items-center justify-center">1</span>
+              <span>การลงทะเบียน & ตรวจสอบประวัติ 90 วัน</span>
+            </div>
+            <ul class="text-xs text-slate-600 dark:text-slate-300 space-y-2 leading-relaxed">
+              <li>• เสียบบัตรประชาชนผ่าน <strong>Smart Card Reader</strong> หรือพิมพ์เลข 13 หลัก</li>
+              <li>• ระบบตรวจสอบการบริจาคครั้งล่าสุด: <strong>ต้องไม่น้อยกว่า 90 วัน</strong> หากยังไม่ครบ ระบบจะขึ้นเตือนสีส้มและไม่อนุญาตให้เปิดรับบริจาค</li>
+              <li>• ตรวจสอบชื่อใน <strong>Donor Deferral Registry</strong> ว่าไม่มีประวัติงดบริจาคถาวร</li>
+            </ul>
+          </div>
+
+          <!-- Step 3 & 4 -->
+          <div class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-3">
+            <div class="flex items-center gap-2 font-bold text-slate-800 dark:text-white font-heading">
+              <span class="w-6 h-6 rounded-full bg-rose-100 dark:bg-rose-900 text-brand-600 dark:text-rose-300 text-xs flex items-center justify-center">2</span>
+              <span>บันทึกสัญญาณชีพ & พิมพ์ Barcode Unit No.</span>
+            </div>
+            <ul class="text-xs text-slate-600 dark:text-slate-300 space-y-2 leading-relaxed">
+              <li>• บันทึกน้ำหนัก (≥45 กก.), ความดันโลหิต, ชีพจร และค่าความเข้มข้นโลหิต (Hb/Hct)</li>
+              <li>• เลือกชนิดถุงโลหิต: Single, Double, Triple (CPDA-1 หรือ SAGM)</li>
+              <li>• ระบบ Generate หมายเลขถุงเลือด (**Unit Number**) เช่น <code>69B-01258</code></li>
+              <li>• พิมพ์สติ๊กเกอร์บาร์โค้ดติดถุงและหลอดเลือดส่งตรวจ (Pilot tubes) ทันทีที่เตียงเจาะ</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 4: Laboratory Screening & TTI -->
+      <section id="sec-lab" class="scroll-mt-24 space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 flex items-center justify-center font-bold">4</div>
+            <h2 class="text-xl sm:text-2xl font-bold font-heading">การตรวจคัดกรองทางห้องปฏิบัติการ (Lab & TTI Screening)</h2>
+          </div>
+          <span class="text-xs px-2.5 py-1 bg-purple-50 text-purple-700 dark:bg-purple-950/50 dark:text-purple-300 rounded-md">Testing</span>
+        </div>
+
+        <p class="text-slate-600 dark:text-slate-300 leading-relaxed">
+          เมนูหลัก: <span class="font-semibold text-slate-800 dark:text-white">งานบริการโลหิต -> [^] ลงผลตรวจ LAB ผู้บริจาค</span>
+        </p>
+
+        <!-- Lab Testing Layout -->
+        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm">
+          <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-200 dark:divide-slate-700">
+            
+            <!-- Blood Grouping -->
+            <div class="p-5 space-y-3">
+              <h3 class="font-bold text-sm text-slate-900 dark:text-white font-heading flex items-center gap-2">
+                <i class="fa-solid fa-droplet text-brand-600"></i> การตรวจหมู่เลือด ABO / Rh & Antigen
+              </h3>
+              <div class="text-xs space-y-1.5 text-slate-600 dark:text-slate-300">
+                <p>• <strong>Forward Grouping:</strong> Anti-A, Anti-B, Anti-AB</p>
+                <p>• <strong>Reverse Grouping:</strong> A-cells, B-cells, O-cells</p>
+                <p>• <strong>Rh Typing:</strong> Room temp, 37°C, AHG (Weak D)</p>
+                <p>• <strong>Antibody Screening:</strong> Screen I, Screen II (Negative/Positive)</p>
+                <p>• <strong>Antigen Phenotype:</strong> C, c, E, e, Mi a, ฯลฯ</p>
+              </div>
+            </div>
+
+            <!-- TTI Markers -->
+            <div class="p-5 space-y-3">
+              <h3 class="font-bold text-sm text-slate-900 dark:text-white font-heading flex items-center gap-2">
+                <i class="fa-solid fa-virus text-purple-600"></i> ตรวจคัดกรองการติดเชื้อ 4 ชนิด (TTI)
+              </h3>
+              <div class="text-xs space-y-2 text-slate-600 dark:text-slate-300">
+                <div class="flex justify-between items-center bg-slate-50 dark:bg-slate-900 p-2 rounded">
+                  <span>Anti-HIV</span>
+                  <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 rounded text-[11px] font-semibold">Non-reactive</span>
+                </div>
+                <div class="flex justify-between items-center bg-slate-50 dark:bg-slate-900 p-2 rounded">
+                  <span>HBsAg (ไวรัสตับอักเสบบี)</span>
+                  <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 rounded text-[11px] font-semibold">Non-reactive</span>
+                </div>
+                <div class="flex justify-between items-center bg-slate-50 dark:bg-slate-900 p-2 rounded">
+                  <span>Anti-HCV (ไวรัสตับอักเสบซี)</span>
+                  <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 rounded text-[11px] font-semibold">Non-reactive</span>
+                </div>
+                <div class="flex justify-between items-center bg-slate-50 dark:bg-slate-900 p-2 rounded">
+                  <span>Syphilis (RPR / TPHA)</span>
+                  <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 rounded text-[11px] font-semibold">Non-reactive</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Alert Barrier -->
+          <div class="bg-red-50 dark:bg-red-950/40 p-4 border-t border-red-200 dark:border-red-900/50 flex items-start gap-3">
+            <i class="fa-solid fa-circle-xmark text-red-600 text-lg mt-0.5"></i>
+            <div class="text-xs text-red-800 dark:text-red-300 leading-relaxed">
+              <strong>ระบบล็อกอัตโนมัติ (Automated Lock):</strong> หากผล TTI ตัวใดตัวหนึ่งเป็น <em>Reactive / Positive</em> โปรแกรมจะเปลี่ยนสถานะเป็น <code>Unsafe / Discard</code> ทันที และจะไม่อนุญาตให้นำเข้าคลังหรือจ่ายให้ผู้ป่วยในทุกกรณี พร้อมบันทึกประวัติผู้บริจาคเข้าบัญชีงดบริจาค
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 5: Inventory Management & FIFO -->
+      <section id="sec-inventory" class="scroll-mt-24 space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-cyan-100 dark:bg-cyan-950/60 text-cyan-600 dark:text-cyan-400 flex items-center justify-center font-bold">5</div>
+            <h2 class="text-xl sm:text-2xl font-bold font-heading">การบริหารคลังโลหิตและการจัดเก็บ (Blood Inventory)</h2>
+          </div>
+          <span class="text-xs px-2.5 py-1 bg-cyan-50 text-cyan-700 dark:bg-cyan-950/50 dark:text-cyan-300 rounded-md">Stock & FIFO</span>
+        </div>
+
+        <p class="text-slate-600 dark:text-slate-300 leading-relaxed">
+          เมนูหลัก: <span class="font-semibold text-slate-800 dark:text-white">คลังเลือด -> ข้อมูลคลังโลหิต</span> หรือเปิดหน้าต่าง <strong>"Alert Bag"</strong> เพื่อติดตามวันหมดอายุ
+        </p>
+
+        <!-- Standard Expiry Table -->
+        <div class="overflow-x-auto bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 text-slate-500 uppercase font-heading">
+              <tr>
+                <th class="p-3">ชนิดผลิตภัณฑ์ (Product)</th>
+                <th class="p-3">อุณหภูมิควบคุม</th>
+                <th class="p-3">อายุมาตรฐาน</th>
+                <th class="p-3">หลักการจ่าย (Issuing Rule)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
+              <tr>
+                <td class="p-3 font-semibold text-slate-900 dark:text-white">PRC (Packed Red Cells)</td>
+                <td class="p-3 text-cyan-600 dark:text-cyan-400">1 – 6 °C</td>
+                <td class="p-3">35 วัน (CPDA-1) / 42 วัน (SAGM)</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">FIFO (ใกล้หมดอายุก่อน)</span></td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold text-slate-900 dark:text-white">FFP (Fresh Frozen Plasma)</td>
+                <td class="p-3 text-blue-600 dark:text-blue-400">≤ -18 °C</td>
+                <td class="p-3">1 ปี นับจากวันเจาะ</td>
+                <td class="p-3">ละลายน้ำ 37°C และใช้ภายใน 24 ชม.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold text-slate-900 dark:text-white">PC (Platelet Concentrate)</td>
+                <td class="p-3 text-amber-600 dark:text-amber-400">20 – 24 °C (บน Agitator)</td>
+                <td class="p-3">5 วัน</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300">จ่ายด่วนพิเศษ (อายุสั้น)</span></td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold text-slate-900 dark:text-white">Cryoprecipitate</td>
+                <td class="p-3 text-blue-600 dark:text-blue-400">≤ -18 °C</td>
+                <td class="p-3">1 ปี</td>
+                <td class="p-3">ละลาย 37°C และใช้ภายใน 6 ชม.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Color Codes Explanation -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+          <div class="p-3 rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-800 dark:bg-emerald-950/40 dark:border-emerald-900 dark:text-emerald-300 flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-emerald-500 shrink-0"></span>
+            <span><strong>เขียว:</strong> พร้อมใช้ (> 7 วัน)</span>
+          </div>
+          <div class="p-3 rounded-lg border border-amber-200 bg-amber-50 text-amber-800 dark:bg-amber-950/40 dark:border-amber-900 dark:text-amber-300 flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-amber-500 shrink-0"></span>
+            <span><strong>ส้ม:</strong> ใกล้หมดอายุ (≤ 7 วัน)</span>
+          </div>
+          <div class="p-3 rounded-lg border border-blue-200 bg-blue-50 text-blue-800 dark:bg-blue-950/40 dark:border-blue-900 dark:text-blue-300 flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-blue-500 shrink-0"></span>
+            <span><strong>ฟ้า:</strong> ถูกจองแล้ว (Reserved)</span>
+          </div>
+          <div class="p-3 rounded-lg border border-red-200 bg-red-50 text-red-800 dark:bg-red-950/40 dark:border-red-900 dark:text-red-300 flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-red-500 shrink-0"></span>
+            <span><strong>แดง:</strong> หมดอายุ (ล็อกจ่าย)</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 6: Cross-matching & Reservation -->
+      <section id="sec-crossmatch" class="scroll-mt-24 space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-brand-100 dark:bg-rose-950/60 text-brand-600 dark:text-rose-400 flex items-center justify-center font-bold">6</div>
+            <h2 class="text-xl sm:text-2xl font-bold font-heading">การตรวจความเข้ากันได้และการจองโลหิต (Cross-matching)</h2>
+          </div>
+          <span class="text-xs px-2.5 py-1 bg-rose-50 text-brand-700 dark:bg-rose-950/50 dark:text-rose-300 rounded-md">Core Safety</span>
+        </div>
+
+        <p class="text-slate-600 dark:text-slate-300 leading-relaxed">
+          หน้าต่างหลัก: <strong>CrossMatch (`frm_maincrossmatch` / `frm_Crossmatch`)</strong> เป็นโมดูลหัวใจสำคัญในการปกป้องผู้ป่วยจากภาวะ ABO-Incompatible Transfusion
+        </p>
+
+        <!-- Detailed Steps Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-2">
+            <div class="text-xs font-bold text-brand-600 font-heading">ขั้นตอนที่ 1 : ดึงข้อมูล HOSxP</div>
+            <p class="text-xs text-slate-600 dark:text-slate-300">
+              พิมพ์เลข HN หรือสแกนใบสั่งแล็บ กด <strong>"ดึงข้อมูล HOSxP"</strong> ข้อมูลผู้ป่วย (Ward, แพทย์, จำนวนยูนิต) จะโหลดเข้าจอทันที ทวนสอบชื่อ-HN กับหลอดเลือดให้ตรงกัน
+            </p>
+          </div>
+
+          <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-2">
+            <div class="text-xs font-bold text-brand-600 font-heading">ขั้นตอนที่ 2 : ตรวจ ABO/Rh 2 ครั้ง</div>
+            <p class="text-xs text-slate-600 dark:text-slate-300">
+              บันทึกผล Forward, Reverse, Rh, Ab Screen และบันทึกผล <strong>ABO Group ครั้งที่ 2</strong> เพื่อยืนยันความถูกต้อง หากไม่ตรงกับประวัติเดิม ระบบจะเตือน Discrepancy Alert สีแดง
+            </p>
+          </div>
+
+          <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-2">
+            <div class="text-xs font-bold text-brand-600 font-heading">ขั้นตอนที่ 3 : ทดสอบ Cross-match</div>
+            <p class="text-xs text-slate-600 dark:text-slate-300">
+              ทดสอบ IS (RT), 37°C, AHG (IAT), Auto-control หาก <strong>Compatible</strong> ระบบจะล็อกสถานะเป็น <strong>Reserved</strong> ให้ผู้ป่วยรายนั้น 48 ชั่วโมง
+            </p>
+          </div>
+        </div>
+
+        <!-- Emergency Release Banner -->
+        <div class="p-4 bg-amber-500/10 dark:bg-amber-950/30 rounded-xl border border-amber-300 dark:border-amber-800 flex items-start gap-3">
+          <i class="fa-solid fa-bell text-amber-600 text-lg mt-0.5"></i>
+          <div class="text-xs text-amber-900 dark:text-amber-200 space-y-1">
+            <span class="font-bold">แนวทางกรณีขอเลือดฉุกเฉินวิกฤต (Uncrossmatched Blood):</span>
+            <p>เลือกปุ่ม <strong>"ขอเลือดฉุกเฉิน"</strong> และจัด PRC Group O (หรือตรงหมู่กรณีทราบผลแน่ชัด) ระบบจะพิมพ์สติ๊กเกอร์คาดแถบ <em>"UNCROSSMATCHED BLOOD"</em> โดยเจ้าหน้าที่ต้องทำการทดสอบ Cross-match ต่อเนื่องจนเสร็จสมบูรณ์ทันที</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 7: Dispensing & Blood Return -->
+      <section id="sec-dispense" class="scroll-mt-24 space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">7</div>
+            <h2 class="text-xl sm:text-2xl font-bold font-heading">การจ่ายโลหิตและการรับคืน (Blood Dispensing & Return)</h2>
+          </div>
+          <span class="text-xs px-2.5 py-1 bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300 rounded-md">Dispensing</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          <!-- Two-Person Verification Box -->
+          <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-3">
+            <h3 class="font-bold text-sm text-slate-900 dark:text-white font-heading flex items-center gap-2">
+              <i class="fa-solid fa-user-check text-emerald-600"></i> Two-Person Verification (ตรวจสอบ 6 จุด)
+            </h3>
+            <p class="text-xs text-slate-600 dark:text-slate-300">
+              เมื่อเจ้าหน้าที่หอผู้ป่วยนำใบรับเลือดและกระติกควบคุมความเย็นมาติดต่อ ให้ร่วมกันทวนสอบข้อมูลระหว่างหน้าจอ, ใบคล้องเลือด และถุงโลหิต:
+            </p>
+            <ol class="text-xs space-y-1 text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-900 p-3 rounded-lg list-decimal list-inside">
+              <li>ชื่อ - สกุล ผู้ป่วย</li>
+              <li>เลขประจำตัวผู้ป่วย (HN)</li>
+              <li>หอผู้ป่วย (Ward)</li>
+              <li>หมู่เลือด ABO / Rh ผู้ป่วยและถุงโลหิต</li>
+              <li>หมายเลขถุงเลือด (Unit Number)</li>
+              <li>วันหมดอายุ & ผล Cross-match (Compatible)</li>
+            </ol>
+            <p class="text-xs text-slate-500">สแกนจ่ายในระบบ สถานะจะเปลี่ยนจาก Reserved เป็น <strong>Dispensed</strong></p>
+          </div>
+
+          <!-- Return Rules Box -->
+          <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-3">
+            <h3 class="font-bold text-sm text-slate-900 dark:text-white font-heading flex items-center gap-2">
+              <i class="fa-solid fa-clock-rotate-left text-brand-600"></i> เกณฑ์การรับคืนโลหิต (Cold Chain Integrity)
+            </h3>
+            <div class="text-xs space-y-2 text-slate-600 dark:text-slate-300 leading-relaxed">
+              <div class="p-2.5 rounded bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900">
+                <strong><i class="fa-solid fa-check mr-1"></i> เกณฑ์รับคืนเข้าคลัง (Return to Stock):</strong>
+                <ul class="list-disc list-inside mt-1 space-y-0.5">
+                  <li>ส่งคืนภายใน <strong>30 นาที</strong> นับจากเวลาที่จ่ายออก</li>
+                  <li>อุณหภูมิในกระติก <strong>1 – 10 °C</strong> (Ice pack ไม่ละลายหมด)</li>
+                  <li>สาย segment และตัวถุงไม่ถูกเจาะหรือตัด</li>
+                </ul>
+              </div>
+              <div class="p-2.5 rounded bg-red-50 dark:bg-red-950/40 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-900">
+                <strong><i class="fa-solid fa-xmark mr-1"></i> เกณฑ์รับคืนเพื่อตัดทิ้ง (Discard):</strong>
+                <p class="mt-1">หากเกิน 30 นาที หรืออุณหภูมิเกินเกณฑ์ ให้เข้าเมนู <code>CancelUseBlood</code> และเลือก <strong>"รับคืนเพื่อจำหน่ายทิ้ง (Discard)"</strong> ห้ามนำกลับไปจ่ายให้ผู้ป่วยรายอื่น</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Section 8: Transfusion Reaction Investigation -->
+      <section id="sec-reaction" class="scroll-mt-24 space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-red-100 dark:bg-red-950/60 text-red-600 dark:text-red-400 flex items-center justify-center font-bold">8</div>
+            <h2 class="text-xl sm:text-2xl font-bold font-heading">การสอบสวนอาการไม่พึงประสงค์ (Transfusion Reaction)</h2>
+          </div>
+          <span class="text-xs px-2.5 py-1 bg-red-50 text-red-700 dark:bg-red-950/50 dark:text-red-300 rounded-md">Investigation</span>
+        </div>
+
+        <p class="text-slate-600 dark:text-slate-300 leading-relaxed">
+          หน้าต่าง: <strong>Transfusion Reaction Report (`Transfusion_react.frm`)</strong> สำหรับสืบค้นและรายงานอุบัติการณ์แพ้เลือดตามข้อกำหนดของ HA และสภากาชาดไทย
+        </p>
+
+        <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 text-xs">
+            <div class="p-3 bg-slate-50 dark:bg-slate-900 rounded-lg">
+              <span class="font-bold text-slate-800 dark:text-white block mb-1">1. Clerical Check</span>
+              <span class="text-slate-500">ทวนสอบชื่อ-HN บนถุงเลือด, หลอดเลือด Pre/Post และใบขอตรวจ</span>
+            </div>
+            <div class="p-3 bg-slate-50 dark:bg-slate-900 rounded-lg">
+              <span class="font-bold text-slate-800 dark:text-white block mb-1">2. Visual Check</span>
+              <span class="text-slate-500">ปั่นตรวจดู Hemolysis หรือ Icteric ในหลอดเลือด Post-transfusion</span>
+            </div>
+            <div class="p-3 bg-slate-50 dark:bg-slate-900 rounded-lg">
+              <span class="font-bold text-slate-800 dark:text-white block mb-1">3. DAT & Repeat XM</span>
+              <span class="text-slate-500">ตรวจ DAT Pre/Post และ Cross-match ซ้ำทุกขั้นตอน (RT, 37°C, AHG)</span>
+            </div>
+            <div class="p-3 bg-slate-50 dark:bg-slate-900 rounded-lg">
+              <span class="font-bold text-slate-800 dark:text-white block mb-1">4. Gram Stain & Culture</span>
+              <span class="text-slate-500">ย้อมสีและส่งเพาะเชื้อจากถุงเลือดหากสงสัย Septic Reaction</span>
+            </div>
+          </div>
+
+          <div class="text-xs text-slate-500 dark:text-slate-400">
+            * สรุปผลการวินิจฉัย (FNHTR, Allergic, AHTR, TRALI) และพิมพ์รายงานส่งแพทย์ผู้รักษาและคณะกรรมการความปลอดภัยของโรงพยาบาล
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 9: Reports & KPIs -->
+      <section id="sec-reports" class="scroll-mt-24 space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold">9</div>
+            <h2 class="text-xl sm:text-2xl font-bold font-heading">รายงาน สถิติ และตัวชี้วัดคุณภาพ (Reports & KPIs)</h2>
+          </div>
+          <span class="text-xs px-2.5 py-1 bg-blue-50 text-blue-700 dark:bg-blue-950/50 dark:text-blue-300 rounded-md">Quality KPIs</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- KPI 1 -->
+          <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <div class="text-xs text-slate-500 font-medium">ตัวชี้วัดประสิทธิภาพการสั่งเลือด</div>
+            <div class="text-lg font-bold text-slate-900 dark:text-white font-heading mt-1">C/T Ratio ≤ 2.0</div>
+            <p class="text-xs text-slate-500 mt-1">อัตราส่วนยูนิตที่ทำ Cross-match ต่อยูนิตที่จ่ายจริง บ่งชี้การจองเลือดเกินความจำเป็น</p>
+          </div>
+
+          <!-- KPI 2 -->
+          <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <div class="text-xs text-slate-500 font-medium">อัตราการสูญเสียโลหิต</div>
+            <div class="text-lg font-bold text-slate-900 dark:text-white font-heading mt-1">Blood Discard Rate &lt; 1%</div>
+            <p class="text-xs text-slate-500 mt-1">สถิติโลหิตหมดอายุหรือชำรุด ติดตามการบริหารคลังตามหลัก FIFO</p>
+          </div>
+
+          <!-- KPI 3 -->
+          <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <div class="text-xs text-slate-500 font-medium">ความปลอดภัยสูงสุด</div>
+            <div class="text-lg font-bold text-emerald-600 font-heading mt-1">ABO Incompatible = 0%</div>
+            <p class="text-xs text-slate-500 mt-1">Zero Tolerance สำหรับความผิดพลาดในการให้เลือดผิดหมู่</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 10: Administration, Backup & Downtime -->
+      <section id="sec-admin" class="scroll-mt-24 space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 flex items-center justify-center font-bold">10</div>
+            <h2 class="text-xl sm:text-2xl font-bold font-heading">การสำรองข้อมูลและแผนฉุกเฉิน (Backup & Downtime)</h2>
+          </div>
+          <span class="text-xs px-2.5 py-1 bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 rounded-md">Contingency</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Backup Card -->
+          <div class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-2">
+            <h3 class="font-bold text-sm text-slate-900 dark:text-white font-heading flex items-center gap-2">
+              <i class="fa-solid fa-hard-drive text-cyan-600"></i> การสำรองฐานข้อมูล (Auto Backup)
+            </h3>
+            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+              • ระบบรัน **Auto Backup** ฐานข้อมูล MySQL ทุกคืนเวลา **00:00 น.**<br>
+              • ไฟล์สำรองจะถูกบีบอัดและจัดเก็บแยกไว้ที่ไดรฟ์สำรอง และ External/Cloud Server<br>
+              • เจ้าหน้าที่สามารถกด Backup แบบ Manual ได้ที่เมนู <code>AutoBackUp.frm</code> ก่อนการอัปเกรดระบบ
+            </p>
+          </div>
+
+          <!-- Downtime Card -->
+          <div class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-2">
+            <h3 class="font-bold text-sm text-slate-900 dark:text-white font-heading flex items-center gap-2">
+              <i class="fa-solid fa-file-signature text-amber-600"></i> แผนรองรับเหตุระบบล่ม (Downtime Protocol)
+            </h3>
+            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+              • เมื่อโปรแกรมหรือเครือข่ายขัดข้อง ให้ใช้ **แบบฟอร์มกระดาษ FM-LAB-BB-DT01** ทันที<br>
+              • การจ่ายเลือดฉุกเฉินต้องผ่านการตรวจสอบร่วมกัน (Double Check) โดยนักเทคนิคการแพทย์ 2 ท่าน<br>
+              • เมื่อระบบกลับมาออนไลน์ (Uptime) ให้นำข้อมูลมาบันทึกย้อนหลังเข้า BBSys ภายใน **24 ชั่วโมง**
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 11: Troubleshooting & Help -->
+      <section id="sec-trouble" class="scroll-mt-24 space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold">11</div>
+            <h2 class="text-xl sm:text-2xl font-bold font-heading">คู่มือการแก้ไขปัญหาเบื้องต้น (Troubleshooting Guide)</h2>
+          </div>
+          <span class="text-xs px-2.5 py-1 bg-amber-50 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300 rounded-md">Support</span>
+        </div>
+
+        <!-- Interactive Filter for Troubleshooting -->
+        <div class="space-y-3">
+          <input type="text" id="troubleFilter" placeholder="พิมพ์อาการปัญหา เช่น ต่อฐานข้อมูลไม่ได้, บาร์โค้ดไม่อ่าน, จองค้าง..." 
+                 class="w-full px-4 py-2 text-xs bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500">
+          
+          <div id="troubleList" class="space-y-2">
+            <!-- Item 1 -->
+            <div class="trouble-item p-4 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-1">
+              <div class="font-bold text-xs text-rose-600 dark:text-rose-400 flex items-center gap-2">
+                <i class="fa-solid fa-circle-exclamation"></i> 1. ฐานข้อมูลขึ้นสีแดง (Cannot Connect to MySQL)
+              </div>
+              <div class="text-xs text-slate-600 dark:text-slate-300 pl-5">
+                <strong>สาเหตุ:</strong> สาย LAN หลุด, เครื่อง Server ปิดอยู่, หรือ MySQL Service หยุดทำงาน<br>
+                <strong>วิธีแก้ไข:</strong> ตรวจสอบสาย LAN หลังเครื่อง, เช็กเครื่องแม่ข่ายว่าเปิดอยู่หรือไม่, สั่ง Restart MySQL Service หรือแจ้งศูนย์คอมพิวเตอร์
+              </div>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="trouble-item p-4 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-1">
+              <div class="font-bold text-xs text-rose-600 dark:text-rose-400 flex items-center gap-2">
+                <i class="fa-solid fa-circle-exclamation"></i> 2. ดึงข้อมูลผู้ป่วยจาก HOSxP ไม่ขึ้น
+              </div>
+              <div class="text-xs text-slate-600 dark:text-slate-300 pl-5">
+                <strong>สาเหตุ:</strong> เลข HN ไม่ตรง, ยังไม่เปิด Visit ใน HOSxP หรือ Link Connection หลุด<br>
+                <strong>วิธีแก้ไข:</strong> เข้าเมนู <code>HosXpINI</code> แล้วกด "Test Connection" หาก HOSxP มีปัญหา ให้พิมพ์ข้อมูลแบบ Manual ชั่วคราว
+              </div>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="trouble-item p-4 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-1">
+              <div class="font-bold text-xs text-rose-600 dark:text-rose-400 flex items-center gap-2">
+                <i class="fa-solid fa-circle-exclamation"></i> 3. สแกนบาร์โค้ดยูนิตแล้วไม่พบข้อมูล (Unit Not Found)
+              </div>
+              <div class="text-xs text-slate-600 dark:text-slate-300 pl-5">
+                <strong>สาเหตุ:</strong> ยูนิตยังไม่ได้รับการกดยืนยันผลตรวจแล็บผู้บริจาค (Release) หรือแป้นพิมพ์ตั้งเป็นภาษาไทย<br>
+                <strong>วิธีแก้ไข:</strong> สลับแป้นพิมพ์เป็นภาษาอังกฤษ (EN) และตรวจเช็กในหน้ารับเข้าคลังว่ายูนิตนี้ผ่านการยืนยันผลหรือยัง
+              </div>
+            </div>
+
+            <!-- Item 4 -->
+            <div class="trouble-item p-4 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-1">
+              <div class="font-bold text-xs text-rose-600 dark:text-rose-400 flex items-center gap-2">
+                <i class="fa-solid fa-circle-exclamation"></i> 4. ปุ่มเลือกยูนิตทำ Cross-match เป็นสีเทา (คลิกไม่ได้)
+              </div>
+              <div class="text-xs text-slate-600 dark:text-slate-300 pl-5">
+                <strong>สาเหตุ:</strong> ยูนิตหมดอายุแล้ว หรือติดสถานะ Reserved ค้างไว้ให้ผู้ป่วยรายอื่น<br>
+                <strong>วิธีแก้ไข:</strong> ตรวจสอบวันหมดอายุ หากถูกจองค้างไว้เกิน 48 ชม. และไม่ได้ใช้ ให้ทำเรื่องปลดล็อก (Release) เพื่อนำกลับสู่คลังกลาง
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 12: Interactive Simulators -->
+      <section id="sec-simulator" class="scroll-mt-24 space-y-4 no-print interactive-sim">
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-teal-100 dark:bg-teal-950/60 text-teal-600 dark:text-teal-400 flex items-center justify-center font-bold">12</div>
+            <h2 class="text-xl sm:text-2xl font-bold font-heading">เครื่องมือช่วยปฏิบัติงานและจำลองการตัดสินใจ (Interactive Simulators)</h2>
+          </div>
+          <span class="text-xs px-2.5 py-1 bg-teal-50 text-teal-700 dark:bg-teal-950/50 dark:text-teal-300 rounded-md">Live Tools</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          <!-- Tool 1: Cold Chain Return Decision Simulator -->
+          <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-3">
+            <h3 class="font-bold text-sm text-slate-900 dark:text-white font-heading flex items-center gap-2">
+              <i class="fa-solid fa-calculator text-teal-600"></i> โปรแกรมคำนวณเกณฑ์รับคืนโลหิต (Cold Chain Evaluator)
+            </h3>
+            <p class="text-xs text-slate-500">ทดสอบประเมินว่าถุงเลือดที่นำมาคืนสามารถรับเข้าคลังต่อได้ หรือต้องตัดทำลาย</p>
+            
+            <div class="space-y-3 pt-2 text-xs">
+              <div>
+                <label class="block font-medium text-slate-700 dark:text-slate-300 mb-1">ระยะเวลานับจากจ่าย (นาที):</label>
+                <input type="number" id="simMinutes" value="20" min="1" max="180" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900">
+              </div>
+              <div>
+                <label class="block font-medium text-slate-700 dark:text-slate-300 mb-1">อุณหภูมิในกระติก (°C):</label>
+                <input type="number" id="simTemp" value="4" min="-5" max="30" step="0.5" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900">
+              </div>
+              <div class="flex items-center gap-2">
+                <input type="checkbox" id="simIntact" checked class="rounded text-brand-600">
+                <label for="simIntact" class="text-slate-700 dark:text-slate-300">สภาพถุงสมบูรณ์ สาย segment ไม่ถูกตัด</label>
+              </div>
+
+              <button onclick="evaluateReturn()" class="w-full py-2 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-lg transition">
+                ประเมินผลการรับคืน
+              </button>
+
+              <div id="simReturnResult" class="p-3 rounded-lg bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 text-center font-bold">
+                กดปุ่มเพื่อดูผลการประเมิน
+              </div>
+            </div>
+          </div>
+
+          <!-- Tool 2: Blood Compatibility Quick Reference -->
+          <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-3">
+            <h3 class="font-bold text-sm text-slate-900 dark:text-white font-heading flex items-center gap-2">
+              <i class="fa-solid fa-droplet text-brand-600"></i> ตัวช่วยจับคู่หมู่เลือดเข้ากันได้ (Compatibility Matrix)
+            </h3>
+            <p class="text-xs text-slate-500">เลือกหมู่เลือดผู้ป่วยเพื่อดูหมู่เลือดและส่วนประกอบที่สามารถให้ได้</p>
+            
+            <div class="space-y-3 pt-2 text-xs">
+              <div>
+                <label class="block font-medium text-slate-700 dark:text-slate-300 mb-1">หมู่เลือดผู้ป่วย (Recipient Group):</label>
+                <select id="simPatientGroup" onchange="updateCompatibility()" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900">
+                  <option value="O">Group O</option>
+                  <option value="A">Group A</option>
+                  <option value="B">Group B</option>
+                  <option value="AB">Group AB</option>
+                </select>
+              </div>
+
+              <div class="p-3 bg-slate-50 dark:bg-slate-900 rounded-xl space-y-2 border border-slate-200 dark:border-slate-700">
+                <div class="flex justify-between">
+                  <span class="text-slate-500">ให้เม็ดเลือดแดง (PRC) ได้:</span>
+                  <span id="resRBC" class="font-bold text-brand-600">Group O เท่านั้น</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-slate-500">ให้พลาสมา (FFP) ได้:</span>
+                  <span id="resFFP" class="font-bold text-blue-600">Group O, A, B, AB</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-slate-500">ให้เกล็ดเลือด (PC) ได้:</span>
+                  <span id="resPLT" class="font-bold text-amber-600">Group O (แนะนำตรงหมู่)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-6 mt-12 transition-colors">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-hospital text-brand-600"></i>
+        <span>งานธนาคารเลือด กลุ่มงานเทคนิคการแพทย์และพยาธิวิทยาคลินิก โรงพยาบาลเบตง</span>
+      </div>
+      <div>
+        <span>ระบบสารสนเทศ BBSys Version 3.0 • มาตรฐาน ISO 15189:2022 / LA / HA</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Client-side Interactive Scripts -->
+  <script>
+    // Initialize Mermaid.js
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.documentElement.classList.contains('dark') ? 'dark' : 'default',
+      securityLevel: 'loose'
+    });
+
+    // Theme Switcher (Dark / Light)
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    
+    // Check saved theme or system preference
+    if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+      themeIcon.classList.replace('fa-moon', 'fa-sun');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+
+    themeToggle.addEventListener('click', () => {
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+        themeIcon.classList.replace('fa-sun', 'fa-moon');
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+        themeIcon.classList.replace('fa-moon', 'fa-sun');
+      }
+    });
+
+    // View Mode Switcher: Manual vs WI
+    const btnManualMode = document.getElementById('btnManualMode');
+    const btnWiMode = document.getElementById('btnWiMode');
+
+    btnManualMode.addEventListener('click', () => {
+      btnManualMode.className = 'px-3 py-1.5 rounded-lg bg-white dark:bg-slate-700 text-brand-600 dark:text-rose-400 shadow-sm transition flex items-center gap-1.5';
+      btnWiMode.className = 'px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition flex items-center gap-1.5';
+    });
+
+    btnWiMode.addEventListener('click', () => {
+      btnWiMode.className = 'px-3 py-1.5 rounded-lg bg-white dark:bg-slate-700 text-brand-600 dark:text-rose-400 shadow-sm transition flex items-center gap-1.5';
+      btnManualMode.className = 'px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition flex items-center gap-1.5';
+    });
+
+    // Mobile Sidebar Toggle
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('sidebar');
+    sidebarToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('hidden');
+      sidebar.classList.toggle('fixed');
+      sidebar.classList.toggle('inset-0');
+      sidebar.classList.toggle('z-50');
+      sidebar.classList.toggle('bg-white');
+      sidebar.classList.toggle('dark:bg-slate-900');
+      sidebar.classList.toggle('p-6');
+    });
+
+    // Search Filter
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase().trim();
+      document.querySelectorAll('main section').forEach(sec => {
+        const text = sec.innerText.toLowerCase();
+        if (text.includes(q) || q === '') {
+          sec.style.display = '';
+        } else {
+          sec.style.display = 'none';
+        }
+      });
+    });
+
+    // Troubleshooting Search Filter
+    const troubleFilter = document.getElementById('troubleFilter');
+    troubleFilter.addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase().trim();
+      document.querySelectorAll('.trouble-item').forEach(item => {
+        const text = item.innerText.toLowerCase();
+        item.style.display = (text.includes(q) || q === '') ? '' : 'none';
+      });
+    });
+
+    // Keyboard Shortcut (Ctrl + K) to focus search
+    window.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        searchInput.focus();
+      }
+    });
+
+    // Cold Chain Evaluator
+    function evaluateReturn() {
+      const mins = parseInt(document.getElementById('simMinutes').value, 10);
+      const temp = parseFloat(document.getElementById('simTemp').value);
+      const intact = document.getElementById('simIntact').checked;
+      const res = document.getElementById('simReturnResult');
+
+      if (!intact) {
+        res.className = 'p-3 rounded-lg bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300 text-center font-bold';
+        res.innerHTML = '<i class="fa-solid fa-ban mr-1"></i> ปฏิเสธการรับคืนเข้าคลัง (ถุงชำรุด/ถูกเปิด) -> ตัดจำหน่ายทิ้ง (Discard)';
+        return;
+      }
+
+      if (mins <= 30 && temp >= 1.0 && temp <= 10.0) {
+        res.className = 'p-3 rounded-lg bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 text-center font-bold';
+        res.innerHTML = '<i class="fa-solid fa-circle-check mr-1"></i> ผ่านเกณฑ์ Cold Chain -> สามารถรับคืนเข้าคลัง (Return to Stock) ได้';
+      } else {
+        let reasons = [];
+        if (mins > 30) reasons.push(`เกินเวลา 30 นาที (${mins} นาที)`);
+        if (temp < 1.0 || temp > 10.0) reasons.push(`อุณหภูมิไม่อยู่ในเกณฑ์ 1-10°C (${temp}°C)`);
+        res.className = 'p-3 rounded-lg bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300 text-center font-bold';
+        res.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> ไม่ผ่านเกณฑ์ (${reasons.join(', ')}) -> ตัดจำหน่ายทิ้ง (Discard)`;
+      }
+    }
+
+    // Compatibility Quick Reference
+    function updateCompatibility() {
+      const grp = document.getElementById('simPatientGroup').value;
+      const rbc = document.getElementById('resRBC');
+      const ffp = document.getElementById('resFFP');
+      const plt = document.getElementById('resPLT');
+
+      if (grp === 'O') {
+        rbc.textContent = 'Group O เท่านั้น';
+        ffp.textContent = 'Group O, A, B, AB';
+        plt.textContent = 'Group O (แนะนำตรงหมู่)';
+      } else if (grp === 'A') {
+        rbc.textContent = 'Group A, O';
+        ffp.textContent = 'Group A, AB';
+        plt.textContent = 'Group A, AB (แนะนำตรงหมู่)';
+      } else if (grp === 'B') {
+        rbc.textContent = 'Group B, O';
+        ffp.textContent = 'Group B, AB';
+        plt.textContent = 'Group B, AB (แนะนำตรงหมู่)';
+      } else if (grp === 'AB') {
+        rbc.textContent = 'Group AB, A, B, O';
+        ffp.textContent = 'Group AB เท่านั้น';
+        plt.textContent = 'Group AB (แนะนำตรงหมู่)';
+      }
+    }
+  </script>
+</body>
+</html>
